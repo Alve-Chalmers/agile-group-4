@@ -2,3 +2,9 @@ packages:
   - "apps/*"
 
 nodeLinker: hoisted
+# Hoist drizzle-kit (and esbuild) so nested `node_modules/.pnpm/.../esbuild`
+# resolves when running workspace scripts from `apps/api` without a local
+# `node_modules` (pnpm hoisted layout).
+publicHoistPattern:
+  - "*drizzle-kit*"
+  - "esbuild"

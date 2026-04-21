@@ -10,11 +10,19 @@ Monorepo: Expo SDK 55 app (`apps/mobile`) and Hono API (`apps/api`) with tRPC, B
 
 ## Install
 
+From the **repository root** (the folder that contains `pnpm-workspace.yaml`):
+
 ```bash
+corepack enable
 pnpm install
 ```
 
 Use **pnpm only**; a single `pnpm-lock.yaml` is expected at the repo root.
+
+### Troubleshooting installs / `pnpm db:migrate`
+
+- **`WARN Local package.json exists, but node_modules missing`** under `apps/api` was a misleading pnpm message when a script failed and the workspace package had no `node_modules` folder (hoisted installs often omit it). The root `postinstall` creates empty `apps/*/node_modules` so failed scripts do not print that warning; the real error is shown above it.
+- **`DATABASE_URL` / Postgres driver `url: undefined`:** create `apps/api/.env` from `apps/api/.env.example` and set `DATABASE_URL` before `pnpm db:migrate`.
 
 ## Environment
 
