@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -9,37 +10,27 @@ type HealthJson = { status: string };
 
 export default function ApiExampleScreen() {
   const apiUrl = getApiBaseUrl();
-  const [health, setHealth] = useState<HealthJson | null>(null);
-  const [ping, setPing] = useState<{ pong: true } | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const healthQuery = useQuery({
+    queryKey: ['health', apiUrl],
+    queryFn: async (): Promise<HealthJson> => {
       const healthRes = await fetch(`${apiUrl}/health`);
       if (!healthRes.ok) {
         throw new Error(`/health returned ${healthRes.status}`);
       }
-      const healthJson = (await healthRes.json()) as HealthJson;
+      return (await healthRes.json()) as HealthJson;
+    },
+  });
 
-      const pingJson = await trpc.ping.query();
+  const pingQuery = trpc.ping.useQuery();
 
-      setHealth(healthJson);
-      setPing(pingJson);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Request failed');
-      setHealth(null);
-      setPing(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [apiUrl]);
+  const loading = healthQuery.isPending || pingQuery.isPending;
+  const error =
+    healthQuery.error?.message ?? pingQuery.error?.message ?? null;
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const load = useCallback(() => {
+    void Promise.all([healthQuery.refetch(), pingQuery.refetch()]);
+  }, [healthQuery.refetch, pingQuery.refetch]);
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
@@ -51,21 +42,29 @@ export default function ApiExampleScreen() {
         <View style={styles.card}>
           <Text style={styles.label}>Health</Text>
           <Text style={styles.value}>
-            {health ? JSON.stringify(health) : loading ? '…' : '—'}
+            {healthQuery.data
+              ? JSON.stringify(healthQuery.data)
+              : loading
+                ? '…'
+                : '—'}
           </Text>
         </View>
 
         <View style={styles.card}>
           <Text style={styles.label}>tRPC ping</Text>
           <Text style={styles.value}>
-            {ping ? JSON.stringify(ping) : loading ? '…' : '—'}
+            {pingQuery.data
+              ? JSON.stringify(pingQuery.data)
+              : loading
+                ? '…'
+                : '—'}
           </Text>
         </View>
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <Pressable
-          onPress={() => void load()}
+          onPress={load}
           style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
           disabled={loading}
         >
