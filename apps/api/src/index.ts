@@ -1,2 +1,10 @@
-/** Replaced when the tRPC router is wired in scaffold-api. */
-export type AppRouter = Record<string, never>;
+/**
+ * Vercel default export (see https://hono.dev/docs/getting-started/vercel).
+ * Type-only consumers: `import type { AppRouter } from '@0waste/api'`.
+ */
+import { app } from './app.js';
+
+export { app };
+export type { AppRouter } from './trpc/router.js';
+
+export default app;

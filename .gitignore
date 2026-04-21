@@ -38,6 +38,9 @@ apps/api/.env
 # Turborepo
 .turbo
 
+# API build
+apps/api/dist
+
 # typescript
 *.tsbuildinfo
 
