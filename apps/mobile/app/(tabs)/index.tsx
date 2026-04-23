@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Button } from 'tamagui';
 
 import { Text, View } from '@/components/Themed';
 import { getApiBaseUrl } from '@/lib/api-base';
@@ -63,13 +64,11 @@ export default function ApiExampleScreen() {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <Pressable
-          onPress={load}
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-          disabled={loading}
-        >
-          <Text style={styles.buttonLabel}>{loading ? 'Loading…' : 'Refresh'}</Text>
-        </Pressable>
+        <View style={styles.buttonWrap}>
+          <Button onPress={load} disabled={loading}>
+            {loading ? 'Loading…' : 'Refresh'}
+          </Button>
+        </View>
       </View>
     </ScrollView>
   );
@@ -116,20 +115,8 @@ const styles = StyleSheet.create({
     color: '#b91c1c',
     fontSize: 14,
   },
-  button: {
+  buttonWrap: {
     marginTop: 16,
     alignSelf: 'flex-start',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  buttonPressed: {
-    opacity: 0.85,
-  },
-  buttonLabel: {
-    color: '#fafafa',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

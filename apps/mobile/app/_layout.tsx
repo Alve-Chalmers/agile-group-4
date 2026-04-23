@@ -4,10 +4,12 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { TamaguiProvider } from 'tamagui';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { TrpcProvider } from '@/lib/trpc-provider';
+import { tamaguiConfig } from '../tamagui.config';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,13 +52,18 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <TrpcProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </TrpcProvider>
-    </ThemeProvider>
+    <TamaguiProvider
+      config={tamaguiConfig}
+      defaultTheme={colorScheme === 'dark' ? 'dark' : 'light'}
+    >
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <TrpcProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </TrpcProvider>
+      </ThemeProvider>
+    </TamaguiProvider>
   );
 }
