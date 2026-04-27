@@ -1,4 +1,4 @@
-import { protectedProcedure, publicProcedure, router } from './init.js';
+import { protectedProcedure, publicProcedure, router } from "./init.js";
 
 export const appRouter = router({
   ping: publicProcedure.query(() => ({ pong: true as const })),
