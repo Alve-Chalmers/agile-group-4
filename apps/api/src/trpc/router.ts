@@ -27,7 +27,7 @@ export const homeRouter = router({
       z.object({
         name: z.string(),
         category: z.string(),
-        expiresAt: z.date(),
+        expiresAt: z.coerce.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -39,7 +39,7 @@ export const homeRouter = router({
         homeId: home.id,
         name: input.name,
         category: input.category,
-        expiresAt: input.expiresAt,
+        expiresAt: new Date(input.expiresAt),
       });
     }),
 });

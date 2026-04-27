@@ -1,17 +1,16 @@
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { Pressable, ScrollView, StyleSheet, TextInput } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { getApiBaseUrl } from "@/lib/api-base";
 import { trpc } from "@/lib/trpc";
-import { useCallback } from "react";
-
-type HealthJson = { status: string };
+import { useCallback, useState } from "react";
 
 export default function ApiExampleScreen() {
   const apiUrl = getApiBaseUrl();
-
+  const [productName, setProductName] = useState("");
   const pingQuery = trpc.ping.useQuery();
   const homeQuery = trpc.home.getHome.useQuery();
+  const addProductMutation = trpc.home.addProduct.useMutation();
 
   const error = homeQuery.error?.message ?? pingQuery.error?.message ?? null;
   const loading = homeQuery.isPending || pingQuery.isPending;
@@ -42,6 +41,15 @@ export default function ApiExampleScreen() {
 
         <Pressable onPress={load} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]} disabled={loading}>
           <Text style={styles.buttonLabel}>{loading ? "Loading…" : "Refresh"}</Text>
+        </Pressable>
+
+        <TextInput placeholder='Product name' value={productName} onChangeText={setProductName} />
+        <Pressable
+          onPress={() => addProductMutation.mutate({ name: productName, category: "Test", expiresAt: "2026-05-10" })}
+          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+          disabled={addProductMutation.isPending}
+        >
+          <Text style={styles.buttonLabel}>{addProductMutation.isPending ? "Adding…" : "Add product"}</Text>
         </Pressable>
       </View>
     </ScrollView>
