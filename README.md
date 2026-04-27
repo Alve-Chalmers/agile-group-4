@@ -6,7 +6,7 @@ Monorepo: Expo SDK 55 app (`apps/mobile`) and Hono API (`apps/api`) with tRPC, B
 
 - Node.js 20+ (see [Expo SDK 55](https://expo.dev/changelog/sdk-55) tool versions)
 - [pnpm](https://pnpm.io/) 9+
-- A [Neon](https://neon.tech/) Postgres database (or any Postgres URL compatible with `@neondatabase/serverless`)
+- Postgres: a [Neon](https://neon.tech/) database for hosted dev/prod, or a **local Postgres 14+** instance (see [Local Postgres](#local-postgres-for-development))
 
 ## Install
 
@@ -21,6 +21,21 @@ Use **pnpm only**; a single `pnpm-lock.yaml` is expected at the repo root.
 - Copy [`.env.example`](.env.example) for variable names.
 - **Mobile:** set `EXPO_PUBLIC_API_URL` (e.g. `http://localhost:3000` or your deployed API URL) in `apps/mobile/.env` or via EAS.
 - **API:** copy [`apps/api/.env.example`](apps/api/.env.example) to `apps/api/.env` and set `DATABASE_URL`, `BETTER_AUTH_SECRET` (≥32 random bytes in production), and `BETTER_AUTH_URL` (public origin of the API, no trailing slash).
+
+## Local Postgres for development
+
+Install Postgres on the machine that runs the API (or on a host you can reach from it, for example WSL when the API runs in Linux). Hosted URLs often use `?sslmode=require`; **local** servers usually omit SSL in the URL (see the example in [`apps/api/.env.example`](apps/api/.env.example)).
+
+1. Install and start the Postgres service for your OS (e.g. `postgresql` on Linux, Postgres.app or Homebrew on macOS, or the Windows installer).
+2. Create an empty database, for example:
+
+   ```bash
+   createdb zerowaste
+   ```
+
+   (If your OS uses a `postgres` system user or a different default user, run this as that user or use `psql` with `-U`.)
+3. Set `DATABASE_URL` in `apps/api/.env` to match your user, password, host, port, and database name, e.g. `postgresql://YOUR_USER:YOUR_PASSWORD@127.0.0.1:5432/zerowaste`.
+4. Continue with [Database migrations](#database-migrations-api) (`pnpm db:migrate` from the repo root).
 
 ## Database migrations (API)
 
