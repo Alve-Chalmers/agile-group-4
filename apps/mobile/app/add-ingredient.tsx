@@ -17,7 +17,7 @@ export default function AddIngredientScreen() {
 
   const handleSave = () => {
     const [day, month, year] = expirationDate.split('-');
-    
+
     const newIngredient = {
       id: Date.now().toString(),
       name,
