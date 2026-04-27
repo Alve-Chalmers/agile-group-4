@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { router } from 'expo-router';
 import { useCallback } from 'react';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
@@ -70,6 +71,14 @@ export default function ApiExampleScreen() {
         >
           <Text style={styles.buttonLabel}>{loading ? 'Loading…' : 'Refresh'}</Text>
         </Pressable>
+
+        <Pressable
+        onPress={() => router.push('/add-ingredient')}
+        style={({ pressed }) => [styles.addButton, pressed && styles.buttonPressed]}
+        
+        >
+          <Text style={styles.buttonLabel}>Add Ingredient</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -131,5 +140,13 @@ const styles = StyleSheet.create({
     color: '#fafafa',
     fontSize: 16,
     fontWeight: '600',
+  },
+  addButton: {
+    marginTop: 8,
+    alignSelf: 'flex-start',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: '#16a34a',
   },
 });
