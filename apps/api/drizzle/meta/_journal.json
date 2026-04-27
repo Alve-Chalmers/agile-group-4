@@ -8,6 +8,13 @@
       "when": 1776775172809,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777318122369,
+      "tag": "0001_fixed_emma_frost",
+      "breakpoints": true
     }
   ]
 }
