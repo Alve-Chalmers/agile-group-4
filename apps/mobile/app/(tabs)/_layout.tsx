@@ -1,11 +1,13 @@
-import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Link, Redirect, Tabs } from 'expo-router';
+import React from 'react';
+import { ActivityIndicator, Pressable } from 'react-native';
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
+import { Text, View } from '@/components/Themed';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
+import { useAuthSession } from '@/lib/auth';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -17,6 +19,20 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const scheme = useColorScheme() === 'dark' ? 'dark' : 'light';
+  const { state } = useAuthSession();
+
+  if (state === 'loading') {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 10 }}>
+        <ActivityIndicator size="large" />
+        <Text style={{ opacity: 0.75 }}>Checking your session...</Text>
+      </View>
+    );
+  }
+
+  if (state === 'unauthenticated') {
+    return <Redirect href="/login" />;
+  }
 
   return (
     <Tabs
@@ -54,6 +70,18 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
-    </Tabs>
+      <Tabs.Screen
+        name="login"
+        options={{
+          href: null,
+        }}
+        />
+      <Tabs.Screen
+        name="create-accout"
+        options={{
+          href: null,
+        }}
+      />
+    </Tabs> 
   );
 }

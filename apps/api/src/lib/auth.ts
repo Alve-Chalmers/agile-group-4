@@ -7,6 +7,9 @@ import * as tables from '../db/schema.js';
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET ?? 'development-secret-min-32-chars-long!!',
   baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
+  emailAndPassword: {
+    enabled: true,
+  },
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: {
