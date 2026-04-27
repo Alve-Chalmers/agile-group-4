@@ -16,9 +16,6 @@ export default function AuthLayout() {
     );
   }
 
-  if (state === 'authenticated') {
-    return <Redirect href="/(tabs)" />;
-  }
 
   return (
     <Stack>

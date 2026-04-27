@@ -20,7 +20,9 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const scheme = useColorScheme() === 'dark' ? 'dark' : 'light';
   const { state } = useAuthSession();
+  const headerShown = useClientOnlyValue(false, true);
 
+  
   if (state === 'loading') {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 10 }}>
@@ -40,7 +42,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[scheme].tint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
+        headerShown,
       }}>
       <Tabs.Screen
         name="index"

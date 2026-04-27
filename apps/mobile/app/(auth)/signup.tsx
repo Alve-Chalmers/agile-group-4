@@ -58,7 +58,7 @@ export default function SignupScreen() {
 
       <TextInput
         style={styles.input}
-        placeholder="Name (optional)"
+        placeholder="Name"
         value={name}
         onChangeText={setName}
       />
