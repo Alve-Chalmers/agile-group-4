@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { boolean, index, integer, pgTable, primaryKey, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -30,7 +30,7 @@ export const session = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
   },
-  (table) => [index("session_userId_idx").on(table.userId)],
+  table => [index("session_userId_idx").on(table.userId)],
 );
 
 export const account = pgTable(
@@ -54,7 +54,7 @@ export const account = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("account_userId_idx").on(table.userId)],
+  table => [index("account_userId_idx").on(table.userId)],
 );
 
 export const verification = pgTable(
@@ -70,12 +70,84 @@ export const verification = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)],
+  table => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const userRelations = relations(user, ({ many }) => ({
+export const category = pgTable("category", {
+  name: text("name").primaryKey(),
+  /** Can be `null` */
+  defaultShelfLifeSeconds: integer("default_shelf_life_seconds"),
+});
+
+export const home = pgTable("home", {
+  id: serial().primaryKey(),
+});
+
+export const userHome = pgTable(
+  "user_home",
+  {
+    userId: text("user_id")
+      .notNull()
+      .unique()
+      .references(() => user.id),
+    homeId: integer("home_id")
+      .notNull()
+      .references(() => home.id),
+  },
+  t => [primaryKey({ columns: [t.homeId, t.userId] })],
+);
+
+export const product = pgTable("product", {
+  id: serial().primaryKey(),
+  homeId: integer("home_id")
+    .references(() => home.id)
+    .notNull(),
+  name: text("name").notNull(),
+  category: text("category_name").references(() => category.name),
+  expiresAt: timestamp("expires_at").notNull(),
+  addedAt: timestamp("added_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
+export const productRelations = relations(product, ({ one }) => ({
+  home: one(home, {
+    fields: [product.homeId],
+    references: [home.id],
+  }),
+  category: one(category, {
+    fields: [product.category],
+    references: [category.name],
+  }),
+}));
+
+export const userHomeRelations = relations(userHome, ({ one }) => ({
+  user: one(user, {
+    fields: [userHome.userId],
+    references: [user.id],
+  }),
+  home: one(home, {
+    fields: [userHome.homeId],
+    references: [home.id],
+  }),
+}));
+
+export const homeRelations = relations(home, ({ many }) => ({
+  userHomes: many(userHome),
+  products: many(product),
+}));
+
+export const categoryRelations = relations(category, ({ many }) => ({
+  products: many(product),
+}));
+
+export const userRelations = relations(user, ({ many, one }) => ({
   sessions: many(session),
   accounts: many(account),
+  /** 0..1 row per user (`user_home.user_id` is unique). Use nested `with: { home: true }` to load the home. */
+  userHome: one(userHome),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
