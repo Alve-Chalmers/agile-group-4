@@ -1,9 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
 import { useState, type ReactNode } from "react";
 
-import { getApiBaseUrl } from "./api-base";
-import { trpc } from "./trpc";
+import { batchLink, trpc } from "./trpc";
 
 export function TrpcProvider({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -19,17 +17,7 @@ export function TrpcProvider({ children }: { children: ReactNode }) {
 
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      links: [
-        httpBatchLink({
-          url: `${getApiBaseUrl()}/trpc`,
-          fetch(url, options) {
-            return fetch(url, {
-              ...options,
-              credentials: "include",
-            });
-          },
-        }),
-      ],
+      links: [batchLink],
     }),
   );
 
