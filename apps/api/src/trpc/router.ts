@@ -20,8 +20,16 @@ export const getHome = async (userId: string) => {
   return home;
 };
 
+
 export const homeRouter = router({
   getHome: protectedProcedure.query(async ({ ctx }) => getHome(ctx.user.id)),
+  getProducts: protectedProcedure.query(async ({ ctx }) => {
+    const home = await getHome(ctx.user.id);
+  if (!home) {
+    throw new TRPCError({ code: "NO HOME" });
+  }
+  return home.products;
+}),
   addProduct: protectedProcedure
     .input(
       z.object({
@@ -42,7 +50,9 @@ export const homeRouter = router({
         expiresAt: new Date(input.expiresAt),
       });
     }),
-});
+}
+
+);
 
 export const appRouter = router({
   ping: publicProcedure.query(() => ({ pong: true as const })),
