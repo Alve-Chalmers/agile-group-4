@@ -20,13 +20,12 @@ export const getHome = async (userId: string) => {
   return home;
 };
 
-
 export const homeRouter = router({
   getHome: protectedProcedure.query(async ({ ctx }) => getHome(ctx.user.id)),
   getProducts: protectedProcedure.query(async ({ ctx }) => {
     const home = await getHome(ctx.user.id);
   if (!home) {
-    throw new TRPCError({ code: "NO HOME" });
+    throw new TRPCError({ code: "NOT_FOUND" });
   }
   return home.products;
 }),
@@ -51,7 +50,6 @@ export const homeRouter = router({
       });
     }),
 }
-
 );
 
 export const appRouter = router({
