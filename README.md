@@ -2,6 +2,18 @@
 
 Monorepo: Expo SDK 55 app (`apps/mobile`) and Hono API (`apps/api`) with tRPC, Better Auth, Drizzle, and Neon.
 
+## Structure
+
+### Important files
+
+#### API
+
+In the API directory, the most important file is `src/trpc/router.ts`. This file defines all procedures which are accessible in the front-end.
+
+Another important file is `src/db/schema.ts` - defines the schema for our database.
+
+#### Mobile App
+
 ## Prerequisites
 
 - Node.js 20+ (see [Expo SDK 55](https://expo.dev/changelog/sdk-55) tool versions)
@@ -34,6 +46,7 @@ Install Postgres on the machine that runs the API (or on a host you can reach fr
    ```
 
    (If your OS uses a `postgres` system user or a different default user, run this as that user or use `psql` with `-U`.)
+
 3. Set `DATABASE_URL` in `apps/api/.env` to match your user, password, host, port, and database name, e.g. `postgresql://YOUR_USER:YOUR_PASSWORD@127.0.0.1:5432/zerowaste`.
 4. Continue with [Database migrations](#database-migrations-api) (`pnpm db:migrate` from the repo root).
 
