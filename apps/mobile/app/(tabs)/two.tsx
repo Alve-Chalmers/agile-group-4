@@ -1,62 +1,58 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
-
 import { Text, View } from '@/components/Themed';
 import { useAuthSession } from '@/lib/auth';
+import { trpcServer } from '@/lib/trpc';
 
 type Product = {
   id: number;
   name: string;
-  updatedAt: Date;
-  expiresAt: Date;
-  category: string;
+  updatedAt: string;
+  expiresAt: string;
+  category: string | null;
   homeId: number;
-  addedAt: Date;
-
+  addedAt: string;
 };
 
 export default function TabTwoScreen() {
-  const dummyProducts: Product[] = [
+  const dummyP: Product[] = [
   {
     id: 1,
     name: 'Milk',
     category: 'Dairy',
-    updatedAt: new Date(),
-    expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
     homeId: 1,
-    addedAt: new Date(),
+    addedAt: new Date().toISOString(),
   },
   {
     id: 2,
-    name: 'Bananas',
+    name: 'Banana',
     category: 'Fruit',
-    updatedAt: new Date(),
-    expiresAt: new Date(),
+    updatedAt: new Date().toISOString(),
+    expiresAt: new Date().toISOString(),
     homeId: 1,
-    addedAt: new Date(),
-  }
+    addedAt: new Date().toISOString(),
+  } //use these if you don't have anything in the database
 ];
   const [products, setProducts] = useState<Product[]>([]);
   const { state: authState } = useAuthSession();
 
   useEffect(() => {
     if (authState !== 'authenticated') return;
-    setTimeout(() => {
-    setProducts(dummyProducts);
-    }, 500);
-    }, [authState]);
-    /*const fetchProducts = async () => {
+    //setProducts(dummyP);
+    const fetchProducts = async () => {
         const product = await trpcServer.home.getProducts.query();
         setProducts(product);
     };
     fetchProducts();
-  }, [authState]);*/
+  }, [authState]);
   if (authState !== 'authenticated') {
-    return <Text>You must be logged in</Text>;
+    return <Text style={styles.errorText}>You must be logged in</Text>;
   }
   if (products.length === 0) {
-    return <Text>No products found</Text>;
+    return <Text style={styles.errorText}>No products found</Text>;
   }
 
   return (
@@ -79,15 +75,13 @@ export default function TabTwoScreen() {
   );
 }
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   contentContainer: {
-    padding: 16,
-    paddingTop: 12,
+    padding: 24,
+    paddingTop: 16,
   },
   title: {
     fontSize: 24,
@@ -100,10 +94,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   listContainer: {
-    gap: 10,
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   productCard: {
-    padding: 12,
+    padding: 16,
     borderRadius: 8,
     backgroundColor: 'rgba(120,120,128,0.12)',
   },
@@ -115,11 +111,6 @@ const styles = StyleSheet.create({
   productCategory: {
     fontSize: 13,
     opacity: 0.7,
-  },
-  loadingText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 20,
   },
   errorText: {
     fontSize: 14,
