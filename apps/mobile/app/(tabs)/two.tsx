@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { useCallback } from "react";
+import { Pressable, ScrollView, StyleSheet } from "react-native";
 
-import { Text, View } from '@/components/Themed';
-import { useAuthSession } from '@/lib/auth';
-import { trpcServer } from '@/lib/trpc';
+import { Text, View } from "@/components/Themed";
+import { trpc } from "@/lib/trpc";
 
 type Product = {
   id: number;
@@ -16,61 +15,50 @@ type Product = {
 };
 
 export default function TabTwoScreen() {
-  const dummyP: Product[] = [
-  {
-    id: 1,
-    name: 'Milk',
-    category: 'Dairy',
-    updatedAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-    homeId: 1,
-    addedAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    name: 'Banana',
-    category: 'Fruit',
-    updatedAt: new Date().toISOString(),
-    expiresAt: new Date().toISOString(),
-    homeId: 1,
-    addedAt: new Date().toISOString(),
-  } //use these if you don't have anything in the database
-];
-  const [products, setProducts] = useState<Product[]>([]);
-  const { state: authState } = useAuthSession();
+  const fetchProducts = trpc.home.getProducts.useQuery();
+  const removeProductMutation = trpc.home.removeProduct.useMutation();
+  const products = fetchProducts.data || [];
+  const load = useCallback(() => {
+    void fetchProducts.refetch();
+  }, [fetchProducts.refetch]);
 
-  useEffect(() => {
-    if (authState !== 'authenticated') return;
-    //setProducts(dummyP);
-    const fetchProducts = async () => {
-        const product = await trpcServer.home.getProducts.query();
-        setProducts(product);
-    };
-    fetchProducts();
-  }, [authState]);
-  if (authState !== 'authenticated') {
-    return <Text style={styles.errorText}>You must be logged in</Text>;
-  }
+  const removeCall = useCallback(
+    (productId: number) => { removeProductMutation.mutate( { id: productId.toString() },
+        { onSuccess: () => { void fetchProducts.refetch(); }});
+      }, [removeProductMutation, fetchProducts]);
+
   if (products.length === 0) {
-    return <Text style={styles.errorText}>No products found</Text>;
-  }
+    return (
+    <View style={[styles.container]}>
+      <Text style={styles.errorText}>No products found</Text>
+      <Pressable
+        onPress={load} style={({ pressed }) => [styles.centeredButton, pressed && styles.buttonPressed]}>
+      <Text style={styles.buttonLabel}>Refresh</Text>
+      </Pressable>
+    </View> );}
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView contentContainerStyle={styles.contentContainer}>
+    <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
-      <View style={styles.separator} />
-      <View style={styles.listContainer}>
-        {products.map((product) => {
-          const expirydate = new Date(product.expiresAt);
-          const daysToexpire = Math.ceil((expirydate.getTime() - Date.now()) / (1000 * 3600 * 24));
+      <View style={[styles.listContainer]}>
+      {products.map((product) => {
+        const expiryDate = new Date(product.expiresAt);
+        const daysToExpire = Math.ceil((expiryDate.getTime() - Date.now()) / (1000 * 3600 * 24));
         return (
-          <View key={product.id} style={styles.productCard}>
+          <View key={product.id} style={styles.card}>
             <Text style={styles.productName}>{product.name}</Text>
             <Text style={styles.productCategory}>{product.category}</Text>
-            <Text>Expires in: {daysToexpire} days.</Text>
-          </View>
-        );})}
+            <Text>Expires in: {daysToExpire} days.</Text>
+            <Pressable
+              onPress={() => removeCall(product.id)}
+              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}
+              disabled={removeProductMutation.isPending}>
+            <Text style={styles.buttonLabel}> {removeProductMutation.isPending ? "Removing..." : "Remove Ingredient!"}</Text>
+            </Pressable>
+          </View> );})}
       </View>
+    </View>
     </ScrollView>
   );
 }
@@ -78,50 +66,68 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  contentContainer: {
     padding: 24,
     paddingTop: 16,
+    gap: 10,
+  },
+  contentContainer: {
+    flexGrow: 1,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 12,
-  },
-  separator: {
-    marginBottom: 16,
-    height: 1,
-    width: '100%',
   },
   listContainer: {
     gap: 12,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    marginBottom: 16,
+    height: 1,
+    width: "100%",
   },
-  productCard: {
+  card: {
     padding: 16,
     borderRadius: 8,
-    backgroundColor: 'rgba(120,120,128,0.12)',
+    backgroundColor: "rgba(120,120,128,0.12)",
   },
   productName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   productCategory: {
     fontSize: 13,
     opacity: 0.7,
+    marginBottom: 4,
+  },
+  button: {
+    marginTop: 16,
+    alignSelf: "flex-start",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#18181b",
+  },
+  centeredButton: {
+    marginTop: 16,
+    alignSelf: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#18181b",
+  },
+  buttonPressed: {
+    opacity: 0.85,
+  },
+  buttonLabel: {
+    color: "#fafafa",
+    fontSize: 16,
+    fontWeight: "600",
   },
   errorText: {
     fontSize: 14,
-    color: '#ff4444',
-    textAlign: 'center',
+    color: "#ff4444",
+    textAlign: "center",
     marginTop: 20,
-  },
-  emptyText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 20,
-    opacity: 0.6,
-  },
+  }
 });
