@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { getApiBaseUrl } from "./api-base";
 import { trpcServer } from "./trpc";
+import { router } from "expo-router";
 
 type AuthUser = {
   id: string;
@@ -112,6 +113,8 @@ export async function signOut() {
     method: "POST",
     body: JSON.stringify({}),
   });
+
+  router.push("/login");
 }
 
 export async function getSession() {

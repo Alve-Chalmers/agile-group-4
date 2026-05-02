@@ -4,6 +4,7 @@ import { Text, View } from "@/components/Themed";
 import { getApiBaseUrl } from "@/lib/api-base";
 import { trpc } from "@/lib/trpc";
 import { useCallback, useState } from "react";
+import { signOut } from "@/lib/auth";
 
 export default function ApiExampleScreen() {
   const apiUrl = getApiBaseUrl();
@@ -50,6 +51,13 @@ export default function ApiExampleScreen() {
           disabled={addProductMutation.isPending}
         >
           <Text style={styles.buttonLabel}>{addProductMutation.isPending ? "Adding…" : "Add product"}</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => void signOut()}
+          disabled={loading}
+          style={({ pressed }) => [styles.button, loading && styles.buttonDisabled, pressed && styles.buttonPressed]}
+        >
+          <Text style={styles.buttonLabel}>{loading ? "Logging out..." : "Logout"}</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -112,5 +120,8 @@ const styles = StyleSheet.create({
     color: "#fafafa",
     fontSize: 16,
     fontWeight: "600",
+  },
+   buttonDisabled: {
+    opacity: 0.6,
   },
 });
