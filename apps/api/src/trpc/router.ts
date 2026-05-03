@@ -22,13 +22,6 @@ export const getHome = async (userId: string) => {
 
 export const homeRouter = router({
   getHome: protectedProcedure.query(async ({ ctx }) => getHome(ctx.user.id)),
-  getProducts: protectedProcedure.query(async ({ ctx }) => {
-    const home = await getHome(ctx.user.id);
-  if (!home) {
-    throw new TRPCError({ code: "NOT_FOUND" });
-  }
-  return home.products;
-}),
   addProduct: protectedProcedure
     .input(
       z.object({

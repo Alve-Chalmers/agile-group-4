@@ -4,24 +4,13 @@ import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { trpc } from "@/lib/trpc";
 
-type Product = {
-  id: number;
-  name: string;
-  updatedAt: string;
-  expiresAt: string;
-  category: string | null;
-  homeId: number;
-  addedAt: string;
-};
-
 export default function TabTwoScreen() {
-  const fetchProducts = trpc.home.getProducts.useQuery();
+  const fetchProducts = trpc.home.getHome.useQuery();
   const removeProductMutation = trpc.home.removeProduct.useMutation();
-  const products = fetchProducts.data || [];
+  const products = (fetchProducts.data)?.products || [];
   const load = useCallback(() => {
     void fetchProducts.refetch();
   }, [fetchProducts.refetch]);
-
   const removeCall = useCallback(
     (productId: number) => { removeProductMutation.mutate( { id: productId.toString() },
         { onSuccess: () => { void fetchProducts.refetch(); }});
