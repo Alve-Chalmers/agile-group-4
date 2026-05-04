@@ -5,6 +5,7 @@ import { getApiBaseUrl } from "@/lib/api-base";
 import { trpc } from "@/lib/trpc";
 import { useCallback, useState } from "react";
 import { signOut } from "@/lib/auth";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 export default function ApiExampleScreen() {
   const apiUrl = getApiBaseUrl();
@@ -15,6 +16,7 @@ export default function ApiExampleScreen() {
 
   const error = homeQuery.error?.message ?? pingQuery.error?.message ?? null;
   const loading = homeQuery.isPending || pingQuery.isPending;
+  const queryClient = useQueryClient();
 
   const load = useCallback(() => {
     void homeQuery.refetch();
@@ -53,7 +55,7 @@ export default function ApiExampleScreen() {
           <Text style={styles.buttonLabel}>{addProductMutation.isPending ? "Adding…" : "Add product"}</Text>
         </Pressable>
         <Pressable
-          onPress={() => void signOut()}
+          onPress={() => void signOut(queryClient)}
           disabled={loading}
           style={({ pressed }) => [styles.button, loading && styles.buttonDisabled, pressed && styles.buttonPressed]}
         >
