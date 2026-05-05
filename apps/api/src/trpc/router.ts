@@ -42,6 +42,23 @@ export const homeRouter = router({
         expiresAt: new Date(input.expiresAt),
       });
     }),
+  updateExpirationDate: protectedProcedure
+    .input(
+      z.object({
+        productId: z.number(),
+        expiresAt: z.coerce.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const home = await getHome(ctx.user.id);
+      if (!home) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+      await db
+        .update(product)
+        .set({ expiresAt: new Date(input.expiresAt) })
+        .where(eq(product.id, input.productId));
+    }),
 });
 
 export const appRouter = router({

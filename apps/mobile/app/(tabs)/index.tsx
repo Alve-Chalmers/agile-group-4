@@ -11,6 +11,13 @@ export default function ApiExampleScreen() {
   const pingQuery = trpc.ping.useQuery();
   const homeQuery = trpc.home.getHome.useQuery();
   const addProductMutation = trpc.home.addProduct.useMutation();
+  const updateExpirationDateMutation =
+    trpc.home.updateExpirationDate.useMutation({
+      onSuccess: () => homeQuery.refetch(),
+    });
+
+  const [productId, setProductId] = useState("");
+  const [newExpiresAt, setNewExpiresAt] = useState("");
 
   const error = homeQuery.error?.message ?? pingQuery.error?.message ?? null;
   const loading = homeQuery.isPending || pingQuery.isPending;
@@ -26,30 +33,92 @@ export default function ApiExampleScreen() {
         <Text style={styles.title}>API data fetching</Text>
         <Text style={styles.muted}>GET {apiUrl}/health</Text>
         <Text style={styles.muted}>tRPC ping → {apiUrl}/trpc</Text>
-
         <View style={styles.card}>
           <Text style={styles.label}>Home data</Text>
-          <Text style={styles.value}>{homeQuery.data ? JSON.stringify(homeQuery.data) : homeQuery.isPending ? "…" : "—"}</Text>
+          <Text style={styles.value}>
+            {homeQuery.data
+              ? JSON.stringify(homeQuery.data)
+              : homeQuery.isPending
+                ? "…"
+                : "—"}
+          </Text>
         </View>
-
         <View style={styles.card}>
           <Text style={styles.label}>tRPC ping</Text>
-          <Text style={styles.value}>{pingQuery.data ? JSON.stringify(pingQuery.data) : pingQuery.isPending ? "…" : "—"}</Text>
+          <Text style={styles.value}>
+            {pingQuery.data
+              ? JSON.stringify(pingQuery.data)
+              : pingQuery.isPending
+                ? "…"
+                : "—"}
+          </Text>
         </View>
-
         {error ? <Text style={styles.error}>{error}</Text> : null}
-
-        <Pressable onPress={load} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]} disabled={loading}>
-          <Text style={styles.buttonLabel}>{loading ? "Loading…" : "Refresh"}</Text>
-        </Pressable>
-
-        <TextInput placeholder='Product name' value={productName} onChangeText={setProductName} />
         <Pressable
-          onPress={() => addProductMutation.mutate({ name: productName, category: "Test", expiresAt: "2026-05-10" })}
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+          onPress={load}
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
+          disabled={loading}
+        >
+          <Text style={styles.buttonLabel}>
+            {loading ? "Loading…" : "Refresh"}
+          </Text>
+        </Pressable>
+        <TextInput
+          placeholder="Product name"
+          value={productName}
+          onChangeText={setProductName}
+        />
+        <Pressable
+          onPress={() =>
+            addProductMutation.mutate({
+              name: productName,
+              category: "Test",
+              expiresAt: "2026-05-10",
+            })
+          }
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
           disabled={addProductMutation.isPending}
         >
-          <Text style={styles.buttonLabel}>{addProductMutation.isPending ? "Adding…" : "Add product"}</Text>
+          <Text style={styles.buttonLabel}>
+            {addProductMutation.isPending ? "Adding…" : "Add product"}
+          </Text>
+        </Pressable>
+
+        {/* Knapp för att updatera BF datum */}
+        <TextInput
+          placeholder="Product ID"
+          value={productId}
+          onChangeText={setProductId}
+        />
+        <TextInput
+          placeholder="New expiration date (YYYY-MM-DD)"
+          value={newExpiresAt}
+          onChangeText={setNewExpiresAt}
+        />
+        <Pressable
+          onPress={() =>
+            updateExpirationDateMutation.mutate({
+              productId: Number(productId),
+              expiresAt: newExpiresAt,
+            })
+          }
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
+          disabled={updateExpirationDateMutation.isPending}
+        >
+          <Text style={styles.buttonLabel}>
+            {updateExpirationDateMutation.isPending
+              ? "Updating…"
+              : "Update expiration date"}
+          </Text>
         </Pressable>
       </View>
     </ScrollView>
