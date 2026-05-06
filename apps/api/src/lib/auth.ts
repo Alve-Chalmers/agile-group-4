@@ -1,5 +1,7 @@
 import { betterAuth } from 'better-auth';
+import { createAuthMiddleware } from 'better-auth/api';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { createHomeForUser } from '../db/home.js';
 
 import { db } from '../db/index.js';
 import * as tables from '../db/schema.js';
@@ -32,6 +34,19 @@ export const auth = betterAuth({
       verification: tables.verification,
     },
   }),
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path.startsWith('/sign-up')) {
+        const newSession = ctx.context.newSession;
+        if (newSession) {
+          // Create a default home for the new user
+          await createHomeForUser(newSession.user.id);
+        }
+      }
+    }),
+  },
+
+
   ...(crossSiteSessionCookiesEnabled()
     ? {
         advanced: {
