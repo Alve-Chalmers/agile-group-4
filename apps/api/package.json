@@ -16,7 +16,7 @@
     "dev": "tsx watch src/dev.ts",
     "build": "tsc -p tsconfig.build.json",
     "check": "tsc -p tsconfig.json --noEmit",
-    "lint": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . && prettier --check .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
@@ -32,10 +32,15 @@
     "postgres": "^3.4.7",
     "zod": "^4.3.6"
   },
+  "prettier": "@0waste/prettier-config",
   "devDependencies": {
+    "@0waste/eslint-config": "workspace:*",
+    "@0waste/prettier-config": "workspace:*",
     "@better-auth/cli": "^1.4.21",
     "@types/node": "^25.6.0",
     "drizzle-kit": "^0.31.10",
+    "eslint": "^9.39.4",
+    "prettier": "^3.8.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.3"
   }
