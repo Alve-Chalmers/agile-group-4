@@ -25,18 +25,23 @@ export default function TabTwoScreen() {
     let selection;
     switch (sort) {
       case 'Expiring':
-        selection = sorted.filter(product => ((new Date(product.expiresAt).getTime() - Date.now()) / (1000 * 3600 * 24) ) < 7);
+        selection = sorted.filter(
+          (product) =>
+            (new Date(product.expiresAt).getTime() - Date.now()) / (1000 * 3600 * 24) < 7,
+        );
         break;
       case 'Dairy':
-        selection = sorted.filter(product => product.category === 'Dairy');
+        selection = sorted.filter((product) => product.category === 'Dairy');
         break;
       case 'Produce':
-        selection = sorted.filter(product => product.category === 'Produce');
+        selection = sorted.filter((product) => product.category === 'Produce');
         break;
       default:
         selection = sorted;
     }
-    let result = selection.sort( (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime());
+    let result = selection.sort(
+      (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime(),
+    );
     return sortAsc ? result.reverse() : result;
   }, [products, sort, sortAsc]);
 
@@ -83,87 +88,106 @@ export default function TabTwoScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
-    <View style={styles.container}>
-      <Text style={styles.title}>Products</Text>
-      <View style={styles.buttonRow}>
-        <Pressable
-                onPress={() => setAsc(!sortAsc)}
-                style={({ pressed }) => [styles.sortButton, pressed && styles.buttonPressed,]}>
-                <Text style={styles.buttonLabel}>{sortAsc ? "Ascending" : "Descending"}</Text>
-        </Pressable>
-        {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => {
-          return (
-            <Pressable
+      <View style={styles.container}>
+        <Text style={styles.title}>Products</Text>
+        <View style={styles.buttonRow}>
+          <Pressable
+            onPress={() => setAsc(!sortAsc)}
+            style={({ pressed }) => [styles.sortButton, pressed && styles.buttonPressed]}
+          >
+            <Text style={styles.buttonLabel}>{sortAsc ? 'Ascending' : 'Descending'}</Text>
+          </Pressable>
+          {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => {
+            return (
+              <Pressable
                 onPress={() => setSort(sort === str ? 'All' : str)}
-                style={({ pressed }) => [styles.sortButton, sort === str && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
+                style={({ pressed }) => [
+                  styles.sortButton,
+                  sort === str && styles.sortButtonSelected,
+                  pressed && styles.buttonPressed,
+                ]}
+              >
                 <Text style={styles.buttonLabel}>{str}</Text>
-             </Pressable>
-          );})
-        }
-      </View>
-      <View style={[styles.listContainer]}>
-      {sortedProducts.map((product) => {
-        const expiryDate = new Date(product.expiresAt);
-        const daysToExpire = Math.ceil((expiryDate.getTime() - Date.now()) / (1000 * 3600 * 24));
-        return (
-          <View key={product.id} style={styles.card}>
-            <Text style={styles.productName}>{product.name}</Text>
-            <Text style={styles.productCategory}>{product.category}</Text>
-            <Text>Expires in: {daysToExpire} days.</Text>
-            <Pressable
-              onPress={() => removeCall(product.id)}
-              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}
-              disabled={removeProductMutation.isPending}>
-            <Text style={styles.buttonLabel}> {removeProductMutation.isPending ? "Removing..." : "Remove Ingredient!"}</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => openSetPopup(product)}
-              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}>
-            <Text style={styles.buttonLabel}>Change!</Text>
-            </Pressable>
-          </View> );})}
-      </View>
-
-    {popup && (
-      <View style = {styles.overlay}>
-        <View style = {styles.modal}>
-          <TextInput
-            placeholder="Product Name"
-            value={newName}
-            onChangeText={setNewName}
-            style={styles.textInput}
-          />
-          <TextInput
-            placeholder="Category"
-            value={newCategory}
-            onChangeText={setNewCategory}
-            style={styles.textInput}
-          />
-          <TextInput
-            placeholder="Expiration Date"
-            value={newExpiresAt}
-            onChangeText={setNewExpiresAt}
-            style={styles.textInput}
-          />
-          <Pressable
-              onPress={() => setPopup(null)}
-              style={({ pressed }) => [styles.exitButton, pressed && styles.buttonPressed,]}>
-            <Text style={styles.buttonLabel}>Exit!</Text>
-          </Pressable>
-          <Pressable
-              onPress={() => changeProduct.mutate({
-                id: Number(productsId),
-                category: newCategory,
-                expiresAt: newExpiresAt,
-                name: newName,
-              })}
-              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}>
-            <Text style={styles.buttonLabel}>Change!</Text>
-          </Pressable>
+              </Pressable>
+            );
+          })}
         </View>
+        <View style={[styles.listContainer]}>
+          {sortedProducts.map((product) => {
+            const expiryDate = new Date(product.expiresAt);
+            const daysToExpire = Math.ceil(
+              (expiryDate.getTime() - Date.now()) / (1000 * 3600 * 24),
+            );
+            return (
+              <View key={product.id} style={styles.card}>
+                <Text style={styles.productName}>{product.name}</Text>
+                <Text style={styles.productCategory}>{product.category}</Text>
+                <Text>Expires in: {daysToExpire} days.</Text>
+                <Pressable
+                  onPress={() => removeCall(product.id)}
+                  style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+                  disabled={removeProductMutation.isPending}
+                >
+                  <Text style={styles.buttonLabel}>
+                    {' '}
+                    {removeProductMutation.isPending ? 'Removing...' : 'Remove Ingredient!'}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => openSetPopup(product)}
+                  style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+                >
+                  <Text style={styles.buttonLabel}>Change!</Text>
+                </Pressable>
+              </View>
+            );
+          })}
+        </View>
+
+        {popup && (
+          <View style={styles.overlay}>
+            <View style={styles.modal}>
+              <TextInput
+                placeholder="Product Name"
+                value={newName}
+                onChangeText={setNewName}
+                style={styles.textInput}
+              />
+              <TextInput
+                placeholder="Category"
+                value={newCategory}
+                onChangeText={setNewCategory}
+                style={styles.textInput}
+              />
+              <TextInput
+                placeholder="Expiration Date"
+                value={newExpiresAt}
+                onChangeText={setNewExpiresAt}
+                style={styles.textInput}
+              />
+              <Pressable
+                onPress={() => setPopup(null)}
+                style={({ pressed }) => [styles.exitButton, pressed && styles.buttonPressed]}
+              >
+                <Text style={styles.buttonLabel}>Exit!</Text>
+              </Pressable>
+              <Pressable
+                onPress={() =>
+                  changeProduct.mutate({
+                    id: Number(productsId),
+                    category: newCategory,
+                    expiresAt: newExpiresAt,
+                    name: newName,
+                  })
+                }
+                style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+              >
+                <Text style={styles.buttonLabel}>Change!</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
       </View>
-    )}
-    </View>
     </ScrollView>
   );
 }
