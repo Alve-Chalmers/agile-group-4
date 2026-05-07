@@ -9,31 +9,34 @@ export default function TabTwoScreen() {
   const changeProduct = trpc.home.changeProduct.useMutation({
     onSuccess: () => fetchProducts.refetch(),
   });
-
   const removeProductMutation = trpc.home.removeProduct.useMutation();
   const products = fetchProducts.data?.products || [];
 
   const [popup, setPopup] = useState<(typeof products)[0] | null>(null);
   const [productsId, setProductId] = useState('');
   const [newName, setNewName] = useState('');
+  const [newCategory, setNewCategory] = useState('');
   const [newExpiresAt, setNewExpiresAt] = useState('');
-
-  const [sort, setSort] = useState('expiration');
+  const [sort, setSort] = useState('');
   const [sortAsc, setAsc] = useState(false);
 
   const sortedProducts = useMemo(() => {
     const sorted = products;
-    let result;
+    let selection;
     switch (sort) {
-      case 'expiration':
-        result = sorted.sort(
-          (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime(),
-        );
-      case 'name':
-        result = sorted.sort((a, b) => a.name.localeCompare(b.name));
+      case 'expiring':
+        selection = sorted.filter(product => ((new Date(product.expiresAt).getTime() - Date.now()) / (1000 * 3600 * 24) ) < 7);
+        break;
+      case 'dairy':
+        selection = sorted.filter(product => product.category === 'Dairy');
+        break;
+      case 'produce':
+        selection = sorted.filter(product => product.category === 'Produce');
+        break;
       default:
-        result = sorted;
+        selection = sorted;
     }
+    let result = selection.sort( (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime());
     return sortAsc ? result.reverse() : result;
   }, [products, sort, sortAsc]);
 
@@ -55,9 +58,10 @@ export default function TabTwoScreen() {
     [removeProductMutation, fetchProducts],
   );
 
-  const OpenSetPopup = useCallback((product: (typeof products)[0]) => {
+  const openSetPopup = useCallback((product: (typeof products)[0]) => {
     setPopup(product);
     setNewName(product.name);
+    setNewCategory(product?.category ?? '');
     setProductId('' + product.id);
     const time = product.expiresAt.slice(0, 10);
     setNewExpiresAt(time);
@@ -81,11 +85,33 @@ export default function TabTwoScreen() {
     <ScrollView contentContainerStyle={styles.contentContainer}>
     <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
-      <Pressable
-              onPress={() => setAsc(!sortAsc)}
-              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}>
-            <Text style={styles.buttonLabel}>{sortAsc ? "Ascending" : "Descending"}</Text>
-      </Pressable>
+      <View style={styles.buttonRow}>
+        <Pressable
+                onPress={() => setAsc(!sortAsc)}
+                style={({ pressed }) => [styles.sortButton, pressed && styles.buttonPressed,]}>
+                <Text style={styles.buttonLabel}>{sortAsc ? "Ascending" : "Descending"}</Text>
+        </Pressable>
+        <Pressable
+                onPress={() => setSort('')}
+                style={({ pressed }) => [styles.sortButton, sort === '' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
+                <Text style={styles.buttonLabel}>{"All"}</Text>
+        </Pressable>
+        <Pressable
+                onPress={() => setSort(sort === 'produce' ? '' : 'produce')}
+                style={({ pressed }) => [styles.sortButton, sort === 'produce' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
+                <Text style={styles.buttonLabel}>{"Produce"}</Text>
+        </Pressable>
+        <Pressable
+                onPress={() => setSort(sort === 'expiring' ? '' : 'expiring')}
+                style={({ pressed }) => [styles.sortButton, sort === 'expiring' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
+                <Text style={styles.buttonLabel}>{"Expiring"}</Text>
+        </Pressable>
+        <Pressable
+                onPress={() => setSort(sort === 'dairy' ? '' : 'dairy')}
+                style={({ pressed }) => [styles.sortButton, sort === 'dairy' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
+                <Text style={styles.buttonLabel}>{"Dairy"}</Text>
+        </Pressable>
+      </View>
       <View style={[styles.listContainer]}>
       {sortedProducts.map((product) => {
         const expiryDate = new Date(product.expiresAt);
@@ -102,7 +128,7 @@ export default function TabTwoScreen() {
             <Text style={styles.buttonLabel}> {removeProductMutation.isPending ? "Removing..." : "Remove Ingredient!"}</Text>
             </Pressable>
             <Pressable
-              onPress={() => OpenSetPopup(product)}
+              onPress={() => openSetPopup(product)}
               style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}>
             <Text style={styles.buttonLabel}>Change!</Text>
             </Pressable>
@@ -119,6 +145,12 @@ export default function TabTwoScreen() {
             style={styles.textInput}
           />
           <TextInput
+            placeholder="Category"
+            value={newCategory}
+            onChangeText={setNewCategory}
+            style={styles.textInput}
+          />
+          <TextInput
             placeholder="Expiration Date"
             value={newExpiresAt}
             onChangeText={setNewExpiresAt}
@@ -132,6 +164,7 @@ export default function TabTwoScreen() {
           <Pressable
               onPress={() => changeProduct.mutate({
                 id: Number(productsId),
+                category: newCategory,
                 expiresAt: newExpiresAt,
                 name: newName,
               })}
@@ -147,6 +180,9 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
+  sortButtonSelected: {
+    backgroundColor: '#044f0b',
+  },
   overlay: {
     position: 'fixed',
     top: 0,
@@ -190,6 +226,11 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     gap: 10,
   },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
   contentContainer: {
     flexGrow: 1,
   },
@@ -223,6 +264,12 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 16,
     alignSelf: 'flex-start',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: '#18181b',
+  },
+  sortButton: {
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,

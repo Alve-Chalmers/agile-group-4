@@ -25,7 +25,7 @@ export const homeRouter = router({
   changeProduct : protectedProcedure.input(z.object({
     id : z.number(),
     name: z.string(),
-    //category: z.string(),
+    category: z.string(),
     expiresAt: z.coerce.string()
   }),
 ).mutation(async ({ ctx, input}) => {
@@ -35,7 +35,7 @@ export const homeRouter = router({
     }
   
   const [result] = await db.update(product).set({name : input.name, 
-    //category : input.category, 
+    category : input.category, 
     expiresAt : new Date(input.expiresAt)}).where(and(and(eq(product.homeId, home?.id), eq(product.id, input.id)))).returning()
   if (!result) {
     throw new TRPCError({ code: "NOT_FOUND" });
