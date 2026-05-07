@@ -100,6 +100,7 @@ export default function TabTwoScreen() {
           {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => {
             return (
               <Pressable
+                key={str}
                 onPress={() => setSort(sort === str ? 'All' : str)}
                 style={({ pressed }) => [
                   styles.sortButton,
