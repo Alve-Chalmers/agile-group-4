@@ -77,7 +77,7 @@ export default function TabTwoScreen() {
       <Text style={styles.title}>Products</Text>
       <Pressable
               onPress={() => setAsc(!sortAsc)}
-              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}>
+              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}>
             <Text style={styles.buttonLabel}>{sortAsc ? "Ascending" : "Descending"}</Text>
       </Pressable>
       <View style={[styles.listContainer]}>
@@ -91,13 +91,13 @@ export default function TabTwoScreen() {
             <Text>Expires in: {daysToExpire} days.</Text>
             <Pressable
               onPress={() => removeCall(product.id)}
-              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}
+              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}
               disabled={removeProductMutation.isPending}>
             <Text style={styles.buttonLabel}> {removeProductMutation.isPending ? "Removing..." : "Remove Ingredient!"}</Text>
             </Pressable>
             <Pressable
               onPress={() => OpenSetPopup(product)}
-              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}>
+              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}>
             <Text style={styles.buttonLabel}>Change!</Text>
             </Pressable>
           </View> );})}
@@ -120,7 +120,7 @@ export default function TabTwoScreen() {
           />
           <Pressable
               onPress={() => setPopup(null)}
-              style={({ pressed }: { pressed: boolean }) => [styles.exitButton, pressed && styles.buttonPressed,]}>
+              style={({ pressed }) => [styles.exitButton, pressed && styles.buttonPressed,]}>
             <Text style={styles.buttonLabel}>Exit!</Text>
           </Pressable>
           <Pressable
@@ -129,7 +129,7 @@ export default function TabTwoScreen() {
                 expiresAt: newExpiresAt,
                 name: newName,
               })}
-              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}>
+              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed,]}>
             <Text style={styles.buttonLabel}>Change!</Text>
           </Pressable>
         </View>
