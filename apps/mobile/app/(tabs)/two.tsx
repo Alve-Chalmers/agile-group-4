@@ -10,7 +10,10 @@ export default function TabTwoScreen() {
     onSuccess: () => fetchProducts.refetch(),
   });
   const removeProductMutation = trpc.home.removeProduct.useMutation();
-  const products = fetchProducts.data?.products || [];
+
+  const products = useMemo(() => {
+    return fetchProducts.data?.products || [];
+  }, [fetchProducts]);
 
   const [popup, setPopup] = useState<(typeof products)[0] | null>(null);
   const [productsId, setProductId] = useState('');
