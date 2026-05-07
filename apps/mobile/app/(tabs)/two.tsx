@@ -17,20 +17,20 @@ export default function TabTwoScreen() {
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [newExpiresAt, setNewExpiresAt] = useState('');
-  const [sort, setSort] = useState('');
+  const [sort, setSort] = useState('All');
   const [sortAsc, setAsc] = useState(false);
 
   const sortedProducts = useMemo(() => {
     const sorted = products;
     let selection;
     switch (sort) {
-      case 'expiring':
+      case 'Expiring':
         selection = sorted.filter(product => ((new Date(product.expiresAt).getTime() - Date.now()) / (1000 * 3600 * 24) ) < 7);
         break;
-      case 'dairy':
+      case 'Dairy':
         selection = sorted.filter(product => product.category === 'Dairy');
         break;
-      case 'produce':
+      case 'Produce':
         selection = sorted.filter(product => product.category === 'Produce');
         break;
       default:
@@ -91,26 +91,15 @@ export default function TabTwoScreen() {
                 style={({ pressed }) => [styles.sortButton, pressed && styles.buttonPressed,]}>
                 <Text style={styles.buttonLabel}>{sortAsc ? "Ascending" : "Descending"}</Text>
         </Pressable>
-        <Pressable
-                onPress={() => setSort('')}
-                style={({ pressed }) => [styles.sortButton, sort === '' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
-                <Text style={styles.buttonLabel}>{"All"}</Text>
-        </Pressable>
-        <Pressable
-                onPress={() => setSort(sort === 'produce' ? '' : 'produce')}
-                style={({ pressed }) => [styles.sortButton, sort === 'produce' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
-                <Text style={styles.buttonLabel}>{"Produce"}</Text>
-        </Pressable>
-        <Pressable
-                onPress={() => setSort(sort === 'expiring' ? '' : 'expiring')}
-                style={({ pressed }) => [styles.sortButton, sort === 'expiring' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
-                <Text style={styles.buttonLabel}>{"Expiring"}</Text>
-        </Pressable>
-        <Pressable
-                onPress={() => setSort(sort === 'dairy' ? '' : 'dairy')}
-                style={({ pressed }) => [styles.sortButton, sort === 'dairy' && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
-                <Text style={styles.buttonLabel}>{"Dairy"}</Text>
-        </Pressable>
+        {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => {
+          return (
+            <Pressable
+                onPress={() => setSort(sort === str ? 'All' : str)}
+                style={({ pressed }) => [styles.sortButton, sort === str && styles.sortButtonSelected, pressed && styles.buttonPressed,]}>
+                <Text style={styles.buttonLabel}>{str}</Text>
+             </Pressable>
+          );})
+        }
       </View>
       <View style={[styles.listContainer]}>
       {sortedProducts.map((product) => {
