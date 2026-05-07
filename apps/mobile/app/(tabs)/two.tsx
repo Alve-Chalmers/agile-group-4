@@ -1,20 +1,65 @@
-import { useCallback } from "react";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, TextInput } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { trpc } from "@/lib/trpc";
 
 export default function TabTwoScreen() {
   const fetchProducts = trpc.home.getHome.useQuery();
+  const changeProduct =
+    trpc.home.changeProduct.useMutation({
+      onSuccess: () => fetchProducts.refetch(),
+    });
+
   const removeProductMutation = trpc.home.removeProduct.useMutation();
   const products = (fetchProducts.data)?.products || [];
+  
+
+  const [popup, setPopup] = useState<(typeof products)[0] | null>(null);
+  const [productsId, setProductId] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newExpiresAt, setNewExpiresAt] = useState("");
+  
+  const [sort, setSort] = useState("expiration")
+  const [sortAsc, setAsc] = useState(false)
+
+  const sortedProducts = useMemo(() => {
+    const sorted = products;
+    let result;
+    switch (sort) {
+      case "expiration":
+        result = sorted.sort(
+          (a, b) =>
+            new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime()
+        );
+      case "name": 
+        result = sorted.sort(
+          (a, b) =>
+            a.name.localeCompare(b.name)
+        );
+      default:
+        result = sorted;
+    }
+    return sortAsc ? result.reverse() : result;
+  }, [products, sort, sortAsc]);
+
   const load = useCallback(() => {
     void fetchProducts.refetch();
   }, [fetchProducts.refetch]);
+
   const removeCall = useCallback(
     (productId: number) => { removeProductMutation.mutate( { id: productId.toString() },
         { onSuccess: () => { void fetchProducts.refetch(); }});
       }, [removeProductMutation, fetchProducts]);
+
+  const OpenSetPopup = useCallback(
+    (product: (typeof products)[0]) => {
+      setPopup(product);
+      setNewName(product.name);
+      setProductId('' + product.id);
+      const time = product.expiresAt.slice(0, 10);
+      setNewExpiresAt(time);
+    }, []);
 
   if (products.length === 0) {
     return (
@@ -30,8 +75,13 @@ export default function TabTwoScreen() {
     <ScrollView contentContainerStyle={styles.contentContainer}>
     <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
+      <Pressable
+              onPress={() => setAsc(!sortAsc)}
+              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}>
+            <Text style={styles.buttonLabel}>{sortAsc ? "Ascending" : "Descending"}</Text>
+      </Pressable>
       <View style={[styles.listContainer]}>
-      {products.map((product) => {
+      {sortedProducts.map((product) => {
         const expiryDate = new Date(product.expiresAt);
         const daysToExpire = Math.ceil((expiryDate.getTime() - Date.now()) / (1000 * 3600 * 24));
         return (
@@ -45,14 +95,91 @@ export default function TabTwoScreen() {
               disabled={removeProductMutation.isPending}>
             <Text style={styles.buttonLabel}> {removeProductMutation.isPending ? "Removing..." : "Remove Ingredient!"}</Text>
             </Pressable>
+            <Pressable
+              onPress={() => OpenSetPopup(product)}
+              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}>
+            <Text style={styles.buttonLabel}>Change!</Text>
+            </Pressable>
           </View> );})}
       </View>
+
+    {popup && (
+      <View style = {styles.overlay}>
+        <View style = {styles.modal}>
+          <TextInput
+            placeholder="Product Name"
+            value={newName}
+            onChangeText={setNewName}
+            style={styles.textInput}
+          />
+          <TextInput
+            placeholder="Expiration Date"
+            value={newExpiresAt}
+            onChangeText={setNewExpiresAt}
+            style={styles.textInput}
+          />
+          <Pressable
+              onPress={() => setPopup(null)}
+              style={({ pressed }: { pressed: boolean }) => [styles.exitButton, pressed && styles.buttonPressed,]}>
+            <Text style={styles.buttonLabel}>Exit!</Text>
+          </Pressable>
+          <Pressable
+              onPress={() => changeProduct.mutate({
+                id: Number(productsId),
+                expiresAt: newExpiresAt,
+                name: newName,
+              })}
+              style={({ pressed }: { pressed: boolean }) => [styles.button, pressed && styles.buttonPressed,]}>
+            <Text style={styles.buttonLabel}>Change!</Text>
+          </Pressable>
+        </View>
+      </View>
+    )}
     </View>
     </ScrollView>
+    
+    
   );
 }
 
 const styles = StyleSheet.create({
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modal: {
+    position: "relative",
+    borderRadius: "8px",
+    padding : 40,
+    paddingHorizontal : 200,
+  },
+  exitButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#18181b",
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    fontSize: 16,
+    backgroundColor: "#ffffff",
+    color: "#000000",
+  },
   container: {
     flex: 1,
     padding: 24,

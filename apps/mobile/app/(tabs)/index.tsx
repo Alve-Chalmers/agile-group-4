@@ -2,10 +2,10 @@ import { Pressable, ScrollView, StyleSheet, TextInput } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { getApiBaseUrl } from "@/lib/api-base";
-import { trpc } from "@/lib/trpc";
-import { useCallback, useState } from "react";
 import { signOut } from "@/lib/auth";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { trpc } from "@/lib/trpc";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 
 export default function ApiExampleScreen() {
   const apiUrl = getApiBaseUrl();
