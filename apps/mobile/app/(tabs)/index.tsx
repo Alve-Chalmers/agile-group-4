@@ -4,6 +4,8 @@ import { Text, View } from "@/components/Themed";
 import { getApiBaseUrl } from "@/lib/api-base";
 import { trpc } from "@/lib/trpc";
 import { useCallback, useState } from "react";
+import { signOut } from "@/lib/auth";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 export default function ApiExampleScreen() {
   const apiUrl = getApiBaseUrl();
@@ -21,6 +23,7 @@ export default function ApiExampleScreen() {
 
   const error = homeQuery.error?.message ?? pingQuery.error?.message ?? null;
   const loading = homeQuery.isPending || pingQuery.isPending;
+  const queryClient = useQueryClient();
 
   const load = useCallback(() => {
     void homeQuery.refetch();
@@ -120,6 +123,13 @@ export default function ApiExampleScreen() {
               : "Update expiration date"}
           </Text>
         </Pressable>
+        <Pressable
+          onPress={() => void signOut(queryClient)}
+          disabled={loading}
+          style={({ pressed }) => [styles.button, loading && styles.buttonDisabled, pressed && styles.buttonPressed]}
+        >
+          <Text style={styles.buttonLabel}>{loading ? "Logging out..." : "Logout"}</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -181,5 +191,8 @@ const styles = StyleSheet.create({
     color: "#fafafa",
     fontSize: 16,
     fontWeight: "600",
+  },
+   buttonDisabled: {
+    opacity: 0.6,
   },
 });

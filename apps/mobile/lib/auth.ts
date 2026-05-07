@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import { getApiBaseUrl } from "./api-base";
 import { trpcServer } from "./trpc";
+import { router } from "expo-router";
+import { QueryClient } from "@tanstack/react-query";
 
 type AuthUser = {
   id: string;
@@ -107,11 +109,15 @@ export async function signUpWithEmail(params: {
   });
 }
 
-export async function signOut() {
+export async function signOut(queryClient?: QueryClient) {
   await authRequest("sign-out", {
     method: "POST",
     body: JSON.stringify({}),
   });
+  queryClient?.clear();
+  
+
+  router.replace("/login");
 }
 
 export async function getSession() {
