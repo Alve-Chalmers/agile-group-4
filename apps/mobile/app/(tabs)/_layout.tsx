@@ -22,7 +22,6 @@ export default function TabLayout() {
   const { state } = useAuthSession();
   const headerShown = useClientOnlyValue(false, true);
 
-  
   if (state === 'loading') {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 10 }}>
@@ -43,7 +42,8 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown,
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -77,13 +77,13 @@ export default function TabLayout() {
         options={{
           href: null,
         }}
-        />
+      />
       <Tabs.Screen
         name="create-accout"
         options={{
           href: null,
         }}
       />
-    </Tabs> 
+    </Tabs>
   );
 }

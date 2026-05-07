@@ -7,10 +7,17 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "db:generate": "pnpm --filter @0waste/api db:generate",
     "db:migrate": "pnpm --filter @0waste/api db:migrate"
   },
+  "prettier": "@0waste/prettier-config",
   "devDependencies": {
+    "@0waste/eslint-config": "workspace:*",
+    "@0waste/prettier-config": "workspace:*",
+    "eslint": "^9.39.4",
+    "prettier": "^3.8.3",
     "turbo": "^2.9.6"
   },
   "pnpm": {

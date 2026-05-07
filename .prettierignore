@@ -1,0 +1,11 @@
+node_modules
+dist
+**/dist/**
+.turbo
+.expo
+web-build
+coverage
+pnpm-lock.yaml
+*.tsbuildinfo
+apps/api/dist
+apps/mobile/expo-env.d.ts

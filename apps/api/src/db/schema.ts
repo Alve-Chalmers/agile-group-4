@@ -1,112 +1,121 @@
-import { relations } from "drizzle-orm";
-import { boolean, index, integer, pgTable, primaryKey, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { relations } from 'drizzle-orm';
+import {
+  boolean,
+  index,
+  integer,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  image: text("image"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
+export const user = pgTable('user', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: boolean('email_verified').default(false).notNull(),
+  image: text('image'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
 
 export const session = pgTable(
-  "session",
+  'session',
   {
-    id: text("id").primaryKey(),
-    expiresAt: timestamp("expires_at").notNull(),
-    token: text("token").notNull().unique(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
+    id: text('id').primaryKey(),
+    expiresAt: timestamp('expires_at').notNull(),
+    token: text('token').notNull().unique(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
-    ipAddress: text("ip_address"),
-    userAgent: text("user_agent"),
-    userId: text("user_id")
+    ipAddress: text('ip_address'),
+    userAgent: text('user_agent'),
+    userId: text('user_id')
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: 'cascade' }),
   },
-  table => [index("session_userId_idx").on(table.userId)],
+  (table) => [index('session_userId_idx').on(table.userId)],
 );
 
 export const account = pgTable(
-  "account",
+  'account',
   {
-    id: text("id").primaryKey(),
-    accountId: text("account_id").notNull(),
-    providerId: text("provider_id").notNull(),
-    userId: text("user_id")
+    id: text('id').primaryKey(),
+    accountId: text('account_id').notNull(),
+    providerId: text('provider_id').notNull(),
+    userId: text('user_id')
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    accessToken: text("access_token"),
-    refreshToken: text("refresh_token"),
-    idToken: text("id_token"),
-    accessTokenExpiresAt: timestamp("access_token_expires_at"),
-    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
-    scope: text("scope"),
-    password: text("password"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
+      .references(() => user.id, { onDelete: 'cascade' }),
+    accessToken: text('access_token'),
+    refreshToken: text('refresh_token'),
+    idToken: text('id_token'),
+    accessTokenExpiresAt: timestamp('access_token_expires_at'),
+    refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
+    scope: text('scope'),
+    password: text('password'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  table => [index("account_userId_idx").on(table.userId)],
+  (table) => [index('account_userId_idx').on(table.userId)],
 );
 
 export const verification = pgTable(
-  "verification",
+  'verification',
   {
-    id: text("id").primaryKey(),
-    identifier: text("identifier").notNull(),
-    value: text("value").notNull(),
-    expiresAt: timestamp("expires_at").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
+    id: text('id').primaryKey(),
+    identifier: text('identifier').notNull(),
+    value: text('value').notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
       .defaultNow()
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  table => [index("verification_identifier_idx").on(table.identifier)],
+  (table) => [index('verification_identifier_idx').on(table.identifier)],
 );
 
-export const category = pgTable("category", {
-  name: text("name").primaryKey(),
+export const category = pgTable('category', {
+  name: text('name').primaryKey(),
   /** Can be `null` */
-  defaultShelfLifeSeconds: integer("default_shelf_life_seconds"),
+  defaultShelfLifeSeconds: integer('default_shelf_life_seconds'),
 });
 
-export const home = pgTable("home", {
+export const home = pgTable('home', {
   id: serial().primaryKey(),
 });
 
 export const userHome = pgTable(
-  "user_home",
+  'user_home',
   {
-    userId: text("user_id")
+    userId: text('user_id')
       .notNull()
       .unique()
       .references(() => user.id),
-    homeId: integer("home_id")
+    homeId: integer('home_id')
       .notNull()
       .references(() => home.id),
   },
-  t => [primaryKey({ columns: [t.homeId, t.userId] })],
+  (t) => [primaryKey({ columns: [t.homeId, t.userId] })],
 );
 
-export const product = pgTable("product", {
+export const product = pgTable('product', {
   id: serial().primaryKey(),
-  homeId: integer("home_id")
+  homeId: integer('home_id')
     .references(() => home.id)
     .notNull(),
-  name: text("name").notNull(),
-  category: text("category_name").references(() => category.name),
-  expiresAt: timestamp("expires_at").notNull(),
-  addedAt: timestamp("added_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
+  name: text('name').notNull(),
+  category: text('category_name').references(() => category.name),
+  expiresAt: timestamp('expires_at').notNull(),
+  addedAt: timestamp('added_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
     .defaultNow()
     .$onUpdate(() => new Date())
     .notNull(),
