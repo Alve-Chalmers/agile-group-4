@@ -70,7 +70,9 @@ export const homeRouter = router({
       await db
         .update(product)
         .set({ expiresAt: new Date(input.expiresAt) })
-        .where(eq(product.id, input.productId));
+        .where(
+          and(eq(product.id, input.productId), eq(product.homeId, home.id)),
+        );
     }),
 });
 
