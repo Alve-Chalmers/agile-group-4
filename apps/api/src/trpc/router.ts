@@ -22,6 +22,30 @@ export const getHome = async (userId: string) => {
 
 export const homeRouter = router({
   getHome: protectedProcedure.query(async ({ ctx }) => getHome(ctx.user.id)),
+  changeProduct: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        category: z.string(),
+        expiresAt: z.coerce.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const home = await getHome(ctx.user.id);
+      if (!home) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      const [result] = await db
+        .update(product)
+        .set({ name: input.name, category: input.category, expiresAt: new Date(input.expiresAt) })
+        .where(and(and(eq(product.homeId, home?.id), eq(product.id, input.id))))
+        .returning();
+      if (!result) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+    }),
   addProduct: protectedProcedure
     .input(
       z.object({
