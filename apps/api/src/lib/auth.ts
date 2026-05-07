@@ -46,7 +46,6 @@ export const auth = betterAuth({
     }),
   },
 
-
   ...(crossSiteSessionCookiesEnabled()
     ? {
         advanced: {
