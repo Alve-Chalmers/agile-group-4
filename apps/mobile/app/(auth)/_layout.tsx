@@ -1,4 +1,4 @@
-import { Redirect, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -15,7 +15,6 @@ export default function AuthLayout() {
       </View>
     );
   }
-
 
   return (
     <Stack>

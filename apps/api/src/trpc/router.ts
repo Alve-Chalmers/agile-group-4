@@ -1,9 +1,9 @@
-import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
-import { z } from "zod";
-import { db } from "../db/index.js";
-import { product, userHome } from "../db/schema.js";
-import { protectedProcedure, publicProcedure, router } from "./init.js";
+import { TRPCError } from '@trpc/server';
+import { and, eq } from 'drizzle-orm';
+import { z } from 'zod';
+import { db } from '../db/index.js';
+import { product, userHome } from '../db/schema.js';
+import { protectedProcedure, publicProcedure, router } from './init.js';
 
 export const getHome = async (userId: string) => {
   const { home } = (await db.query.userHome.findFirst({
@@ -52,7 +52,7 @@ export const homeRouter = router({
     .mutation(async ({ ctx, input }) => {
       const home = await getHome(ctx.user.id);
       if (!home) {
-        throw new TRPCError({ code: "NOT_FOUND" });
+        throw new TRPCError({ code: 'NOT_FOUND' });
       }
       await db.insert(product).values({
         homeId: home.id,
@@ -61,19 +61,18 @@ export const homeRouter = router({
         expiresAt: new Date(input.expiresAt),
       });
     }),
-    removeProduct: protectedProcedure.input(z.object({id: z.string(),}),)
-    .mutation(async ({ctx, input}) => {
+  removeProduct: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
       const home = await getHome(ctx.user.id);
       if (!home) {
-        throw new TRPCError({ code : "NOT_FOUND"});
+        throw new TRPCError({ code: 'NOT_FOUND' });
       }
-      await db.delete(product).where(and(
-          eq(product.id, parseInt(input.id)),
-          eq(product.homeId, home.id)
-        )
-      );
-      }),
-    });
+      await db
+        .delete(product)
+        .where(and(eq(product.id, parseInt(input.id)), eq(product.homeId, home.id)));
+    }),
+});
 
 export const appRouter = router({
   ping: publicProcedure.query(() => ({ pong: true as const })),

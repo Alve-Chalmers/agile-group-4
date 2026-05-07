@@ -44,6 +44,9 @@ apps/api/dist
 # typescript
 *.tsbuildinfo
 
+# ESLint
+.eslintcache
+
 # generated native folders
 /ios
 /android
