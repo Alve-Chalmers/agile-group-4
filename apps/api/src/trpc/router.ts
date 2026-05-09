@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/index.js';
-import { product, userHome } from '../db/schema.js';
+import { product, userHome, category } from '../db/schema.js';
 import { protectedProcedure, publicProcedure, router } from './init.js';
 
 export const getHome = async (userId: string) => {
@@ -79,10 +79,17 @@ export const homeRouter = router({
     }),
 });
 
+export const categoryRouter = router({
+  getCategories: publicProcedure.query(async () => {
+    return await db.select().from(category);
+  }),
+});
+
 export const appRouter = router({
   ping: publicProcedure.query(() => ({ pong: true as const })),
   me: protectedProcedure.query(({ ctx }) => ctx.user),
   home: homeRouter,
+  category: categoryRouter,
 });
 
 export type AppRouter = typeof appRouter;
