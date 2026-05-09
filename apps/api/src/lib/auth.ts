@@ -19,31 +19,6 @@ function crossSiteSessionCookiesEnabled() {
   return process.env.NODE_ENV !== 'production';
 }
 
-/** Origins allowed to call the auth API from a browser (CSRF / Origin checks). localhost ≠ 127.0.0.1 for this purpose. */
-const defaultTrustedOrigins = [
-  'http://localhost:8081',
-  'http://127.0.0.1:8081',
-  'http://localhost:8082',
-  'http://127.0.0.1:8082',
-  'http://localhost:19006',
-  'http://127.0.0.1:19006',
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'zerowaste://',
-  'exp://',
-];
-
-function trustedOriginsFromEnv(): string[] {
-  const raw = process.env.BETTER_AUTH_TRUSTED_ORIGINS;
-  if (!raw?.trim()) {
-    return [];
-  }
-  return raw
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET ?? 'development-secret-min-32-chars-long!!',
   baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
@@ -81,5 +56,18 @@ export const auth = betterAuth({
         },
       }
     : {}),
-  trustedOrigins: [...defaultTrustedOrigins, ...trustedOriginsFromEnv()],
+  trustedOrigins: [
+    'zerowaste://',
+    // tsx / Node often leave NODE_ENV unset locally — only production should drop dev origins.
+    ...(process.env.NODE_ENV !== 'production'
+      ? [
+          'http://localhost:8081',
+          'http://127.0.0.1:8081',
+          'http://[::1]:8081',
+          'exp://',
+          'exp://**',
+          'exp://192.168.*.*:*/**',
+        ]
+      : []),
+  ],
 });
