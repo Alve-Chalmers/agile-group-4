@@ -82,7 +82,7 @@ export default function TabTwoScreen() {
   if (products.length === 0) {
     return (
       <ThemeView style={[styles.container, styles.centeredEmpty]}>
-        <Text style={styles.errorText}>No products found</Text>
+        <Text style={tw.style('text-center text-[14px] text-error')}>No products found</Text>
         <Button text="Refresh" onPress={load} variant="primary" />
       </ThemeView>
     );
@@ -247,10 +247,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     opacity: 0.7,
     marginBottom: 4,
-  },
-  errorText: {
-    fontSize: 14,
-    color: '#ff4444',
-    textAlign: 'center',
   },
 });

@@ -90,6 +90,7 @@ module.exports = {
         900: '#e2e7e9',
         950: '#f1f3f4',
       },
+      error: '#D95B3E',
     },
   },
   plugins: [],

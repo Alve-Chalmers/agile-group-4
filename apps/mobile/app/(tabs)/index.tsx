@@ -4,6 +4,7 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Text, View } from '@/components/Themed';
 import { getApiBaseUrl } from '@/lib/api-base';
+import tw from '@/lib/tailwind';
 import { signOut } from '@/lib/auth';
 import { trpc } from '@/lib/trpc';
 import { useQueryClient } from '@tanstack/react-query';
@@ -46,7 +47,7 @@ export default function ApiExampleScreen() {
           </Text>
         </View>
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? <Text style={tw.style('mt-2 text-[14px] text-error')}>{error}</Text> : null}
 
         <Button
           text={loading ? 'Loading…' : 'Refresh'}
@@ -125,10 +126,5 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     fontFamily: 'SpaceMono',
-  },
-  error: {
-    marginTop: 8,
-    color: '#b91c1c',
-    fontSize: 14,
   },
 });

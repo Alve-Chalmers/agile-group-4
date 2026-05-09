@@ -35,7 +35,7 @@ export function Input({
 
   const wrapperStyle = useMemo(() => {
     let borderCls = 'border-field-border';
-    if (hasError) borderCls = 'border-[#dc2626]';
+    if (hasError) borderCls = 'border-error';
     else if (disabled) borderCls = 'border-field-disabled-border';
     else if (focused) borderCls = 'border-field-focus';
 
@@ -89,7 +89,7 @@ export function Input({
         />
       </View>
       {hasError ? (
-        <Text style={tw.style('text-[13px] text-[#dc2626]')}>{errorText}</Text>
+        <Text style={tw.style('text-[13px] text-error')}>{errorText}</Text>
       ) : helperText ? (
         <Text style={tw.style('text-[13px] text-text-600')}>{helperText}</Text>
       ) : null}

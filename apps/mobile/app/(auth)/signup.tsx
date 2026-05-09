@@ -103,7 +103,7 @@ export default function SignupScreen() {
 
           <View style={tw.style('w-full items-stretch gap-4')}>
             {error ? (
-              <ThemedText style={tw.style('text-center text-[14px] text-[#dc2626]')}>
+              <ThemedText style={tw.style('text-center text-[14px] text-error')}>
                 {error}
               </ThemedText>
             ) : null}
