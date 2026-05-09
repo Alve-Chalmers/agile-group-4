@@ -1,9 +1,18 @@
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, TextInput } from 'react-native';
+import { Text, View } from 'react-native';
+import { Key, User } from 'lucide-react-native';
 
-import { Text, View } from '@/components/Themed';
+import { AuthScreenShell } from '@/components/auth/AuthScreenShell';
+import { AuthTextLinkRow } from '@/components/auth/AuthTextLinkRow';
+import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
+import { Text as ThemedText } from '@/components/Themed';
+import { fontLexendRegular } from '@/constants/typography';
+import tw from '@/lib/tailwind';
 import { signInWithEmail } from '@/lib/auth';
+
+const iconMuted = '#8e8e71';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -35,97 +44,52 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+    <AuthScreenShell>
+      <View style={tw.style('flex-grow justify-between pb-6 pt-12')}>
+        <View style={tw.style('items-center px-2')}>
+          <Text style={titleLine}>Log in or sign up</Text>
+          <Text style={[titleLine, tw.style('mt-0')]}>to continue</Text>
+        </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        <View style={tw.style('w-full gap-16 pb-8')}>
+          <View style={tw.style('w-full gap-[15px]')}>
+            <Input
+              placeholder="Email"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+              leftIcon={<User size={24} color={iconMuted} strokeWidth={2} />}
+            />
+            <Input
+              placeholder="Password"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              leftIcon={<Key size={24} color={iconMuted} strokeWidth={2} />}
+            />
+          </View>
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-
-      <Pressable
-        onPress={() => void onLogin()}
-        disabled={loading}
-        style={({ pressed }) => [
-          styles.button,
-          loading && styles.buttonDisabled,
-          pressed && styles.buttonPressed,
-        ]}
-      >
-        <Text style={styles.buttonLabel}>{loading ? 'Logging in...' : 'Login'}</Text>
-      </Pressable>
-
-      <Link href="./signup" asChild>
-        <Pressable style={styles.linkButton}>
-          <Text style={styles.linkText}>Need an account? Sign up</Text>
-        </Pressable>
-      </Link>
-    </View>
+          <View style={tw.style('w-full items-stretch gap-4')}>
+            {error ? <ThemedText style={tw.style('text-center text-[14px] text-[#dc2626]')}>{error}</ThemedText> : null}
+            <Button
+              text={loading ? 'Logging in...' : 'Log in'}
+              onPress={() => void onLogin()}
+              disabled={loading}
+              className="self-stretch w-full"
+            />
+            <AuthTextLinkRow lead="Don’t have an account?" linkLabel="Register" href="/(auth)/signup" />
+          </View>
+        </View>
+      </View>
+    </AuthScreenShell>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-    gap: 12,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#d4d4d8',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    backgroundColor: 'white',
-  },
-  error: {
-    color: '#b91c1c',
-  },
-  button: {
-    marginTop: 8,
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
-    backgroundColor: '#18181b',
-  },
-  buttonPressed: {
-    opacity: 0.85,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonLabel: {
-    color: '#fafafa',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  linkButton: {
-    marginTop: 6,
-    alignSelf: 'center',
-    padding: 6,
-  },
-  linkText: {
-    color: '#1d4ed8',
-    fontWeight: '600',
-  },
-});
+const titleLine = {
+  fontFamily: fontLexendRegular,
+  fontSize: 32,
+  lineHeight: 40,
+  color: '#343a2c',
+  textAlign: 'center' as const,
+};

@@ -1,8 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Modal, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/Button';
-import { Text, View } from '@/components/Themed';
+import { Input } from '@/components/Input';
+import { Text, View as ThemeView } from '@/components/Themed';
+import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
 
 export default function TabTwoScreen() {
@@ -78,166 +80,126 @@ export default function TabTwoScreen() {
 
   if (products.length === 0) {
     return (
-      <View style={[styles.container]}>
+      <ThemeView style={[styles.container, styles.centeredEmpty]}>
         <Text style={styles.errorText}>No products found</Text>
-        <Pressable
-          onPress={load}
-          style={({ pressed }) => [styles.centeredButton, pressed && styles.buttonPressed]}
-        >
-          <Text style={styles.buttonLabel}>Refresh</Text>
-        </Pressable>
-        <Button text="Refresh" onPress={load} />
-      </View>
+        <Button text="Refresh" onPress={load} variant="primary" />
+      </ThemeView>
     );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
-      <View style={styles.container}>
+      <ThemeView style={styles.container}>
         <Text style={styles.title}>Products</Text>
-        <View style={styles.buttonRow}>
-          <Pressable
+        <ThemeView style={styles.buttonRow}>
+          <Button
+            density="compact"
+            variant={sortAsc ? 'primary' : 'secondary'}
+            text={sortAsc ? 'Ascending' : 'Descending'}
             onPress={() => setAsc(!sortAsc)}
-            style={({ pressed }) => [styles.sortButton, pressed && styles.buttonPressed]}
-          >
-            <Text style={styles.buttonLabel}>{sortAsc ? 'Ascending' : 'Descending'}</Text>
-          </Pressable>
-          {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => {
-            return (
-              <Pressable
-                key={str}
-                onPress={() => setSort(sort === str ? 'All' : str)}
-                style={({ pressed }) => [
-                  styles.sortButton,
-                  sort === str && styles.sortButtonSelected,
-                  pressed && styles.buttonPressed,
-                ]}
-              >
-                <Text style={styles.buttonLabel}>{str}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-        <View style={[styles.listContainer]}>
+          />
+          {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => (
+            <Button
+              density="compact"
+              key={str}
+              variant={sort === str ? 'primary' : 'secondary'}
+              text={str}
+              onPress={() => setSort(sort === str ? 'All' : str)}
+            />
+          ))}
+        </ThemeView>
+        <ThemeView style={[styles.listContainer]}>
           {sortedProducts.map((product) => {
             const expiryDate = new Date(product.expiresAt);
             const daysToExpire = Math.ceil(
               (expiryDate.getTime() - Date.now()) / (1000 * 3600 * 24),
             );
             return (
-              <View key={product.id} style={styles.card}>
+              <ThemeView key={product.id} style={styles.card}>
                 <Text style={styles.productName}>{product.name}</Text>
                 <Text style={styles.productCategory}>{product.category}</Text>
                 <Text>Expires in: {daysToExpire} days.</Text>
-                <Pressable
-                  onPress={() => removeCall(product.id)}
-                  style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-                  disabled={removeProductMutation.isPending}
-                >
-                  <Text style={styles.buttonLabel}>
-                    {' '}
-                    {removeProductMutation.isPending ? 'Removing...' : 'Remove Ingredient!'}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => openSetPopup(product)}
-                  style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-                >
-                  <Text style={styles.buttonLabel}>Change!</Text>
-                </Pressable>
-              </View>
+                <ThemeView style={styles.cardActions}>
+                  <Button
+                    density="compact"
+                    variant="secondary"
+                    text={removeProductMutation.isPending ? 'Removing...' : 'Remove'}
+                    onPress={() => removeCall(product.id)}
+                    disabled={removeProductMutation.isPending}
+                  />
+                  <Button
+                    density="compact"
+                    variant="primary"
+                    text="Change"
+                    onPress={() => openSetPopup(product)}
+                  />
+                </ThemeView>
+              </ThemeView>
             );
           })}
-        </View>
+        </ThemeView>
 
-        {popup && (
+        <Modal visible={popup !== null} transparent animationType="fade" onRequestClose={() => setPopup(null)}>
           <View style={styles.overlay}>
-            <View style={styles.modal}>
-              <TextInput
-                placeholder="Product Name"
-                value={newName}
-                onChangeText={setNewName}
-                style={styles.textInput}
-              />
-              <TextInput
-                placeholder="Category"
-                value={newCategory}
-                onChangeText={setNewCategory}
-                style={styles.textInput}
-              />
-              <TextInput
+            <ThemeView style={styles.modal}>
+              <View style={tw.style('flex-row justify-end pb-3')}>
+                <Button density="compact" variant="outline" text="Close" onPress={() => setPopup(null)} />
+              </View>
+              <Input placeholder="Product Name" value={newName} onChangeText={setNewName} />
+              <Input placeholder="Category" value={newCategory} onChangeText={setNewCategory} />
+              <Input
                 placeholder="Expiration Date"
                 value={newExpiresAt}
                 onChangeText={setNewExpiresAt}
-                style={styles.textInput}
+                containerClassName="mb-2"
               />
-              <Pressable
-                onPress={() => setPopup(null)}
-                style={({ pressed }) => [styles.exitButton, pressed && styles.buttonPressed]}
-              >
-                <Text style={styles.buttonLabel}>Exit!</Text>
-              </Pressable>
-              <Pressable
-                onPress={() =>
-                  changeProduct.mutate({
-                    id: Number(productsId),
-                    category: newCategory,
-                    expiresAt: newExpiresAt,
-                    name: newName,
-                  })
-                }
-                style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-              >
-                <Text style={styles.buttonLabel}>Change!</Text>
-              </Pressable>
-            </View>
+              <Button
+                text={changeProduct.isPending ? 'Saving…' : 'Apply'}
+                onPress={() => {
+                  changeProduct.mutate(
+                    {
+                      id: Number(productsId),
+                      category: newCategory,
+                      expiresAt: newExpiresAt,
+                      name: newName,
+                    },
+                    {
+                      onSuccess: () => setPopup(null),
+                    },
+                  );
+                }}
+                variant="primary"
+                className="w-full self-stretch"
+                disabled={changeProduct.isPending}
+              />
+            </ThemeView>
           </View>
-        )}
-      </View>
+        </Modal>
+      </ThemeView>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  sortButtonSelected: {
-    backgroundColor: '#044f0b',
-  },
   overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modal: {
-    position: 'relative',
-    borderRadius: '8px',
-    padding: 40,
-    paddingHorizontal: 200,
-  },
-  exitButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    width: '100%',
+    maxWidth: 380,
     borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    fontSize: 16,
-    backgroundColor: '#ffffff',
-    color: '#000000',
+    padding: 24,
+    backgroundColor: '#f4f4f1',
+    gap: 8,
+  },
+  centeredEmpty: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
   },
   container: {
     flex: 1,
@@ -249,6 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     flexWrap: 'wrap',
+    alignItems: 'center',
   },
   contentContainer: {
     flexGrow: 1,
@@ -262,13 +225,20 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 12,
     marginBottom: 16,
-    height: 1,
     width: '100%',
+    minHeight: 80,
   },
   card: {
     padding: 16,
     borderRadius: 8,
     backgroundColor: 'rgba(120,120,128,0.12)',
+    gap: 8,
+  },
+  cardActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 8,
   },
   productName: {
     fontSize: 16,
@@ -280,40 +250,9 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     marginBottom: 4,
   },
-  button: {
-    marginTop: 16,
-    alignSelf: 'flex-start',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  sortButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  centeredButton: {
-    marginTop: 16,
-    alignSelf: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  buttonPressed: {
-    opacity: 0.85,
-  },
-  buttonLabel: {
-    color: '#fafafa',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   errorText: {
     fontSize: 14,
     color: '#ff4444',
     textAlign: 'center',
-    marginTop: 20,
   },
 });
