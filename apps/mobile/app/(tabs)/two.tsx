@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Modal, ScrollView, StyleSheet, View } from 'react-native';
+import { Modal, ScrollView, View } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Chip } from '@/components/Chip';
@@ -8,6 +8,8 @@ import { Text, View as ThemeView } from '@/components/Themed';
 import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
 
+const MS_PER_DAY = 1000 * 3600 * 24;
+
 export default function TabTwoScreen() {
   const fetchProducts = trpc.home.getHome.useQuery();
   const changeProduct = trpc.home.changeProduct.useMutation({
@@ -15,12 +17,12 @@ export default function TabTwoScreen() {
   });
   const removeProductMutation = trpc.home.removeProduct.useMutation();
 
-  const products = useMemo(() => {
-    return fetchProducts.data?.products || [];
-  }, [fetchProducts]);
+  const products = useMemo(
+    () => fetchProducts.data?.products ?? [],
+    [fetchProducts.data?.products],
+  );
 
   const [popup, setPopup] = useState<(typeof products)[0] | null>(null);
-  const [productsId, setProductId] = useState('');
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [newExpiresAt, setNewExpiresAt] = useState('');
@@ -28,28 +30,24 @@ export default function TabTwoScreen() {
   const [sortAsc, setAsc] = useState(false);
 
   const sortedProducts = useMemo(() => {
-    const sorted = products;
-    let selection;
-    switch (sort) {
-      case 'Expiring':
-        selection = sorted.filter(
-          (product) =>
-            (new Date(product.expiresAt).getTime() - Date.now()) / (1000 * 3600 * 24) < 7,
-        );
-        break;
-      case 'Dairy':
-        selection = sorted.filter((product) => product.category === 'Dairy');
-        break;
-      case 'Produce':
-        selection = sorted.filter((product) => product.category === 'Produce');
-        break;
-      default:
-        selection = sorted;
-    }
-    let result = selection.sort(
+    const filtered = (() => {
+      switch (sort) {
+        case 'Expiring':
+          return products.filter(
+            (p) => (new Date(p.expiresAt).getTime() - Date.now()) / MS_PER_DAY < 7,
+          );
+        case 'Dairy':
+          return products.filter((p) => p.category === 'Dairy');
+        case 'Produce':
+          return products.filter((p) => p.category === 'Produce');
+        default:
+          return products;
+      }
+    })();
+    const byExpiry = [...filtered].sort(
       (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime(),
     );
-    return sortAsc ? result.reverse() : result;
+    return sortAsc ? byExpiry.reverse() : byExpiry;
   }, [products, sort, sortAsc]);
 
   const load = useCallback(() => {
@@ -74,14 +72,12 @@ export default function TabTwoScreen() {
     setPopup(product);
     setNewName(product.name);
     setNewCategory(product?.category ?? '');
-    setProductId('' + product.id);
-    const time = product.expiresAt.slice(0, 10);
-    setNewExpiresAt(time);
+    setNewExpiresAt(product.expiresAt.slice(0, 10));
   }, []);
 
   if (products.length === 0) {
     return (
-      <ThemeView style={[styles.container, styles.centeredEmpty]}>
+      <ThemeView style={tw.style('flex-1 items-center justify-center gap-4 p-6 pt-4')}>
         <Text style={tw.style('text-center text-[14px] text-error')}>No products found</Text>
         <Button text="Refresh" onPress={load} variant="primary" />
       </ThemeView>
@@ -89,10 +85,10 @@ export default function TabTwoScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.contentContainer}>
-      <ThemeView style={styles.container}>
-        <Text style={styles.title}>Products</Text>
-        <ThemeView style={styles.chipRow}>
+    <ScrollView contentContainerStyle={tw.style('flex-grow')}>
+      <ThemeView style={tw.style('flex-1 gap-2.5 p-6 pt-4')}>
+        <Text style={tw.style('mb-3 text-2xl font-bold')}>Products</Text>
+        <ThemeView style={tw.style('flex-row flex-wrap items-center gap-2')}>
           <Chip
             label={sortAsc ? 'Ascending' : 'Descending'}
             selected={sortAsc}
@@ -107,18 +103,19 @@ export default function TabTwoScreen() {
             />
           ))}
         </ThemeView>
-        <ThemeView style={[styles.listContainer]}>
+        <ThemeView style={tw.style('mb-4 min-h-[80px] w-full gap-3')}>
           {sortedProducts.map((product) => {
             const expiryDate = new Date(product.expiresAt);
-            const daysToExpire = Math.ceil(
-              (expiryDate.getTime() - Date.now()) / (1000 * 3600 * 24),
-            );
+            const daysToExpire = Math.ceil((expiryDate.getTime() - Date.now()) / MS_PER_DAY);
             return (
-              <ThemeView key={product.id} style={styles.card}>
-                <Text style={styles.productName}>{product.name}</Text>
-                <Text style={styles.productCategory}>{product.category}</Text>
+              <ThemeView
+                key={product.id}
+                style={tw.style('gap-2 rounded-lg bg-black/10 p-4 bg-background-900')}
+              >
+                <Text style={tw.style('mb-1 text-base font-semibold')}>{product.name}</Text>
+                <Text style={tw.style('mb-1 text-[13px] opacity-70')}>{product.category}</Text>
                 <Text>Expires in: {daysToExpire} days.</Text>
-                <ThemeView style={styles.cardActions}>
+                <ThemeView style={tw.style('mt-2 flex-row flex-wrap gap-2 bg-inherit')}>
                   <Button
                     variant="secondary"
                     text={removeProductMutation.isPending ? 'Removing...' : 'Remove'}
@@ -138,8 +135,8 @@ export default function TabTwoScreen() {
           animationType="fade"
           onRequestClose={() => setPopup(null)}
         >
-          <View style={styles.overlay}>
-            <ThemeView style={styles.modal}>
+          <View style={tw.style('flex-1 items-center justify-center bg-black/50 p-6')}>
+            <ThemeView style={tw.style('w-full max-w-[380px] gap-2 rounded-lg bg-auth-screen p-6')}>
               <View style={tw.style('flex-row justify-end pb-3')}>
                 <Button variant="outline" text="Close" onPress={() => setPopup(null)} />
               </View>
@@ -154,9 +151,10 @@ export default function TabTwoScreen() {
               <Button
                 text={changeProduct.isPending ? 'Saving…' : 'Apply'}
                 onPress={() => {
+                  if (!popup) return;
                   changeProduct.mutate(
                     {
-                      id: Number(productsId),
+                      id: popup.id,
                       category: newCategory,
                       expiresAt: newExpiresAt,
                       name: newName,
@@ -177,75 +175,3 @@ export default function TabTwoScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modal: {
-    width: '100%',
-    maxWidth: 380,
-    borderRadius: 8,
-    padding: 24,
-    backgroundColor: '#f4f4f1',
-    gap: 8,
-  },
-  centeredEmpty: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 16,
-  },
-  container: {
-    flex: 1,
-    padding: 24,
-    paddingTop: 16,
-    gap: 10,
-  },
-  chipRow: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
-  contentContainer: {
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  listContainer: {
-    gap: 12,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    width: '100%',
-    minHeight: 80,
-  },
-  card: {
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: 'rgba(120,120,128,0.12)',
-    gap: 8,
-  },
-  cardActions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 8,
-  },
-  productName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  productCategory: {
-    fontSize: 13,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-});

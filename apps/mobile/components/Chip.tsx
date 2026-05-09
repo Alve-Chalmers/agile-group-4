@@ -34,11 +34,13 @@ export function Chip({
       style={({ pressed }) =>
         tw.style(
           'min-h-[30px] shrink items-center justify-center self-start overflow-hidden rounded-full px-6 py-[6px]',
-          selected && 'bg-button-primary',
-          selected && pressed && !disabled && 'bg-button-primary-pressed',
-          !selected && 'bg-background-800',
-          !selected && pressed && !disabled && 'bg-button-secondary-pressed',
-          disabled && 'opacity-45',
+          {
+            'bg-button-primary': selected,
+            'bg-button-primary-pressed': selected && pressed && !disabled,
+            'bg-background-800': !selected,
+            'bg-button-secondary-pressed': !selected && pressed && !disabled,
+            'opacity-45': disabled,
+          },
           className,
         )
       }

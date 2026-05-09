@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Platform, TextInput, type TextInputProps, View } from 'react-native';
 
 import { Text } from '@/components/Themed';
@@ -33,18 +33,16 @@ export function Input({
   const hasError = Boolean(errorText);
   const disabled = !editable;
 
-  const wrapperStyle = useMemo(() => {
-    let borderCls = 'border-field-border';
-    if (hasError) borderCls = 'border-error';
-    else if (disabled) borderCls = 'border-field-disabled-border';
-    else if (focused) borderCls = 'border-field-focus';
-
-    return tw.style(
-      'flex-row items-center rounded-lg border bg-field-bg px-4 py-[14px]',
-      leftIcon ? 'gap-4' : undefined,
-      borderCls,
-    );
-  }, [focused, hasError, disabled, leftIcon]);
+  const wrapperStyle = tw.style(
+    'flex-row items-center rounded-lg border bg-field-bg px-4 py-[14px]',
+    { 'gap-4': Boolean(leftIcon) },
+    {
+      'border-error': hasError,
+      'border-field-disabled-border': !hasError && disabled,
+      'border-field-focus': !hasError && !disabled && focused,
+      'border-field-border': !hasError && !disabled && !focused,
+    },
+  );
 
   const handleFocus: TextInputProps['onFocus'] = (e) => {
     setFocused(true);
@@ -61,7 +59,7 @@ export function Input({
 
   const inputTypography = tw.style(
     'min-h-[22px] flex-1 rounded-none border-0 bg-transparent p-0 text-[16px] font-normal leading-normal',
-    disabled ? 'text-field-disabled-muted' : 'text-text-100',
+    { 'text-field-disabled-muted': disabled, 'text-text-100': !disabled },
   );
   const inputFont = { fontFamily: fontLexendRegular };
   const placeholderColor = disabled ? disabledMutedHex : placeholderDefaultHex;
@@ -88,10 +86,15 @@ export function Input({
           {...rest}
         />
       </View>
-      {hasError ? (
-        <Text style={tw.style('text-[13px] text-error')}>{errorText}</Text>
-      ) : helperText ? (
-        <Text style={tw.style('text-[13px] text-text-600')}>{helperText}</Text>
+      {errorText || helperText ? (
+        <Text
+          style={tw.style('text-[13px]', {
+            'text-error': !!errorText,
+            'text-text-600': !errorText,
+          })}
+        >
+          {errorText || helperText}
+        </Text>
       ) : null}
     </View>
   );

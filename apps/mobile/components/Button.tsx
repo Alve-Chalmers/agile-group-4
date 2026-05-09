@@ -24,8 +24,6 @@ export function Button({
 
   const labelFont = { fontFamily: fontLexendRegular };
 
-  const sizeStyle = 'min-h-[52px] rounded-lg px-8 py-4';
-
   return (
     <Pressable
       accessibilityRole="button"
@@ -35,14 +33,16 @@ export function Button({
       style={({ pressed }) =>
         tw.style(
           'flex flex-row items-center justify-center gap-2',
-          sizeStyle,
-          variant === 'primary' && 'bg-button-primary',
-          variant === 'primary' && pressed && !disabled && 'bg-button-primary-pressed',
-          variant === 'secondary' && 'bg-button-secondary',
-          variant === 'secondary' && pressed && !disabled && 'bg-button-secondary-pressed',
-          variant === 'outline' && 'border border-field-focus bg-transparent',
-          variant === 'outline' && pressed && !disabled && 'bg-field-bg',
-          disabled && 'opacity-45',
+          'min-h-[52px] rounded-lg px-8 py-4',
+          {
+            'bg-button-primary': variant === 'primary',
+            'bg-button-primary-pressed': variant === 'primary' && pressed && !disabled,
+            'bg-button-secondary': variant === 'secondary',
+            'bg-button-secondary-pressed': variant === 'secondary' && pressed && !disabled,
+            'border border-field-focus bg-transparent': variant === 'outline',
+            'bg-field-bg': variant === 'outline' && pressed && !disabled,
+            'opacity-45': !!disabled,
+          },
           className,
         )
       }
