@@ -11,7 +11,12 @@ export default function NotFoundScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>This screen {"doesn't"} exist.</Text>
 
-        <Button text="Go to home screen" variant="primary" className="mt-6" onPress={() => router.replace('/')} />
+        <Button
+          text="Go to home screen"
+          variant="primary"
+          className="mt-6"
+          onPress={() => router.replace('/')}
+        />
       </View>
     </>
   );

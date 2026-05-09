@@ -17,7 +17,9 @@ type AuthTextLinkRowProps = {
 export function AuthTextLinkRow({ lead, linkLabel, href }: AuthTextLinkRowProps) {
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 4 }}>
-      <Text style={{ fontFamily: fontLexendRegular, fontSize: 16, color: '#4f5742', lineHeight: 22 }}>
+      <Text
+        style={{ fontFamily: fontLexendRegular, fontSize: 16, color: '#4f5742', lineHeight: 22 }}
+      >
         {lead}
       </Text>
       <Link href={href} asChild>
@@ -30,7 +32,14 @@ export function AuthTextLinkRow({ lead, linkLabel, href }: AuthTextLinkRowProps)
             paddingBottom: 0,
           }}
         >
-          <Text style={{ fontFamily: fontLexendRegular, fontSize: 16, color: '#1a1d16', lineHeight: 22 }}>
+          <Text
+            style={{
+              fontFamily: fontLexendRegular,
+              fontSize: 16,
+              color: '#1a1d16',
+              lineHeight: 22,
+            }}
+          >
             {linkLabel}
           </Text>
         </Pressable>

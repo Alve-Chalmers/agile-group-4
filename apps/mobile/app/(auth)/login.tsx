@@ -71,14 +71,22 @@ export default function LoginScreen() {
           </View>
 
           <View style={tw.style('w-full items-stretch gap-4')}>
-            {error ? <ThemedText style={tw.style('text-center text-[14px] text-[#dc2626]')}>{error}</ThemedText> : null}
+            {error ? (
+              <ThemedText style={tw.style('text-center text-[14px] text-[#dc2626]')}>
+                {error}
+              </ThemedText>
+            ) : null}
             <Button
               text={loading ? 'Logging in...' : 'Log in'}
               onPress={() => void onLogin()}
               disabled={loading}
               className="self-stretch w-full"
             />
-            <AuthTextLinkRow lead="Don’t have an account?" linkLabel="Register" href="/(auth)/signup" />
+            <AuthTextLinkRow
+              lead="Don’t have an account?"
+              linkLabel="Register"
+              href="/(auth)/signup"
+            />
           </View>
         </View>
       </View>

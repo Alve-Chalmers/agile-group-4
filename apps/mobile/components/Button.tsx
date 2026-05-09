@@ -8,8 +8,7 @@ export type ButtonProps = {
   onPress: () => void;
   disabled?: boolean;
   variant?: 'primary' | 'secondary' | 'outline';
-  /** Chips / tight rows (`Products` filters). Default matches Figma 52px CTAs. */
-  density?: 'default' | 'compact';
+  density?: 'default';
   icon?: React.ReactNode;
   className?: string;
 };
@@ -23,16 +22,11 @@ export function Button({
   icon,
   className,
 }: ButtonProps) {
-  const labelStyle = tw.style(
-    density === 'compact' ? 'text-[14px] font-normal leading-normal text-text-100' : 'text-[16px] font-normal leading-normal text-text-100',
-  );
+  const labelStyle = tw.style('text-[16px] font-normal leading-normal text-text-100');
 
   const labelFont = { fontFamily: fontLexendRegular };
 
-  const sizeStyle =
-    density === 'compact'
-      ? 'min-h-[40px] rounded-lg px-3 py-2'
-      : 'min-h-[52px] rounded-lg px-8 py-4';
+  const sizeStyle = 'min-h-[52px] rounded-lg px-8 py-4';
 
   return (
     <Pressable

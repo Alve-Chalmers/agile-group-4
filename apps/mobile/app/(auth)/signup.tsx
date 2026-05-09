@@ -102,7 +102,11 @@ export default function SignupScreen() {
           </View>
 
           <View style={tw.style('w-full items-stretch gap-4')}>
-            {error ? <ThemedText style={tw.style('text-center text-[14px] text-[#dc2626]')}>{error}</ThemedText> : null}
+            {error ? (
+              <ThemedText style={tw.style('text-center text-[14px] text-[#dc2626]')}>
+                {error}
+              </ThemedText>
+            ) : null}
             <Button
               text={loading ? 'Creating account...' : 'Sign up'}
               onPress={() => void onSignup()}

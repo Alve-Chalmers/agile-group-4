@@ -57,9 +57,7 @@ export function Input({
   };
 
   const androidSelection =
-    Platform.OS === 'android' && !disabled
-      ? ({ selectionColor: '#84bf54' } as const)
-      : {};
+    Platform.OS === 'android' && !disabled ? ({ selectionColor: '#84bf54' } as const) : {};
 
   const inputTypography = tw.style(
     'min-h-[22px] flex-1 rounded-none border-0 bg-transparent p-0 text-[16px] font-normal leading-normal',
@@ -76,7 +74,9 @@ export function Input({
         </Text>
       ) : null}
       <View style={wrapperStyle}>
-        {leftIcon ? <View style={tw.style('size-6 items-center justify-center')}>{leftIcon}</View> : null}
+        {leftIcon ? (
+          <View style={tw.style('size-6 items-center justify-center')}>{leftIcon}</View>
+        ) : null}
         <TextInput
           editable={editable}
           underlineColorAndroid="transparent"

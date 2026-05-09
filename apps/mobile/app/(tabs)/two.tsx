@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/Button';
+import { Chip } from '@/components/Chip';
 import { Input } from '@/components/Input';
 import { Text, View as ThemeView } from '@/components/Themed';
 import tw from '@/lib/tailwind';
@@ -91,19 +92,17 @@ export default function TabTwoScreen() {
     <ScrollView contentContainerStyle={styles.contentContainer}>
       <ThemeView style={styles.container}>
         <Text style={styles.title}>Products</Text>
-        <ThemeView style={styles.buttonRow}>
-          <Button
-            density="compact"
-            variant={sortAsc ? 'primary' : 'secondary'}
-            text={sortAsc ? 'Ascending' : 'Descending'}
+        <ThemeView style={styles.chipRow}>
+          <Chip
+            label={sortAsc ? 'Ascending' : 'Descending'}
+            selected={sortAsc}
             onPress={() => setAsc(!sortAsc)}
           />
           {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => (
-            <Button
-              density="compact"
+            <Chip
               key={str}
-              variant={sort === str ? 'primary' : 'secondary'}
-              text={str}
+              label={str}
+              selected={sort === str}
               onPress={() => setSort(sort === str ? 'All' : str)}
             />
           ))}
@@ -121,29 +120,28 @@ export default function TabTwoScreen() {
                 <Text>Expires in: {daysToExpire} days.</Text>
                 <ThemeView style={styles.cardActions}>
                   <Button
-                    density="compact"
                     variant="secondary"
                     text={removeProductMutation.isPending ? 'Removing...' : 'Remove'}
                     onPress={() => removeCall(product.id)}
                     disabled={removeProductMutation.isPending}
                   />
-                  <Button
-                    density="compact"
-                    variant="primary"
-                    text="Change"
-                    onPress={() => openSetPopup(product)}
-                  />
+                  <Button variant="primary" text="Change" onPress={() => openSetPopup(product)} />
                 </ThemeView>
               </ThemeView>
             );
           })}
         </ThemeView>
 
-        <Modal visible={popup !== null} transparent animationType="fade" onRequestClose={() => setPopup(null)}>
+        <Modal
+          visible={popup !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setPopup(null)}
+        >
           <View style={styles.overlay}>
             <ThemeView style={styles.modal}>
               <View style={tw.style('flex-row justify-end pb-3')}>
-                <Button density="compact" variant="outline" text="Close" onPress={() => setPopup(null)} />
+                <Button variant="outline" text="Close" onPress={() => setPopup(null)} />
               </View>
               <Input placeholder="Product Name" value={newName} onChangeText={setNewName} />
               <Input placeholder="Category" value={newCategory} onChangeText={setNewCategory} />
@@ -207,7 +205,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     gap: 10,
   },
-  buttonRow: {
+  chipRow: {
     flexDirection: 'row',
     gap: 8,
     flexWrap: 'wrap',
