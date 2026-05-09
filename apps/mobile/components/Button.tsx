@@ -8,7 +8,6 @@ export type ButtonProps = {
   onPress: () => void;
   disabled?: boolean;
   variant?: 'primary' | 'secondary' | 'outline';
-  density?: 'default';
   icon?: React.ReactNode;
   className?: string;
 };
@@ -18,7 +17,6 @@ export function Button({
   onPress,
   disabled,
   variant = 'primary',
-  density = 'default',
   icon,
   className,
 }: ButtonProps) {

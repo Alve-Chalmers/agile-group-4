@@ -4,8 +4,8 @@ import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Text, View } from '@/components/Themed';
 import { getApiBaseUrl } from '@/lib/api-base';
-import tw from '@/lib/tailwind';
 import { signOut } from '@/lib/auth';
+import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
@@ -54,7 +54,6 @@ export default function ApiExampleScreen() {
           onPress={load}
           disabled={loading}
           className="mt-4 self-start"
-          density="compact"
           variant="primary"
         />
 
@@ -75,7 +74,6 @@ export default function ApiExampleScreen() {
           }
           disabled={addProductMutation.isPending}
           className="mt-2 self-start"
-          density="compact"
           variant="secondary"
         />
         <Button
@@ -83,7 +81,6 @@ export default function ApiExampleScreen() {
           onPress={() => void signOut(queryClient)}
           disabled={loading}
           className="mt-2 self-start"
-          density="compact"
           variant="outline"
         />
       </View>
