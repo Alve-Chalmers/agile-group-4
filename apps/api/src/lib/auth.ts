@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
-import { createAuthMiddleware } from 'better-auth/api';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { createAuthMiddleware } from 'better-auth/api';
 import { createHomeForUser } from '../db/home.js';
 
 import { db } from '../db/index.js';
@@ -17,6 +17,31 @@ function crossSiteSessionCookiesEnabled() {
   }
   // Default: on in development (split localhost ports), opt-in in production.
   return process.env.NODE_ENV !== 'production';
+}
+
+/** Origins allowed to call the auth API from a browser (CSRF / Origin checks). localhost ≠ 127.0.0.1 for this purpose. */
+const defaultTrustedOrigins = [
+  'http://localhost:8081',
+  'http://127.0.0.1:8081',
+  'http://localhost:8082',
+  'http://127.0.0.1:8082',
+  'http://localhost:19006',
+  'http://127.0.0.1:19006',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'zerowaste://',
+  'exp://',
+];
+
+function trustedOriginsFromEnv(): string[] {
+  const raw = process.env.BETTER_AUTH_TRUSTED_ORIGINS;
+  if (!raw?.trim()) {
+    return [];
+  }
+  return raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export const auth = betterAuth({
@@ -56,11 +81,5 @@ export const auth = betterAuth({
         },
       }
     : {}),
-  trustedOrigins: [
-    'http://localhost:8081',
-    'http://localhost:19006',
-    'http://localhost:3000',
-    'zerowaste://',
-    'exp://',
-  ],
+  trustedOrigins: [...defaultTrustedOrigins, ...trustedOriginsFromEnv()],
 });

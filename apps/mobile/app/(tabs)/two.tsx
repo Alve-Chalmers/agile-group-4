@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 
+import { Button } from '@/components/Button';
 import { Text, View } from '@/components/Themed';
 import { trpc } from '@/lib/trpc';
 
@@ -85,6 +86,7 @@ export default function TabTwoScreen() {
         >
           <Text style={styles.buttonLabel}>Refresh</Text>
         </Pressable>
+        <Button text="Refresh" onPress={load} />
       </View>
     );
   }
