@@ -58,7 +58,6 @@ export const auth = betterAuth({
     : {}),
   trustedOrigins: [
     'zerowaste://',
-    // tsx / Node often leave NODE_ENV unset locally — only production should drop dev origins.
     ...(process.env.NODE_ENV !== 'production'
       ? [
           'http://localhost:8081',
