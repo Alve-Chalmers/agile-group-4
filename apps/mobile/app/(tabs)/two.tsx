@@ -12,10 +12,6 @@ import { trpc } from '@/lib/trpc';
 export default function TabTwoScreen() {
   const MS_PER_DAY = 1000 * 3600 * 24;
   const fetchProducts = trpc.home.getHome.useQuery();
-  const changeProduct = trpc.home.changeProduct.useMutation({
-    onSuccess: () => fetchProducts.refetch(),
-  });
-  const removeProductMutation = trpc.home.removeProduct.useMutation();
 
   const products = useMemo(
     () => fetchProducts.data?.products ?? [],
@@ -45,25 +41,11 @@ export default function TabTwoScreen() {
       (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime(),
     );
     return sortAsc ? byExpiry.reverse() : byExpiry;
-  }, [products, sort, sortAsc]);
+  }, [products, sort, sortAsc, MS_PER_DAY]);
 
   const load = useCallback(() => {
     void fetchProducts.refetch();
   }, [fetchProducts]);
-
-  const removeCall = useCallback(
-    (productId: number) => {
-      removeProductMutation.mutate(
-        { id: productId.toString() },
-        {
-          onSuccess: () => {
-            void fetchProducts.refetch();
-          },
-        },
-      );
-    },
-    [removeProductMutation, fetchProducts],
-  );
 
   const openSetPopup = useCallback((product: (typeof products)[0]) => {
     setPopup(product);
@@ -103,14 +85,13 @@ export default function TabTwoScreen() {
               <ProductCard
                 key={product.id}
                 product={product}
-                removeProductMutation={removeProductMutation}
-                removeCall={removeCall}
                 openSetPopup={openSetPopup}
+                onSuccess={load}
               />
             );
           })}
         </ThemeView>
-        <Popup popup={popup} setPopup={setPopup} changeProduct={changeProduct} />
+        <Popup popup={popup} setPopup={setPopup} onSuccess={load} />
       </ThemeView>
     </ScrollView>
   );
