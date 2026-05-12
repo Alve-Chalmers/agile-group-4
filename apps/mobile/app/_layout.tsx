@@ -1,12 +1,15 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Lexend_400Regular } from '@expo-google-fonts/lexend';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { useDeviceContext } from 'twrnc';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import tw from '@/lib/tailwind';
 import { TrpcProvider } from '@/lib/trpc-provider';
 
 export {
@@ -23,8 +26,11 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useDeviceContext(tw);
+
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Lexend_400Regular,
     ...FontAwesome.font,
   });
 
