@@ -3,221 +3,254 @@
 import * as z from 'zod';
 
 export const zSearchResult = z.object({
-    image: z.string().optional(),
-    link: z.string().nullish(),
-    name: z.string(),
-    type: z.string().optional(),
-    kvtable: z.string().optional(),
-    content: z.string().nullish(),
-    id: z.int().optional(),
-    relevance: z.number().optional()
+  image: z.string().optional(),
+  link: z.string().nullish(),
+  name: z.string(),
+  type: z.string().optional(),
+  kvtable: z.string().optional(),
+  content: z.string().nullish(),
+  id: z.int().optional(),
+  relevance: z.number().optional(),
 });
 
 export const zComparableProduct = z.object({
-    difference: z.number(),
-    id: z.int(),
-    image: z.string().min(1),
-    title: z.string().min(1)
+  difference: z.number(),
+  id: z.int(),
+  image: z.string().min(1),
+  title: z.string().min(1),
 });
 
 export const zMenuItem = z.object({
-    id: z.int(),
-    title: z.string().min(1),
-    restaurantChain: z.string().min(1),
-    nutrition: z.object({
-        nutrients: z.array(z.object({
+  id: z.int(),
+  title: z.string().min(1),
+  restaurantChain: z.string().min(1),
+  nutrition: z
+    .object({
+      nutrients: z
+        .array(
+          z.object({
             name: z.string().min(1),
             amount: z.number(),
             unit: z.string().min(1),
-            percentOfDailyNeeds: z.number()
-        })).min(0),
-        caloricBreakdown: z.object({
-            percentProtein: z.number(),
-            percentFat: z.number(),
-            percentCarbs: z.number()
-        })
-    }).optional(),
-    badges: z.array(z.string()).optional(),
-    breadcrumbs: z.array(z.string()).optional(),
-    generatedText: z.string().nullish(),
-    imageType: z.string().min(1).optional(),
-    likes: z.int().optional(),
-    servings: z.object({
-        number: z.number(),
-        size: z.number().nullable(),
-        unit: z.string().min(1).nullable()
-    }).optional(),
-    price: z.number().nullable(),
-    spoonacularScore: z.number().nullable()
+            percentOfDailyNeeds: z.number(),
+          }),
+        )
+        .min(0),
+      caloricBreakdown: z.object({
+        percentProtein: z.number(),
+        percentFat: z.number(),
+        percentCarbs: z.number(),
+      }),
+    })
+    .optional(),
+  badges: z.array(z.string()).optional(),
+  breadcrumbs: z.array(z.string()).optional(),
+  generatedText: z.string().nullish(),
+  imageType: z.string().min(1).optional(),
+  likes: z.int().optional(),
+  servings: z
+    .object({
+      number: z.number(),
+      size: z.number().nullable(),
+      unit: z.string().min(1).nullable(),
+    })
+    .optional(),
+  price: z.number().nullable(),
+  spoonacularScore: z.number().nullable(),
 });
 
 export const zIngredientBasics = z.object({
-    description: z.string().nullable(),
-    name: z.string(),
-    safety_level: z.string().nullable()
+  description: z.string().nullable(),
+  name: z.string(),
+  safety_level: z.string().nullable(),
 });
 
 export const zProductInformation = z.object({
-    id: z.int(),
-    title: z.string().min(1),
-    upc: z.string().nullish(),
-    usdaCode: z.string().nullish(),
-    breadcrumbs: z.array(z.string()),
-    imageType: z.string().min(1),
-    badges: z.array(z.string()),
-    importantBadges: z.array(z.string()),
-    ingredientCount: z.int(),
-    generatedText: z.string().nullish(),
-    ingredientList: z.string().min(1),
-    ingredients: z.array(zIngredientBasics).min(0),
-    likes: z.number(),
-    aisle: z.string().nullable(),
-    credits: z.object({
-        text: z.string().optional(),
-        link: z.string().optional(),
-        image: z.string().optional(),
-        imageLink: z.string().optional()
-    }).optional(),
-    nutrition: z.object({
-        nutrients: z.array(z.object({
-            name: z.string().min(1),
-            amount: z.number(),
-            unit: z.string().min(1),
-            percentOfDailyNeeds: z.number()
-        })).min(0),
-        caloricBreakdown: z.object({
-            percentProtein: z.number(),
-            percentFat: z.number(),
-            percentCarbs: z.number()
-        })
+  id: z.int(),
+  title: z.string().min(1),
+  upc: z.string().nullish(),
+  usdaCode: z.string().nullish(),
+  breadcrumbs: z.array(z.string()),
+  imageType: z.string().min(1),
+  badges: z.array(z.string()),
+  importantBadges: z.array(z.string()),
+  ingredientCount: z.int(),
+  generatedText: z.string().nullish(),
+  ingredientList: z.string().min(1),
+  ingredients: z.array(zIngredientBasics).min(0),
+  likes: z.number(),
+  aisle: z.string().nullable(),
+  credits: z
+    .object({
+      text: z.string().optional(),
+      link: z.string().optional(),
+      image: z.string().optional(),
+      imageLink: z.string().optional(),
+    })
+    .optional(),
+  nutrition: z.object({
+    nutrients: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          amount: z.number(),
+          unit: z.string().min(1),
+          percentOfDailyNeeds: z.number(),
+        }),
+      )
+      .min(0),
+    caloricBreakdown: z.object({
+      percentProtein: z.number(),
+      percentFat: z.number(),
+      percentCarbs: z.number(),
     }),
-    price: z.number(),
-    servings: z.object({
-        number: z.number(),
-        size: z.number(),
-        unit: z.string().min(1)
-    }),
-    spoonacularScore: z.number()
+  }),
+  price: z.number(),
+  servings: z.object({
+    number: z.number(),
+    size: z.number(),
+    unit: z.string().min(1),
+  }),
+  spoonacularScore: z.number(),
 });
 
 export const zIngredientInformation = z.object({
-    id: z.int(),
-    original: z.string().min(1),
-    originalName: z.string().min(1),
-    name: z.string().min(1),
-    amount: z.number(),
-    unit: z.string(),
-    unitShort: z.string(),
-    unitLong: z.string(),
-    possibleUnits: z.array(z.string()),
-    estimatedCost: z.object({
-        value: z.number(),
-        unit: z.string().min(1)
-    }),
-    consistency: z.string().min(1),
-    shoppingListUnits: z.array(z.string()).optional(),
-    aisle: z.string().min(1),
-    image: z.string().min(1),
-    meta: z.array(z.string()),
-    nutrition: z.object({
-        nutrients: z.array(z.object({
+  id: z.int(),
+  original: z.string().min(1),
+  originalName: z.string().min(1),
+  name: z.string().min(1),
+  amount: z.number(),
+  unit: z.string(),
+  unitShort: z.string(),
+  unitLong: z.string(),
+  possibleUnits: z.array(z.string()),
+  estimatedCost: z.object({
+    value: z.number(),
+    unit: z.string().min(1),
+  }),
+  consistency: z.string().min(1),
+  shoppingListUnits: z.array(z.string()).optional(),
+  aisle: z.string().min(1),
+  image: z.string().min(1),
+  meta: z.array(z.string()),
+  nutrition: z
+    .object({
+      nutrients: z
+        .array(
+          z.object({
             name: z.string().min(1),
             amount: z.number(),
             unit: z.string().min(1),
-            percentOfDailyNeeds: z.number()
-        })).min(0),
-        properties: z.array(z.object({
+            percentOfDailyNeeds: z.number(),
+          }),
+        )
+        .min(0),
+      properties: z
+        .array(
+          z.object({
             name: z.string().min(1),
             amount: z.number(),
-            unit: z.string()
-        })).min(0),
-        caloricBreakdown: z.object({
-            percentProtein: z.number(),
-            percentFat: z.number(),
-            percentCarbs: z.number()
-        }),
-        weightPerServing: z.object({
-            amount: z.number(),
-            unit: z.string().min(1)
-        })
-    }).optional(),
-    categoryPath: z.array(z.string()).optional()
+            unit: z.string(),
+          }),
+        )
+        .min(0),
+      caloricBreakdown: z.object({
+        percentProtein: z.number(),
+        percentFat: z.number(),
+        percentCarbs: z.number(),
+      }),
+      weightPerServing: z.object({
+        amount: z.number(),
+        unit: z.string().min(1),
+      }),
+    })
+    .optional(),
+  categoryPath: z.array(z.string()).optional(),
 });
 
 export const zTasteInformation = z.object({
-    sweetness: z.number(),
-    saltiness: z.number(),
-    sourness: z.number(),
-    bitterness: z.number(),
-    savoriness: z.number(),
-    fattiness: z.number(),
-    spiciness: z.number()
+  sweetness: z.number(),
+  saltiness: z.number(),
+  sourness: z.number(),
+  bitterness: z.number(),
+  savoriness: z.number(),
+  fattiness: z.number(),
+  spiciness: z.number(),
 });
 
 export const zRecipeInformation = z.object({
-    id: z.int(),
-    title: z.string().min(1),
-    image: z.string().nullable(),
-    imageType: z.string().min(1).optional(),
-    servings: z.number(),
-    readyInMinutes: z.int(),
-    preparationMinutes: z.int().nullish(),
-    cookingMinutes: z.int().nullish(),
-    license: z.string().min(1).optional(),
-    sourceName: z.string().min(1),
-    sourceUrl: z.string().min(1),
-    spoonacularSourceUrl: z.string(),
-    aggregateLikes: z.int(),
-    healthScore: z.number(),
-    spoonacularScore: z.number(),
-    pricePerServing: z.number(),
-    analyzedInstructions: z.array(z.record(z.string(), z.unknown())),
-    cheap: z.boolean(),
-    creditsText: z.string().min(1),
-    cuisines: z.array(z.string()),
-    dairyFree: z.boolean(),
-    diets: z.array(z.string()),
-    gaps: z.string().min(1),
-    glutenFree: z.boolean(),
-    instructions: z.string().nullable(),
-    lowFodmap: z.boolean(),
-    occasions: z.array(z.string()),
-    sustainable: z.boolean(),
-    vegan: z.boolean(),
-    vegetarian: z.boolean(),
-    veryHealthy: z.boolean(),
-    veryPopular: z.boolean(),
-    weightWatcherSmartPoints: z.number(),
-    dishTypes: z.array(z.string()),
-    extendedIngredients: z.array(z.object({
+  id: z.int(),
+  title: z.string().min(1),
+  image: z.string().nullable(),
+  imageType: z.string().min(1).optional(),
+  servings: z.number(),
+  readyInMinutes: z.int(),
+  preparationMinutes: z.int().nullish(),
+  cookingMinutes: z.int().nullish(),
+  license: z.string().min(1).optional(),
+  sourceName: z.string().min(1),
+  sourceUrl: z.string().min(1),
+  spoonacularSourceUrl: z.string(),
+  aggregateLikes: z.int(),
+  healthScore: z.number(),
+  spoonacularScore: z.number(),
+  pricePerServing: z.number(),
+  analyzedInstructions: z.array(z.record(z.string(), z.unknown())),
+  cheap: z.boolean(),
+  creditsText: z.string().min(1),
+  cuisines: z.array(z.string()),
+  dairyFree: z.boolean(),
+  diets: z.array(z.string()),
+  gaps: z.string().min(1),
+  glutenFree: z.boolean(),
+  instructions: z.string().nullable(),
+  lowFodmap: z.boolean(),
+  occasions: z.array(z.string()),
+  sustainable: z.boolean(),
+  vegan: z.boolean(),
+  vegetarian: z.boolean(),
+  veryHealthy: z.boolean(),
+  veryPopular: z.boolean(),
+  weightWatcherSmartPoints: z.number(),
+  dishTypes: z.array(z.string()),
+  extendedIngredients: z
+    .array(
+      z.object({
         aisle: z.string().min(1),
         amount: z.number(),
         consistency: z.string().min(1),
         id: z.int(),
         image: z.string().min(1),
-        measures: z.object({
+        measures: z
+          .object({
             metric: z.object({
-                amount: z.number(),
-                unitLong: z.string().min(0),
-                unitShort: z.string().min(0)
+              amount: z.number(),
+              unitLong: z.string().min(0),
+              unitShort: z.string().min(0),
             }),
             us: z.object({
-                amount: z.number(),
-                unitLong: z.string().min(0),
-                unitShort: z.string().min(0)
-            })
-        }).optional(),
+              amount: z.number(),
+              unitLong: z.string().min(0),
+              unitShort: z.string().min(0),
+            }),
+          })
+          .optional(),
         meta: z.array(z.string()).optional(),
         name: z.string().min(1),
         original: z.string().min(1),
         originalName: z.string().min(1),
-        unit: z.string().min(0)
-    })).min(0),
-    summary: z.string().min(1),
-    winePairing: z.object({
-        pairedWines: z.array(z.string()).optional(),
-        pairingText: z.string().min(1).optional(),
-        productMatches: z.array(z.object({
+        unit: z.string().min(0),
+      }),
+    )
+    .min(0),
+  summary: z.string().min(1),
+  winePairing: z
+    .object({
+      pairedWines: z.array(z.string()).optional(),
+      pairingText: z.string().min(1).optional(),
+      productMatches: z
+        .array(
+          z.object({
             id: z.int(),
             title: z.string().min(1),
             description: z.string().min(1),
@@ -226,10 +259,14 @@ export const zRecipeInformation = z.object({
             averageRating: z.number(),
             ratingCount: z.int(),
             score: z.number(),
-            link: z.string().min(1)
-        })).min(0).optional()
-    }).optional(),
-    taste: zTasteInformation.optional()
+            link: z.string().min(1),
+          }),
+        )
+        .min(0)
+        .optional(),
+    })
+    .optional(),
+  taste: zTasteInformation.optional(),
 });
 
 /**
@@ -303,260 +340,280 @@ export const zHash = z.string();
 export const zRgb = z.string();
 
 export const zSearchRecipesQuery = z.object({
-    query: z.string(),
-    cuisine: z.string().optional(),
-    excludeCuisine: z.string().optional(),
-    diet: z.string().optional(),
-    intolerances: z.string().optional(),
-    equipment: z.string().optional(),
-    includeIngredients: z.string().optional(),
-    excludeIngredients: z.string().optional(),
-    type: z.string().optional(),
-    instructionsRequired: z.boolean().optional(),
-    fillIngredients: z.boolean().optional(),
-    addRecipeInformation: z.boolean().optional(),
-    addRecipeNutrition: z.boolean().optional(),
-    author: z.string().optional(),
-    tags: z.string().optional(),
-    recipeBoxId: z.int().optional(),
-    titleMatch: z.string().optional(),
-    maxReadyTime: z.number().optional(),
-    minServings: z.number().optional(),
-    maxServings: z.number().optional(),
-    ignorePantry: z.boolean().optional().default(false),
-    sort: z.string().optional(),
-    sortDirection: z.string().optional(),
-    minCarbs: z.number().optional(),
-    maxCarbs: z.number().optional(),
-    minProtein: z.number().optional(),
-    maxProtein: z.number().optional(),
-    minCalories: z.number().optional(),
-    maxCalories: z.number().optional(),
-    minFat: z.number().optional(),
-    maxFat: z.number().optional(),
-    minAlcohol: z.number().optional(),
-    maxAlcohol: z.number().optional(),
-    minCaffeine: z.number().optional(),
-    maxCaffeine: z.number().optional(),
-    minCopper: z.number().optional(),
-    maxCopper: z.number().optional(),
-    minCalcium: z.number().optional(),
-    maxCalcium: z.number().optional(),
-    minCholine: z.number().optional(),
-    maxCholine: z.number().optional(),
-    minCholesterol: z.number().optional(),
-    maxCholesterol: z.number().optional(),
-    minFluoride: z.number().optional(),
-    maxFluoride: z.number().optional(),
-    minSaturatedFat: z.number().optional(),
-    maxSaturatedFat: z.number().optional(),
-    minVitaminA: z.number().optional(),
-    maxVitaminA: z.number().optional(),
-    minVitaminC: z.number().optional(),
-    maxVitaminC: z.number().optional(),
-    minVitaminD: z.number().optional(),
-    maxVitaminD: z.number().optional(),
-    minVitaminE: z.number().optional(),
-    maxVitaminE: z.number().optional(),
-    minVitaminK: z.number().optional(),
-    maxVitaminK: z.number().optional(),
-    minVitaminB1: z.number().optional(),
-    maxVitaminB1: z.number().optional(),
-    minVitaminB2: z.number().optional(),
-    maxVitaminB2: z.number().optional(),
-    minVitaminB5: z.number().optional(),
-    maxVitaminB5: z.number().optional(),
-    minVitaminB3: z.number().optional(),
-    maxVitaminB3: z.number().optional(),
-    minVitaminB6: z.number().optional(),
-    maxVitaminB6: z.number().optional(),
-    minVitaminB12: z.number().optional(),
-    maxVitaminB12: z.number().optional(),
-    minFiber: z.number().optional(),
-    maxFiber: z.number().optional(),
-    minFolate: z.number().optional(),
-    maxFolate: z.number().optional(),
-    minFolicAcid: z.number().optional(),
-    maxFolicAcid: z.number().optional(),
-    minIodine: z.number().optional(),
-    maxIodine: z.number().optional(),
-    minIron: z.number().optional(),
-    maxIron: z.number().optional(),
-    minMagnesium: z.number().optional(),
-    maxMagnesium: z.number().optional(),
-    minManganese: z.number().optional(),
-    maxManganese: z.number().optional(),
-    minPhosphorus: z.number().optional(),
-    maxPhosphorus: z.number().optional(),
-    minPotassium: z.number().optional(),
-    maxPotassium: z.number().optional(),
-    minSelenium: z.number().optional(),
-    maxSelenium: z.number().optional(),
-    minSodium: z.number().optional(),
-    maxSodium: z.number().optional(),
-    minSugar: z.number().optional(),
-    maxSugar: z.number().optional(),
-    minZinc: z.number().optional(),
-    maxZinc: z.number().optional(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  query: z.string(),
+  cuisine: z.string().optional(),
+  excludeCuisine: z.string().optional(),
+  diet: z.string().optional(),
+  intolerances: z.string().optional(),
+  equipment: z.string().optional(),
+  includeIngredients: z.string().optional(),
+  excludeIngredients: z.string().optional(),
+  type: z.string().optional(),
+  instructionsRequired: z.boolean().optional(),
+  fillIngredients: z.boolean().optional(),
+  addRecipeInformation: z.boolean().optional(),
+  addRecipeNutrition: z.boolean().optional(),
+  author: z.string().optional(),
+  tags: z.string().optional(),
+  recipeBoxId: z.int().optional(),
+  titleMatch: z.string().optional(),
+  maxReadyTime: z.number().optional(),
+  minServings: z.number().optional(),
+  maxServings: z.number().optional(),
+  ignorePantry: z.boolean().optional().default(false),
+  sort: z.string().optional(),
+  sortDirection: z.string().optional(),
+  minCarbs: z.number().optional(),
+  maxCarbs: z.number().optional(),
+  minProtein: z.number().optional(),
+  maxProtein: z.number().optional(),
+  minCalories: z.number().optional(),
+  maxCalories: z.number().optional(),
+  minFat: z.number().optional(),
+  maxFat: z.number().optional(),
+  minAlcohol: z.number().optional(),
+  maxAlcohol: z.number().optional(),
+  minCaffeine: z.number().optional(),
+  maxCaffeine: z.number().optional(),
+  minCopper: z.number().optional(),
+  maxCopper: z.number().optional(),
+  minCalcium: z.number().optional(),
+  maxCalcium: z.number().optional(),
+  minCholine: z.number().optional(),
+  maxCholine: z.number().optional(),
+  minCholesterol: z.number().optional(),
+  maxCholesterol: z.number().optional(),
+  minFluoride: z.number().optional(),
+  maxFluoride: z.number().optional(),
+  minSaturatedFat: z.number().optional(),
+  maxSaturatedFat: z.number().optional(),
+  minVitaminA: z.number().optional(),
+  maxVitaminA: z.number().optional(),
+  minVitaminC: z.number().optional(),
+  maxVitaminC: z.number().optional(),
+  minVitaminD: z.number().optional(),
+  maxVitaminD: z.number().optional(),
+  minVitaminE: z.number().optional(),
+  maxVitaminE: z.number().optional(),
+  minVitaminK: z.number().optional(),
+  maxVitaminK: z.number().optional(),
+  minVitaminB1: z.number().optional(),
+  maxVitaminB1: z.number().optional(),
+  minVitaminB2: z.number().optional(),
+  maxVitaminB2: z.number().optional(),
+  minVitaminB5: z.number().optional(),
+  maxVitaminB5: z.number().optional(),
+  minVitaminB3: z.number().optional(),
+  maxVitaminB3: z.number().optional(),
+  minVitaminB6: z.number().optional(),
+  maxVitaminB6: z.number().optional(),
+  minVitaminB12: z.number().optional(),
+  maxVitaminB12: z.number().optional(),
+  minFiber: z.number().optional(),
+  maxFiber: z.number().optional(),
+  minFolate: z.number().optional(),
+  maxFolate: z.number().optional(),
+  minFolicAcid: z.number().optional(),
+  maxFolicAcid: z.number().optional(),
+  minIodine: z.number().optional(),
+  maxIodine: z.number().optional(),
+  minIron: z.number().optional(),
+  maxIron: z.number().optional(),
+  minMagnesium: z.number().optional(),
+  maxMagnesium: z.number().optional(),
+  minManganese: z.number().optional(),
+  maxManganese: z.number().optional(),
+  minPhosphorus: z.number().optional(),
+  maxPhosphorus: z.number().optional(),
+  minPotassium: z.number().optional(),
+  maxPotassium: z.number().optional(),
+  minSelenium: z.number().optional(),
+  maxSelenium: z.number().optional(),
+  minSodium: z.number().optional(),
+  maxSodium: z.number().optional(),
+  minSugar: z.number().optional(),
+  maxSugar: z.number().optional(),
+  minZinc: z.number().optional(),
+  maxZinc: z.number().optional(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
 export const zSearchRecipesResponse = z.object({
-    offset: z.int(),
-    number: z.int(),
-    results: z.array(z.object({
+  offset: z.int(),
+  number: z.int(),
+  results: z
+    .array(
+      z.object({
         id: z.int(),
         title: z.string().min(1),
         image: z.string().min(1),
-        imageType: z.string().min(1)
-    })).min(0),
-    totalResults: z.int()
+        imageType: z.string().min(1),
+      }),
+    )
+    .min(0),
+  totalResults: z.int(),
 });
 
 export const zSearchRecipesByIngredientsQuery = z.object({
-    ingredients: z.string(),
-    number: z.int().gte(1).lte(100).optional().default(10),
-    ranking: z.int().optional(),
-    ignorePantry: z.boolean().optional().default(false)
+  ingredients: z.string(),
+  number: z.int().gte(1).lte(100).optional().default(10),
+  ranking: z.int().optional(),
+  ignorePantry: z.boolean().optional().default(false),
 });
 
-export const zSearchRecipesByIngredientsResponse = z.array(z.object({
-    id: z.int(),
-    image: z.string().min(1),
-    imageType: z.string().min(1),
-    likes: z.int(),
-    missedIngredientCount: z.int(),
-    missedIngredients: z.array(z.object({
-        aisle: z.string().min(1),
-        amount: z.number(),
-        id: z.int(),
-        image: z.string().min(1),
-        meta: z.array(z.string()).optional(),
-        name: z.string().min(1),
-        extendedName: z.string().min(1).optional(),
-        original: z.string().min(1),
-        originalName: z.string().min(1),
-        unit: z.string().min(0),
-        unitLong: z.string().min(0),
-        unitShort: z.string().min(0)
-    })).min(0),
-    title: z.string().min(1),
-    unusedIngredients: z.array(z.record(z.string(), z.unknown())).min(0),
-    usedIngredientCount: z.number(),
-    usedIngredients: z.array(z.object({
-        aisle: z.string().min(1),
-        amount: z.number(),
-        id: z.int(),
-        image: z.string().min(1),
-        meta: z.array(z.string()).optional(),
-        name: z.string().min(1),
-        extendedName: z.string().min(1).optional(),
-        original: z.string().min(1),
-        originalName: z.string().min(1),
-        unit: z.string().min(0),
-        unitLong: z.string().min(0),
-        unitShort: z.string().min(0)
-    })).min(0)
-})).min(0);
+export const zSearchRecipesByIngredientsResponse = z
+  .array(
+    z.object({
+      id: z.int(),
+      image: z.string().min(1),
+      imageType: z.string().min(1),
+      likes: z.int(),
+      missedIngredientCount: z.int(),
+      missedIngredients: z
+        .array(
+          z.object({
+            aisle: z.string().min(1),
+            amount: z.number(),
+            id: z.int(),
+            image: z.string().min(1),
+            meta: z.array(z.string()).optional(),
+            name: z.string().min(1),
+            extendedName: z.string().min(1).optional(),
+            original: z.string().min(1),
+            originalName: z.string().min(1),
+            unit: z.string().min(0),
+            unitLong: z.string().min(0),
+            unitShort: z.string().min(0),
+          }),
+        )
+        .min(0),
+      title: z.string().min(1),
+      unusedIngredients: z.array(z.record(z.string(), z.unknown())).min(0),
+      usedIngredientCount: z.number(),
+      usedIngredients: z
+        .array(
+          z.object({
+            aisle: z.string().min(1),
+            amount: z.number(),
+            id: z.int(),
+            image: z.string().min(1),
+            meta: z.array(z.string()).optional(),
+            name: z.string().min(1),
+            extendedName: z.string().min(1).optional(),
+            original: z.string().min(1),
+            originalName: z.string().min(1),
+            unit: z.string().min(0),
+            unitLong: z.string().min(0),
+            unitShort: z.string().min(0),
+          }),
+        )
+        .min(0),
+    }),
+  )
+  .min(0);
 
 export const zSearchRecipesByNutrientsQuery = z.object({
-    minCarbs: z.number().optional(),
-    maxCarbs: z.number().optional(),
-    minProtein: z.number().optional(),
-    maxProtein: z.number().optional(),
-    minCalories: z.number().optional(),
-    maxCalories: z.number().optional(),
-    minFat: z.number().optional(),
-    maxFat: z.number().optional(),
-    minAlcohol: z.number().optional(),
-    maxAlcohol: z.number().optional(),
-    minCaffeine: z.number().optional(),
-    maxCaffeine: z.number().optional(),
-    minCopper: z.number().optional(),
-    maxCopper: z.number().optional(),
-    minCalcium: z.number().optional(),
-    maxCalcium: z.number().optional(),
-    minCholine: z.number().optional(),
-    maxCholine: z.number().optional(),
-    minCholesterol: z.number().optional(),
-    maxCholesterol: z.number().optional(),
-    minFluoride: z.number().optional(),
-    maxFluoride: z.number().optional(),
-    minSaturatedFat: z.number().optional(),
-    maxSaturatedFat: z.number().optional(),
-    minVitaminA: z.number().optional(),
-    maxVitaminA: z.number().optional(),
-    minVitaminC: z.number().optional(),
-    maxVitaminC: z.number().optional(),
-    minVitaminD: z.number().optional(),
-    maxVitaminD: z.number().optional(),
-    minVitaminE: z.number().optional(),
-    maxVitaminE: z.number().optional(),
-    minVitaminK: z.number().optional(),
-    maxVitaminK: z.number().optional(),
-    minVitaminB1: z.number().optional(),
-    maxVitaminB1: z.number().optional(),
-    minVitaminB2: z.number().optional(),
-    maxVitaminB2: z.number().optional(),
-    minVitaminB5: z.number().optional(),
-    maxVitaminB5: z.number().optional(),
-    minVitaminB3: z.number().optional(),
-    maxVitaminB3: z.number().optional(),
-    minVitaminB6: z.number().optional(),
-    maxVitaminB6: z.number().optional(),
-    minVitaminB12: z.number().optional(),
-    maxVitaminB12: z.number().optional(),
-    minFiber: z.number().optional(),
-    maxFiber: z.number().optional(),
-    minFolate: z.number().optional(),
-    maxFolate: z.number().optional(),
-    minFolicAcid: z.number().optional(),
-    maxFolicAcid: z.number().optional(),
-    minIodine: z.number().optional(),
-    maxIodine: z.number().optional(),
-    minIron: z.number().optional(),
-    maxIron: z.number().optional(),
-    minMagnesium: z.number().optional(),
-    maxMagnesium: z.number().optional(),
-    minManganese: z.number().optional(),
-    maxManganese: z.number().optional(),
-    minPhosphorus: z.number().optional(),
-    maxPhosphorus: z.number().optional(),
-    minPotassium: z.number().optional(),
-    maxPotassium: z.number().optional(),
-    minSelenium: z.number().optional(),
-    maxSelenium: z.number().optional(),
-    minSodium: z.number().optional(),
-    maxSodium: z.number().optional(),
-    minSugar: z.number().optional(),
-    maxSugar: z.number().optional(),
-    minZinc: z.number().optional(),
-    maxZinc: z.number().optional(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10),
-    random: z.boolean().optional()
+  minCarbs: z.number().optional(),
+  maxCarbs: z.number().optional(),
+  minProtein: z.number().optional(),
+  maxProtein: z.number().optional(),
+  minCalories: z.number().optional(),
+  maxCalories: z.number().optional(),
+  minFat: z.number().optional(),
+  maxFat: z.number().optional(),
+  minAlcohol: z.number().optional(),
+  maxAlcohol: z.number().optional(),
+  minCaffeine: z.number().optional(),
+  maxCaffeine: z.number().optional(),
+  minCopper: z.number().optional(),
+  maxCopper: z.number().optional(),
+  minCalcium: z.number().optional(),
+  maxCalcium: z.number().optional(),
+  minCholine: z.number().optional(),
+  maxCholine: z.number().optional(),
+  minCholesterol: z.number().optional(),
+  maxCholesterol: z.number().optional(),
+  minFluoride: z.number().optional(),
+  maxFluoride: z.number().optional(),
+  minSaturatedFat: z.number().optional(),
+  maxSaturatedFat: z.number().optional(),
+  minVitaminA: z.number().optional(),
+  maxVitaminA: z.number().optional(),
+  minVitaminC: z.number().optional(),
+  maxVitaminC: z.number().optional(),
+  minVitaminD: z.number().optional(),
+  maxVitaminD: z.number().optional(),
+  minVitaminE: z.number().optional(),
+  maxVitaminE: z.number().optional(),
+  minVitaminK: z.number().optional(),
+  maxVitaminK: z.number().optional(),
+  minVitaminB1: z.number().optional(),
+  maxVitaminB1: z.number().optional(),
+  minVitaminB2: z.number().optional(),
+  maxVitaminB2: z.number().optional(),
+  minVitaminB5: z.number().optional(),
+  maxVitaminB5: z.number().optional(),
+  minVitaminB3: z.number().optional(),
+  maxVitaminB3: z.number().optional(),
+  minVitaminB6: z.number().optional(),
+  maxVitaminB6: z.number().optional(),
+  minVitaminB12: z.number().optional(),
+  maxVitaminB12: z.number().optional(),
+  minFiber: z.number().optional(),
+  maxFiber: z.number().optional(),
+  minFolate: z.number().optional(),
+  maxFolate: z.number().optional(),
+  minFolicAcid: z.number().optional(),
+  maxFolicAcid: z.number().optional(),
+  minIodine: z.number().optional(),
+  maxIodine: z.number().optional(),
+  minIron: z.number().optional(),
+  maxIron: z.number().optional(),
+  minMagnesium: z.number().optional(),
+  maxMagnesium: z.number().optional(),
+  minManganese: z.number().optional(),
+  maxManganese: z.number().optional(),
+  minPhosphorus: z.number().optional(),
+  maxPhosphorus: z.number().optional(),
+  minPotassium: z.number().optional(),
+  maxPotassium: z.number().optional(),
+  minSelenium: z.number().optional(),
+  maxSelenium: z.number().optional(),
+  minSodium: z.number().optional(),
+  maxSodium: z.number().optional(),
+  minSugar: z.number().optional(),
+  maxSugar: z.number().optional(),
+  minZinc: z.number().optional(),
+  maxZinc: z.number().optional(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
+  random: z.boolean().optional(),
 });
 
-export const zSearchRecipesByNutrientsResponse = z.array(z.object({
-    calories: z.number(),
-    carbs: z.string().min(1),
-    fat: z.string().min(1),
-    id: z.int(),
-    image: z.string().min(1),
-    imageType: z.string().min(1),
-    protein: z.string().min(1),
-    title: z.string().min(1)
-})).min(0);
+export const zSearchRecipesByNutrientsResponse = z
+  .array(
+    z.object({
+      calories: z.number(),
+      carbs: z.string().min(1),
+      fat: z.string().min(1),
+      id: z.int(),
+      image: z.string().min(1),
+      imageType: z.string().min(1),
+      protein: z.string().min(1),
+      title: z.string().min(1),
+    }),
+  )
+  .min(0);
 
 export const zGetRecipeInformationPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetRecipeInformationQuery = z.object({
-    includeNutrition: z.boolean().optional().default(false),
-    addWinePairing: z.boolean().optional(),
-    addTasteData: z.boolean().optional()
+  includeNutrition: z.boolean().optional().default(false),
+  addWinePairing: z.boolean().optional(),
+  addTasteData: z.boolean().optional(),
 });
 
 /**
@@ -565,57 +622,68 @@ export const zGetRecipeInformationQuery = z.object({
 export const zGetRecipeInformationResponse = zRecipeInformation;
 
 export const zGetRecipeInformationBulkQuery = z.object({
-    ids: z.string(),
-    includeNutrition: z.boolean().optional().default(false)
+  ids: z.string(),
+  includeNutrition: z.boolean().optional().default(false),
 });
 
 export const zGetRecipeInformationBulkResponse = z.array(zRecipeInformation).min(0);
 
 export const zGetSimilarRecipesPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetSimilarRecipesQuery = z.object({
-    number: z.int().gte(1).lte(100).optional().default(10)
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
-export const zGetSimilarRecipesResponse = z.array(z.object({
-    id: z.int(),
-    title: z.string().min(1),
-    imageType: z.string().min(1),
-    readyInMinutes: z.int(),
-    servings: z.number(),
-    sourceUrl: z.string().min(1)
-})).min(0);
+export const zGetSimilarRecipesResponse = z
+  .array(
+    z.object({
+      id: z.int(),
+      title: z.string().min(1),
+      imageType: z.string().min(1),
+      readyInMinutes: z.int(),
+      servings: z.number(),
+      sourceUrl: z.string().min(1),
+    }),
+  )
+  .min(0);
 
 export const zGetRandomRecipesQuery = z.object({
-    includeNutrition: z.boolean().optional().default(false),
-    'include-tags': z.string().optional(),
-    'exclude-tags': z.string().optional(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  includeNutrition: z.boolean().optional().default(false),
+  'include-tags': z.string().optional(),
+  'exclude-tags': z.string().optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
 export const zGetRandomRecipesResponse = z.object({
-    recipes: z.array(zRecipeInformation).min(0)
+  recipes: z.array(zRecipeInformation).min(0),
 });
 
 export const zAutocompleteRecipeSearchQuery = z.object({
-    query: z.string(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  query: z.string(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
-export const zAutocompleteRecipeSearchResponse = z.array(z.object({
-    id: z.int(),
-    title: z.string().min(1),
-    imageType: z.string().min(1)
-})).min(0);
+export const zAutocompleteRecipeSearchResponse = z
+  .array(
+    z.object({
+      id: z.int(),
+      title: z.string().min(1),
+      imageType: z.string().min(1),
+    }),
+  )
+  .min(0);
 
 export const zGetRecipeTasteByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetRecipeTasteByIdQuery = z.object({
-    normalize: z.union([z.literal(false), z.literal(true)]).optional().default(true)
+  normalize: z
+    .union([z.literal(false), z.literal(true)])
+    .optional()
+    .default(true),
 });
 
 /**
@@ -624,12 +692,12 @@ export const zGetRecipeTasteByIdQuery = z.object({
 export const zGetRecipeTasteByIdResponse = zTasteInformation;
 
 export const zRecipeTasteByIdImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zRecipeTasteByIdImageQuery = z.object({
-    normalize: z.boolean().optional(),
-    rgb: z.string().optional()
+  normalize: z.boolean().optional(),
+  rgb: z.string().optional(),
 });
 
 /**
@@ -638,18 +706,22 @@ export const zRecipeTasteByIdImageQuery = z.object({
 export const zRecipeTasteByIdImageResponse = z.string();
 
 export const zGetRecipeEquipmentByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetRecipeEquipmentByIdResponse = z.object({
-    equipment: z.array(z.object({
+  equipment: z
+    .array(
+      z.object({
         image: z.string().min(1),
-        name: z.string().min(1)
-    })).min(0)
+        name: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zEquipmentByIdImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 /**
@@ -658,31 +730,37 @@ export const zEquipmentByIdImagePath = z.object({
 export const zEquipmentByIdImageResponse = z.string();
 
 export const zGetRecipePriceBreakdownByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetRecipePriceBreakdownByIdResponse = z.object({
-    ingredients: z.array(z.object({
-        amount: z.object({
+  ingredients: z
+    .array(
+      z.object({
+        amount: z
+          .object({
             metric: z.object({
-                unit: z.string().min(0),
-                value: z.number()
+              unit: z.string().min(0),
+              value: z.number(),
             }),
             us: z.object({
-                unit: z.string().min(0),
-                value: z.number()
-            })
-        }).optional(),
+              unit: z.string().min(0),
+              value: z.number(),
+            }),
+          })
+          .optional(),
         image: z.string().min(1),
         name: z.string().min(1),
-        price: z.number()
-    })).min(0),
-    totalCost: z.number(),
-    totalCostPerServing: z.number()
+        price: z.number(),
+      }),
+    )
+    .min(0),
+  totalCost: z.number(),
+  totalCostPerServing: z.number(),
 });
 
 export const zPriceBreakdownByIdImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 /**
@@ -691,32 +769,38 @@ export const zPriceBreakdownByIdImagePath = z.object({
 export const zPriceBreakdownByIdImageResponse = z.string();
 
 export const zGetRecipeIngredientsByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetRecipeIngredientsByIdResponse = z.object({
-    ingredients: z.array(z.object({
-        amount: z.object({
+  ingredients: z
+    .array(
+      z.object({
+        amount: z
+          .object({
             metric: z.object({
-                unit: z.string().min(0),
-                value: z.number()
+              unit: z.string().min(0),
+              value: z.number(),
             }),
             us: z.object({
-                unit: z.string().min(0),
-                value: z.number()
-            })
-        }).optional(),
+              unit: z.string().min(0),
+              value: z.number(),
+            }),
+          })
+          .optional(),
         image: z.string().min(1),
-        name: z.string().min(1)
-    })).min(0)
+        name: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zIngredientsByIdImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zIngredientsByIdImageQuery = z.object({
-    measure: z.enum(['us', 'metric']).optional()
+  measure: z.enum(['us', 'metric']).optional(),
 });
 
 /**
@@ -725,30 +809,38 @@ export const zIngredientsByIdImageQuery = z.object({
 export const zIngredientsByIdImageResponse = z.string();
 
 export const zGetRecipeNutritionWidgetByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetRecipeNutritionWidgetByIdResponse = z.object({
-    calories: z.string().min(1),
-    carbs: z.string().min(1),
-    fat: z.string().min(1),
-    protein: z.string().min(1),
-    bad: z.array(z.object({
+  calories: z.string().min(1),
+  carbs: z.string().min(1),
+  fat: z.string().min(1),
+  protein: z.string().min(1),
+  bad: z
+    .array(
+      z.object({
         title: z.string().min(1),
         amount: z.string().min(1),
         indented: z.boolean(),
-        percentOfDailyNeeds: z.number()
-    })).min(0),
-    good: z.array(z.object({
+        percentOfDailyNeeds: z.number(),
+      }),
+    )
+    .min(0),
+  good: z
+    .array(
+      z.object({
         amount: z.string().min(1),
         indented: z.boolean(),
         percentOfDailyNeeds: z.number(),
-        title: z.string().min(1)
-    })).min(0)
+        title: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zRecipeNutritionByIdImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 /**
@@ -757,14 +849,14 @@ export const zRecipeNutritionByIdImagePath = z.object({
 export const zRecipeNutritionByIdImageResponse = z.string();
 
 export const zRecipeNutritionLabelWidgetPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zRecipeNutritionLabelWidgetQuery = z.object({
-    defaultCss: z.boolean().optional().default(true),
-    showOptionalNutrients: z.boolean().optional(),
-    showZeroValues: z.boolean().optional(),
-    showIngredients: z.boolean().optional()
+  defaultCss: z.boolean().optional().default(true),
+  showOptionalNutrients: z.boolean().optional(),
+  showZeroValues: z.boolean().optional(),
+  showIngredients: z.boolean().optional(),
 });
 
 /**
@@ -773,13 +865,13 @@ export const zRecipeNutritionLabelWidgetQuery = z.object({
 export const zRecipeNutritionLabelWidgetResponse = z.string();
 
 export const zRecipeNutritionLabelImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zRecipeNutritionLabelImageQuery = z.object({
-    showOptionalNutrients: z.boolean().optional(),
-    showZeroValues: z.boolean().optional(),
-    showIngredients: z.boolean().optional()
+  showOptionalNutrients: z.boolean().optional(),
+  showZeroValues: z.boolean().optional(),
+  showIngredients: z.boolean().optional(),
 });
 
 /**
@@ -788,42 +880,59 @@ export const zRecipeNutritionLabelImageQuery = z.object({
 export const zRecipeNutritionLabelImageResponse = z.string();
 
 export const zGetAnalyzedRecipeInstructionsPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetAnalyzedRecipeInstructionsQuery = z.object({
-    stepBreakdown: z.boolean().optional()
+  stepBreakdown: z.boolean().optional(),
 });
 
 /**
  * Success
  */
-export const zGetAnalyzedRecipeInstructionsResponse = z.array(z.object({
+export const zGetAnalyzedRecipeInstructionsResponse = z.array(
+  z.object({
     name: z.string(),
-    steps: z.array(z.object({
-        number: z.number(),
-        step: z.string().min(1),
-        ingredients: z.array(z.object({
-            id: z.int(),
-            name: z.string().min(1),
-            localizedName: z.string().min(1),
-            image: z.string().min(1)
-        })).min(0).optional(),
-        equipment: z.array(z.object({
-            id: z.int(),
-            name: z.string().min(1),
-            localizedName: z.string().min(1),
-            image: z.string().min(1)
-        })).min(0).optional()
-    })).min(0).optional()
-}));
+    steps: z
+      .array(
+        z.object({
+          number: z.number(),
+          step: z.string().min(1),
+          ingredients: z
+            .array(
+              z.object({
+                id: z.int(),
+                name: z.string().min(1),
+                localizedName: z.string().min(1),
+                image: z.string().min(1),
+              }),
+            )
+            .min(0)
+            .optional(),
+          equipment: z
+            .array(
+              z.object({
+                id: z.int(),
+                name: z.string().min(1),
+                localizedName: z.string().min(1),
+                image: z.string().min(1),
+              }),
+            )
+            .min(0)
+            .optional(),
+        }),
+      )
+      .min(0)
+      .optional(),
+  }),
+);
 
 export const zExtractRecipeFromWebsiteQuery = z.object({
-    url: z.string(),
-    forceExtraction: z.boolean().optional(),
-    analyze: z.boolean().optional(),
-    includeNutrition: z.boolean().optional().default(false),
-    includeTaste: z.boolean().optional().default(false)
+  url: z.string(),
+  forceExtraction: z.boolean().optional(),
+  analyze: z.boolean().optional(),
+  includeNutrition: z.boolean().optional().default(false),
+  includeTaste: z.boolean().optional().default(false),
 });
 
 /**
@@ -832,12 +941,12 @@ export const zExtractRecipeFromWebsiteQuery = z.object({
 export const zExtractRecipeFromWebsiteResponse = zRecipeInformation;
 
 export const zVisualizeRecipeIngredientsByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zVisualizeRecipeIngredientsByIdQuery = z.object({
-    defaultCss: z.boolean().optional().default(true),
-    measure: z.enum(['us', 'metric']).optional()
+  defaultCss: z.boolean().optional().default(true),
+  measure: z.enum(['us', 'metric']).optional(),
 });
 
 /**
@@ -846,12 +955,15 @@ export const zVisualizeRecipeIngredientsByIdQuery = z.object({
 export const zVisualizeRecipeIngredientsByIdResponse = z.string();
 
 export const zVisualizeRecipeTasteByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zVisualizeRecipeTasteByIdQuery = z.object({
-    normalize: z.union([z.literal(true), z.literal(false)]).optional().default(true),
-    rgb: z.string().optional()
+  normalize: z
+    .union([z.literal(true), z.literal(false)])
+    .optional()
+    .default(true),
+  rgb: z.string().optional(),
 });
 
 /**
@@ -860,11 +972,11 @@ export const zVisualizeRecipeTasteByIdQuery = z.object({
 export const zVisualizeRecipeTasteByIdResponse = z.string();
 
 export const zVisualizeRecipeEquipmentByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zVisualizeRecipeEquipmentByIdQuery = z.object({
-    defaultCss: z.boolean().optional().default(true)
+  defaultCss: z.boolean().optional().default(true),
 });
 
 /**
@@ -873,11 +985,11 @@ export const zVisualizeRecipeEquipmentByIdQuery = z.object({
 export const zVisualizeRecipeEquipmentByIdResponse = z.string();
 
 export const zVisualizeRecipePriceBreakdownByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zVisualizeRecipePriceBreakdownByIdQuery = z.object({
-    defaultCss: z.boolean().optional().default(true)
+  defaultCss: z.boolean().optional().default(true),
 });
 
 /**
@@ -886,13 +998,13 @@ export const zVisualizeRecipePriceBreakdownByIdQuery = z.object({
 export const zVisualizeRecipePriceBreakdownByIdResponse = z.string();
 
 export const zVisualizeRecipeTasteBody = z.object({
-    ingredientList: z.string(),
-    normalize: z.boolean().optional(),
-    rgb: z.string().optional()
+  ingredientList: z.string(),
+  normalize: z.boolean().optional(),
+  rgb: z.string().optional(),
 });
 
 export const zVisualizeRecipeTasteQuery = z.object({
-    language: z.enum(['en', 'de']).optional()
+  language: z.enum(['en', 'de']).optional(),
 });
 
 /**
@@ -901,14 +1013,14 @@ export const zVisualizeRecipeTasteQuery = z.object({
 export const zVisualizeRecipeTasteResponse = z.string();
 
 export const zVisualizeRecipeNutritionBody = z.object({
-    ingredientList: z.string(),
-    servings: z.number(),
-    defaultCss: z.boolean().optional(),
-    showBacklink: z.boolean().optional()
+  ingredientList: z.string(),
+  servings: z.number(),
+  defaultCss: z.boolean().optional(),
+  showBacklink: z.boolean().optional(),
 });
 
 export const zVisualizeRecipeNutritionQuery = z.object({
-    language: z.enum(['en', 'de']).optional()
+  language: z.enum(['en', 'de']).optional(),
 });
 
 /**
@@ -917,15 +1029,15 @@ export const zVisualizeRecipeNutritionQuery = z.object({
 export const zVisualizeRecipeNutritionResponse = z.string();
 
 export const zVisualizePriceBreakdownBody = z.object({
-    ingredientList: z.string(),
-    servings: z.number(),
-    mode: z.number().optional(),
-    defaultCss: z.boolean().optional(),
-    showBacklink: z.boolean().optional()
+  ingredientList: z.string(),
+  servings: z.number(),
+  mode: z.number().optional(),
+  defaultCss: z.boolean().optional(),
+  showBacklink: z.boolean().optional(),
 });
 
 export const zVisualizePriceBreakdownQuery = z.object({
-    language: z.enum(['en', 'de']).optional()
+  language: z.enum(['en', 'de']).optional(),
 });
 
 /**
@@ -934,10 +1046,10 @@ export const zVisualizePriceBreakdownQuery = z.object({
 export const zVisualizePriceBreakdownResponse = z.string();
 
 export const zVisualizeEquipmentBody = z.object({
-    instructions: z.string(),
-    view: z.enum(['grid', 'list']).optional(),
-    defaultCss: z.boolean().optional(),
-    showBacklink: z.boolean().optional()
+  instructions: z.string(),
+  view: z.enum(['grid', 'list']).optional(),
+  defaultCss: z.boolean().optional(),
+  showBacklink: z.boolean().optional(),
 });
 
 /**
@@ -949,16 +1061,16 @@ export const zVisualizeEquipmentResponse = z.string();
  * Example request body.
  */
 export const zAnalyzeRecipeBody = z.object({
-    title: z.string().optional(),
-    servings: z.int().optional(),
-    ingredients: z.array(z.string()).optional(),
-    instructions: z.string().optional()
+  title: z.string().optional(),
+  servings: z.int().optional(),
+  ingredients: z.array(z.string()).optional(),
+  instructions: z.string().optional(),
 });
 
 export const zAnalyzeRecipeQuery = z.object({
-    language: z.string().optional(),
-    includeNutrition: z.boolean().optional(),
-    includeTaste: z.boolean().optional()
+  language: z.string().optional(),
+  includeNutrition: z.boolean().optional(),
+  includeTaste: z.boolean().optional(),
 });
 
 /**
@@ -967,24 +1079,24 @@ export const zAnalyzeRecipeQuery = z.object({
 export const zAnalyzeRecipeResponse = z.record(z.string(), z.unknown());
 
 export const zSummarizeRecipePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zSummarizeRecipeResponse = z.object({
-    id: z.int(),
-    summary: z.string().min(1),
-    title: z.string().min(1)
+  id: z.int(),
+  summary: z.string().min(1),
+  title: z.string().min(1),
 });
 
 export const zCreateRecipeCardGetPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zCreateRecipeCardGetQuery = z.object({
-    mask: z.string().optional(),
-    backgroundImage: z.string().optional(),
-    backgroundColor: z.string().optional(),
-    fontColor: z.string().optional()
+  mask: z.string().optional(),
+  backgroundImage: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  fontColor: z.string().optional(),
 });
 
 /**
@@ -993,136 +1105,160 @@ export const zCreateRecipeCardGetQuery = z.object({
 export const zCreateRecipeCardGetResponse = z.record(z.string(), z.unknown());
 
 export const zCreateRecipeCardBody = z.object({
-    title: z.string(),
-    ingredients: z.string(),
-    instructions: z.string(),
-    readyInMinutes: z.number(),
-    servings: z.number(),
-    mask: z.enum([
-        'ellipseMask',
-        'diamondMask',
-        'starMask',
-        'heartMask',
-        'potMask',
-        'fishMask'
-    ]),
-    backgroundImage: z.enum([
-        'none',
-        'background1',
-        'background2'
-    ]),
-    image: z.string().optional(),
-    imageUrl: z.string().optional(),
-    author: z.string().optional(),
-    backgroundColor: z.string().optional(),
-    fontColor: z.string().optional(),
-    source: z.string().optional()
+  title: z.string(),
+  ingredients: z.string(),
+  instructions: z.string(),
+  readyInMinutes: z.number(),
+  servings: z.number(),
+  mask: z.enum(['ellipseMask', 'diamondMask', 'starMask', 'heartMask', 'potMask', 'fishMask']),
+  backgroundImage: z.enum(['none', 'background1', 'background2']),
+  image: z.string().optional(),
+  imageUrl: z.string().optional(),
+  author: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  fontColor: z.string().optional(),
+  source: z.string().optional(),
 });
 
 export const zCreateRecipeCardResponse = z.object({
-    url: z.string().min(1)
+  url: z.string().min(1),
 });
 
 export const zAnalyzeRecipeInstructionsBody = z.object({
-    instructions: z.string()
+  instructions: z.string(),
 });
 
 export const zAnalyzeRecipeInstructionsResponse = z.object({
-    parsedInstructions: z.array(z.object({
+  parsedInstructions: z
+    .array(
+      z.object({
         name: z.string(),
-        steps: z.array(z.object({
-            number: z.number(),
-            step: z.string().min(1),
-            ingredients: z.array(z.object({
-                id: z.int(),
-                name: z.string().min(1),
-                localizedName: z.string().min(1),
-                image: z.string().min(1)
-            })).min(0).optional(),
-            equipment: z.array(z.object({
-                id: z.int(),
-                name: z.string().min(1),
-                localizedName: z.string().min(1),
-                image: z.string().min(1)
-            })).min(0).optional()
-        })).min(0).optional()
-    })).min(0),
-    ingredients: z.array(z.object({
+        steps: z
+          .array(
+            z.object({
+              number: z.number(),
+              step: z.string().min(1),
+              ingredients: z
+                .array(
+                  z.object({
+                    id: z.int(),
+                    name: z.string().min(1),
+                    localizedName: z.string().min(1),
+                    image: z.string().min(1),
+                  }),
+                )
+                .min(0)
+                .optional(),
+              equipment: z
+                .array(
+                  z.object({
+                    id: z.int(),
+                    name: z.string().min(1),
+                    localizedName: z.string().min(1),
+                    image: z.string().min(1),
+                  }),
+                )
+                .min(0)
+                .optional(),
+            }),
+          )
+          .min(0)
+          .optional(),
+      }),
+    )
+    .min(0),
+  ingredients: z
+    .array(
+      z.object({
         id: z.int(),
-        name: z.string().min(1)
-    })).min(0),
-    equipment: z.array(z.object({
+        name: z.string().min(1),
+      }),
+    )
+    .min(0),
+  equipment: z
+    .array(
+      z.object({
         id: z.int(),
-        name: z.string().min(1)
-    })).min(0)
+        name: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zClassifyCuisineBody = z.object({
-    title: z.string(),
-    ingredientList: z.string()
+  title: z.string(),
+  ingredientList: z.string(),
 });
 
 export const zClassifyCuisineQuery = z.object({
-    language: z.enum(['en', 'de']).optional()
+  language: z.enum(['en', 'de']).optional(),
 });
 
 export const zClassifyCuisineResponse = z.object({
-    cuisine: z.string().min(1),
-    cuisines: z.array(z.string()),
-    confidence: z.number()
+  cuisine: z.string().min(1),
+  cuisines: z.array(z.string()),
+  confidence: z.number(),
 });
 
 export const zAnalyzeARecipeSearchQueryQuery = z.object({
-    q: z.string()
+  q: z.string(),
 });
 
 export const zAnalyzeARecipeSearchQueryResponse = z.object({
-    dishes: z.array(z.object({
+  dishes: z
+    .array(
+      z.object({
         image: z.string().min(1),
-        name: z.string().min(1)
-    })).min(0),
-    ingredients: z.array(z.object({
+        name: z.string().min(1),
+      }),
+    )
+    .min(0),
+  ingredients: z
+    .array(
+      z.object({
         image: z.string().min(1),
         include: z.boolean(),
-        name: z.string().min(1)
-    })).min(0),
-    cuisines: z.array(z.string()),
-    modifiers: z.array(z.string())
+        name: z.string().min(1),
+      }),
+    )
+    .min(0),
+  cuisines: z.array(z.string()),
+  modifiers: z.array(z.string()),
 });
 
 export const zConvertAmountsQuery = z.object({
-    ingredientName: z.string(),
-    sourceAmount: z.number(),
-    sourceUnit: z.string(),
-    targetUnit: z.string()
+  ingredientName: z.string(),
+  sourceAmount: z.number(),
+  sourceUnit: z.string(),
+  targetUnit: z.string(),
 });
 
 export const zConvertAmountsResponse = z.object({
-    sourceAmount: z.number(),
-    sourceUnit: z.string().min(1),
-    targetAmount: z.number(),
-    targetUnit: z.string().min(1),
-    answer: z.string().min(1)
+  sourceAmount: z.number(),
+  sourceUnit: z.string().min(1),
+  targetAmount: z.number(),
+  targetUnit: z.string().min(1),
+  answer: z.string().min(1),
 });
 
 export const zParseIngredientsBody = z.object({
-    ingredientList: z.string(),
-    servings: z.number(),
-    includeNutrition: z.boolean().optional()
+  ingredientList: z.string(),
+  servings: z.number(),
+  includeNutrition: z.boolean().optional(),
 });
 
 export const zParseIngredientsQuery = z.object({
-    language: z.enum(['en', 'de']).optional()
+  language: z.enum(['en', 'de']).optional(),
 });
 
 export const zParseIngredientsResponse = z.array(zIngredientInformation).min(0);
 
 export const zVisualizeRecipeNutritionByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zVisualizeRecipeNutritionByIdQuery = z.object({
-    defaultCss: z.boolean().optional().default(true)
+  defaultCss: z.boolean().optional().default(true),
 });
 
 /**
@@ -1131,16 +1267,16 @@ export const zVisualizeRecipeNutritionByIdQuery = z.object({
 export const zVisualizeRecipeNutritionByIdResponse = z.string();
 
 export const zVisualizeIngredientsBody = z.object({
-    ingredientList: z.string(),
-    servings: z.number(),
-    measure: z.enum(['us', 'metric']).optional(),
-    view: z.enum(['grid', 'list']).optional(),
-    defaultCss: z.boolean().optional(),
-    showBacklink: z.boolean().optional()
+  ingredientList: z.string(),
+  servings: z.number(),
+  measure: z.enum(['us', 'metric']).optional(),
+  view: z.enum(['grid', 'list']).optional(),
+  defaultCss: z.boolean().optional(),
+  showBacklink: z.boolean().optional(),
 });
 
 export const zVisualizeIngredientsQuery = z.object({
-    language: z.enum(['en', 'de']).optional()
+  language: z.enum(['en', 'de']).optional(),
 });
 
 /**
@@ -1149,56 +1285,56 @@ export const zVisualizeIngredientsQuery = z.object({
 export const zVisualizeIngredientsResponse = z.string();
 
 export const zGuessNutritionByDishNameQuery = z.object({
-    title: z.string()
+  title: z.string(),
 });
 
 export const zGuessNutritionByDishNameResponse = z.object({
-    calories: z.object({
-        confidenceRange95Percent: z.object({
-            max: z.number(),
-            min: z.number()
-        }),
-        standardDeviation: z.number(),
-        unit: z.string().min(1),
-        value: z.number()
+  calories: z.object({
+    confidenceRange95Percent: z.object({
+      max: z.number(),
+      min: z.number(),
     }),
-    carbs: z.object({
-        confidenceRange95Percent: z.object({
-            max: z.number(),
-            min: z.number()
-        }),
-        standardDeviation: z.number(),
-        unit: z.string().min(1),
-        value: z.number()
+    standardDeviation: z.number(),
+    unit: z.string().min(1),
+    value: z.number(),
+  }),
+  carbs: z.object({
+    confidenceRange95Percent: z.object({
+      max: z.number(),
+      min: z.number(),
     }),
-    fat: z.object({
-        confidenceRange95Percent: z.object({
-            max: z.number(),
-            min: z.number()
-        }),
-        standardDeviation: z.number(),
-        unit: z.string().min(1),
-        value: z.number()
+    standardDeviation: z.number(),
+    unit: z.string().min(1),
+    value: z.number(),
+  }),
+  fat: z.object({
+    confidenceRange95Percent: z.object({
+      max: z.number(),
+      min: z.number(),
     }),
-    protein: z.object({
-        confidenceRange95Percent: z.object({
-            max: z.number(),
-            min: z.number()
-        }),
-        standardDeviation: z.number(),
-        unit: z.string().min(1),
-        value: z.number()
+    standardDeviation: z.number(),
+    unit: z.string().min(1),
+    value: z.number(),
+  }),
+  protein: z.object({
+    confidenceRange95Percent: z.object({
+      max: z.number(),
+      min: z.number(),
     }),
-    recipesUsed: z.int()
+    standardDeviation: z.number(),
+    unit: z.string().min(1),
+    value: z.number(),
+  }),
+  recipesUsed: z.int(),
 });
 
 export const zGetIngredientInformationPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetIngredientInformationQuery = z.object({
-    amount: z.number().optional(),
-    unit: z.string().optional()
+  amount: z.number().optional(),
+  unit: z.string().optional(),
 });
 
 /**
@@ -1207,191 +1343,215 @@ export const zGetIngredientInformationQuery = z.object({
 export const zGetIngredientInformationResponse = zIngredientInformation;
 
 export const zComputeIngredientAmountPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zComputeIngredientAmountQuery = z.object({
-    nutrient: z.string(),
-    target: z.int(),
-    unit: z.string().optional()
+  nutrient: z.string(),
+  target: z.int(),
+  unit: z.string().optional(),
 });
 
 export const zComputeIngredientAmountResponse = z.object({
-    amount: z.number(),
-    unit: z.string().min(1)
+  amount: z.number(),
+  unit: z.string().min(1),
 });
 
 export const zComputeGlycemicLoadBody = z.object({
-    ingredients: z.array(z.string())
+  ingredients: z.array(z.string()),
 });
 
 export const zComputeGlycemicLoadQuery = z.object({
-    language: z.enum(['en', 'de']).optional()
+  language: z.enum(['en', 'de']).optional(),
 });
 
 export const zComputeGlycemicLoadResponse = z.object({
-    totalGlycemicLoad: z.number(),
-    ingredients: z.array(z.object({
+  totalGlycemicLoad: z.number(),
+  ingredients: z
+    .array(
+      z.object({
         id: z.int(),
         original: z.string().min(1),
         glycemicIndex: z.number(),
-        glycemicLoad: z.number()
-    })).min(0)
+        glycemicLoad: z.number(),
+      }),
+    )
+    .min(0),
 });
 
 export const zAutocompleteIngredientSearchQuery = z.object({
-    query: z.string(),
-    number: z.int().gte(1).lte(100).optional().default(10),
-    metaInformation: z.boolean().optional(),
-    intolerances: z.string().optional(),
-    language: z.enum(['en', 'de']).optional()
+  query: z.string(),
+  number: z.int().gte(1).lte(100).optional().default(10),
+  metaInformation: z.boolean().optional(),
+  intolerances: z.string().optional(),
+  language: z.enum(['en', 'de']).optional(),
 });
 
-export const zAutocompleteIngredientSearchResponse = z.array(z.object({
-    name: z.string().min(1),
-    image: z.string().min(1),
-    id: z.int().optional(),
-    aisle: z.string().min(1).optional(),
-    possibleUnits: z.array(z.string()).optional()
-})).min(0);
+export const zAutocompleteIngredientSearchResponse = z
+  .array(
+    z.object({
+      name: z.string().min(1),
+      image: z.string().min(1),
+      id: z.int().optional(),
+      aisle: z.string().min(1).optional(),
+      possibleUnits: z.array(z.string()).optional(),
+    }),
+  )
+  .min(0);
 
 export const zIngredientSearchQuery = z.object({
-    query: z.string(),
-    addChildren: z.boolean().optional(),
-    minProteinPercent: z.number().optional(),
-    maxProteinPercent: z.number().optional(),
-    minFatPercent: z.number().optional(),
-    maxFatPercent: z.number().optional(),
-    minCarbsPercent: z.number().optional(),
-    maxCarbsPercent: z.number().optional(),
-    metaInformation: z.boolean().optional(),
-    intolerances: z.string().optional(),
-    sort: z.string().optional(),
-    sortDirection: z.string().optional(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10),
-    language: z.enum(['en', 'de']).optional()
+  query: z.string(),
+  addChildren: z.boolean().optional(),
+  minProteinPercent: z.number().optional(),
+  maxProteinPercent: z.number().optional(),
+  minFatPercent: z.number().optional(),
+  maxFatPercent: z.number().optional(),
+  minCarbsPercent: z.number().optional(),
+  maxCarbsPercent: z.number().optional(),
+  metaInformation: z.boolean().optional(),
+  intolerances: z.string().optional(),
+  sort: z.string().optional(),
+  sortDirection: z.string().optional(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
+  language: z.enum(['en', 'de']).optional(),
 });
 
 export const zIngredientSearchResponse = z.object({
-    results: z.array(z.object({
+  results: z
+    .array(
+      z.object({
         id: z.int(),
         name: z.string().min(1),
-        image: z.string().min(1)
-    })).min(0),
-    offset: z.int(),
-    number: z.int(),
-    totalResults: z.int()
+        image: z.string().min(1),
+      }),
+    )
+    .min(0),
+  offset: z.int(),
+  number: z.int(),
+  totalResults: z.int(),
 });
 
 export const zGetIngredientSubstitutesQuery = z.object({
-    ingredientName: z.string()
+  ingredientName: z.string(),
 });
 
 export const zGetIngredientSubstitutesResponse = z.object({
-    ingredient: z.string().min(1),
-    substitutes: z.array(z.string()),
-    message: z.string().min(1)
+  ingredient: z.string().min(1),
+  substitutes: z.array(z.string()),
+  message: z.string().min(1),
 });
 
 export const zGetIngredientSubstitutesByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zGetIngredientSubstitutesByIdResponse = z.object({
-    ingredient: z.string().min(1),
-    substitutes: z.array(z.string()),
-    message: z.string().min(1)
+  ingredient: z.string().min(1),
+  substitutes: z.array(z.string()),
+  message: z.string().min(1),
 });
 
 export const zSearchGroceryProductsQuery = z.object({
-    query: z.string(),
-    minCalories: z.number().optional(),
-    maxCalories: z.number().optional(),
-    minCarbs: z.number().optional(),
-    maxCarbs: z.number().optional(),
-    minProtein: z.number().optional(),
-    maxProtein: z.number().optional(),
-    minFat: z.number().optional(),
-    maxFat: z.number().optional(),
-    addProductInformation: z.union([z.literal(false), z.literal(true)]).optional(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  query: z.string(),
+  minCalories: z.number().optional(),
+  maxCalories: z.number().optional(),
+  minCarbs: z.number().optional(),
+  maxCarbs: z.number().optional(),
+  minProtein: z.number().optional(),
+  maxProtein: z.number().optional(),
+  minFat: z.number().optional(),
+  maxFat: z.number().optional(),
+  addProductInformation: z.union([z.literal(false), z.literal(true)]).optional(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
 export const zSearchGroceryProductsResponse = z.object({
-    products: z.array(z.object({
+  products: z
+    .array(
+      z.object({
         id: z.int(),
         title: z.string().min(1),
-        imageType: z.string().min(1)
-    })).min(0),
-    totalProducts: z.int(),
-    type: z.string().min(1),
-    offset: z.int(),
-    number: z.int()
+        imageType: z.string().min(1),
+      }),
+    )
+    .min(0),
+  totalProducts: z.int(),
+  type: z.string().min(1),
+  offset: z.int(),
+  number: z.int(),
 });
 
 export const zSearchGroceryProductsByUpcPath = z.object({
-    upc: z.string()
+  upc: z.string(),
 });
 
 export const zSearchGroceryProductsByUpcResponse = z.object({
-    id: z.int(),
-    title: z.string(),
-    badges: z.array(z.string()),
-    importantBadges: z.array(z.string()),
-    breadcrumbs: z.array(z.string()),
-    generatedText: z.string().nullable(),
-    imageType: z.string(),
-    ingredientCount: z.int().optional(),
-    ingredientList: z.string(),
-    ingredients: z.array(zIngredientBasics),
-    likes: z.number(),
-    nutrition: z.object({
-        nutrients: z.array(z.object({
-            name: z.string().min(1),
-            amount: z.number(),
-            unit: z.string().min(1),
-            percentOfDailyNeeds: z.number()
-        })).min(0),
-        caloricBreakdown: z.object({
-            percentProtein: z.number(),
-            percentFat: z.number(),
-            percentCarbs: z.number()
-        })
+  id: z.int(),
+  title: z.string(),
+  badges: z.array(z.string()),
+  importantBadges: z.array(z.string()),
+  breadcrumbs: z.array(z.string()),
+  generatedText: z.string().nullable(),
+  imageType: z.string(),
+  ingredientCount: z.int().optional(),
+  ingredientList: z.string(),
+  ingredients: z.array(zIngredientBasics),
+  likes: z.number(),
+  nutrition: z.object({
+    nutrients: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          amount: z.number(),
+          unit: z.string().min(1),
+          percentOfDailyNeeds: z.number(),
+        }),
+      )
+      .min(0),
+    caloricBreakdown: z.object({
+      percentProtein: z.number(),
+      percentFat: z.number(),
+      percentCarbs: z.number(),
     }),
-    price: z.number(),
-    servings: z.object({
-        number: z.number(),
-        size: z.number(),
-        unit: z.string().min(1)
-    }),
-    spoonacularScore: z.number()
+  }),
+  price: z.number(),
+  servings: z.object({
+    number: z.number(),
+    size: z.number(),
+    unit: z.string().min(1),
+  }),
+  spoonacularScore: z.number(),
 });
 
 export const zSearchCustomFoodsQuery = z.object({
-    query: z.string(),
-    username: z.string(),
-    hash: z.string(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  query: z.string(),
+  username: z.string(),
+  hash: z.string(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
 export const zSearchCustomFoodsResponse = z.object({
-    customFoods: z.array(z.object({
+  customFoods: z
+    .array(
+      z.object({
         id: z.int(),
         title: z.string().min(1),
         servings: z.number(),
         imageUrl: z.string().min(1),
-        price: z.number()
-    })).min(0),
-    type: z.string().min(1),
-    offset: z.int(),
-    number: z.int()
+        price: z.number(),
+      }),
+    )
+    .min(0),
+  type: z.string().min(1),
+  offset: z.int(),
+  number: z.int(),
 });
 
 export const zGetProductInformationPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 /**
@@ -1400,38 +1560,42 @@ export const zGetProductInformationPath = z.object({
 export const zGetProductInformationResponse = zProductInformation;
 
 export const zGetComparableProductsPath = z.object({
-    upc: z.string()
+  upc: z.string(),
 });
 
 export const zGetComparableProductsResponse = z.object({
-    comparableProducts: z.object({
-        calories: z.array(zComparableProduct),
-        likes: z.array(zComparableProduct),
-        price: z.array(zComparableProduct),
-        protein: z.array(zComparableProduct),
-        spoonacular_score: z.array(zComparableProduct),
-        sugar: z.array(zComparableProduct)
-    })
+  comparableProducts: z.object({
+    calories: z.array(zComparableProduct),
+    likes: z.array(zComparableProduct),
+    price: z.array(zComparableProduct),
+    protein: z.array(zComparableProduct),
+    spoonacular_score: z.array(zComparableProduct),
+    sugar: z.array(zComparableProduct),
+  }),
 });
 
 export const zAutocompleteProductSearchQuery = z.object({
-    query: z.string(),
-    number: z.int().gte(1).lte(25).optional()
+  query: z.string(),
+  number: z.int().gte(1).lte(25).optional(),
 });
 
 export const zAutocompleteProductSearchResponse = z.object({
-    results: z.array(z.object({
+  results: z
+    .array(
+      z.object({
         id: z.int(),
-        title: z.string().min(1)
-    })).min(0)
+        title: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zVisualizeProductNutritionByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zVisualizeProductNutritionByIdQuery = z.object({
-    defaultCss: z.boolean().optional().default(true)
+  defaultCss: z.boolean().optional().default(true),
 });
 
 /**
@@ -1440,7 +1604,7 @@ export const zVisualizeProductNutritionByIdQuery = z.object({
 export const zVisualizeProductNutritionByIdResponse = z.string();
 
 export const zProductNutritionByIdImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 /**
@@ -1449,14 +1613,14 @@ export const zProductNutritionByIdImagePath = z.object({
 export const zProductNutritionByIdImageResponse = z.string();
 
 export const zProductNutritionLabelWidgetPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zProductNutritionLabelWidgetQuery = z.object({
-    defaultCss: z.boolean().optional().default(true),
-    showOptionalNutrients: z.boolean().optional(),
-    showZeroValues: z.boolean().optional(),
-    showIngredients: z.boolean().optional()
+  defaultCss: z.boolean().optional().default(true),
+  showOptionalNutrients: z.boolean().optional(),
+  showZeroValues: z.boolean().optional(),
+  showIngredients: z.boolean().optional(),
 });
 
 /**
@@ -1465,13 +1629,13 @@ export const zProductNutritionLabelWidgetQuery = z.object({
 export const zProductNutritionLabelWidgetResponse = z.string();
 
 export const zProductNutritionLabelImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zProductNutritionLabelImageQuery = z.object({
-    showOptionalNutrients: z.boolean().optional(),
-    showZeroValues: z.boolean().optional(),
-    showIngredients: z.boolean().optional()
+  showOptionalNutrients: z.boolean().optional(),
+  showZeroValues: z.boolean().optional(),
+  showIngredients: z.boolean().optional(),
 });
 
 /**
@@ -1480,95 +1644,115 @@ export const zProductNutritionLabelImageQuery = z.object({
 export const zProductNutritionLabelImageResponse = z.string();
 
 export const zClassifyGroceryProductBody = z.object({
-    title: z.string().min(1),
-    upc: z.string(),
-    plu_code: z.string()
+  title: z.string().min(1),
+  upc: z.string(),
+  plu_code: z.string(),
 });
 
 export const zClassifyGroceryProductQuery = z.object({
-    locale: z.enum(['en_US', 'en_GB']).optional()
+  locale: z.enum(['en_US', 'en_GB']).optional(),
 });
 
 export const zClassifyGroceryProductResponse = z.object({
-    cleanTitle: z.string().min(1),
-    image: z.string().min(1),
-    category: z.string().min(1),
-    breadcrumbs: z.array(z.string()),
-    usdaCode: z.int()
+  cleanTitle: z.string().min(1),
+  image: z.string().min(1),
+  category: z.string().min(1),
+  breadcrumbs: z.array(z.string()),
+  usdaCode: z.int(),
 });
 
-export const zClassifyGroceryProductBulkBody = z.array(z.object({
-    title: z.string().min(1),
-    upc: z.string(),
-    plu_code: z.string()
-})).min(0);
+export const zClassifyGroceryProductBulkBody = z
+  .array(
+    z.object({
+      title: z.string().min(1),
+      upc: z.string(),
+      plu_code: z.string(),
+    }),
+  )
+  .min(0);
 
 export const zClassifyGroceryProductBulkQuery = z.object({
-    locale: z.string().optional()
+  locale: z.string().optional(),
 });
 
-export const zClassifyGroceryProductBulkResponse = z.array(z.object({
-    cleanTitle: z.string().min(1),
-    image: z.string().min(1),
-    category: z.string().min(1),
-    breadcrumbs: z.array(z.string()),
-    usdaCode: z.int()
-})).min(0);
+export const zClassifyGroceryProductBulkResponse = z
+  .array(
+    z.object({
+      cleanTitle: z.string().min(1),
+      image: z.string().min(1),
+      category: z.string().min(1),
+      breadcrumbs: z.array(z.string()),
+      usdaCode: z.int(),
+    }),
+  )
+  .min(0);
 
 export const zMapIngredientsToGroceryProductsBody = z.object({
-    ingredients: z.array(z.string()),
-    servings: z.number()
+  ingredients: z.array(z.string()),
+  servings: z.number(),
 });
 
-export const zMapIngredientsToGroceryProductsResponse = z.array(z.object({
-    original: z.string().min(1),
-    originalName: z.string().min(1),
-    ingredientImage: z.string().min(1),
-    meta: z.array(z.string()),
-    products: z.array(z.object({
-        id: z.int(),
-        title: z.string().min(1),
-        upc: z.string().min(1)
-    })).min(0)
-})).min(0);
+export const zMapIngredientsToGroceryProductsResponse = z
+  .array(
+    z.object({
+      original: z.string().min(1),
+      originalName: z.string().min(1),
+      ingredientImage: z.string().min(1),
+      meta: z.array(z.string()),
+      products: z
+        .array(
+          z.object({
+            id: z.int(),
+            title: z.string().min(1),
+            upc: z.string().min(1),
+          }),
+        )
+        .min(0),
+    }),
+  )
+  .min(0);
 
 export const zAutocompleteMenuItemSearchQuery = z.object({
-    query: z.string(),
-    number: z.int().gte(1).lte(25).optional()
+  query: z.string(),
+  number: z.int().gte(1).lte(25).optional(),
 });
 
 export const zAutocompleteMenuItemSearchResponse = z.object({
-    results: z.array(z.object({
+  results: z
+    .array(
+      z.object({
         id: z.int(),
-        title: z.string().min(1)
-    })).min(0)
+        title: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zSearchMenuItemsQuery = z.object({
-    query: z.string(),
-    minCalories: z.number().optional(),
-    maxCalories: z.number().optional(),
-    minCarbs: z.number().optional(),
-    maxCarbs: z.number().optional(),
-    minProtein: z.number().optional(),
-    maxProtein: z.number().optional(),
-    minFat: z.number().optional(),
-    maxFat: z.number().optional(),
-    addMenuItemInformation: z.union([z.literal(false), z.literal(true)]).optional(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  query: z.string(),
+  minCalories: z.number().optional(),
+  maxCalories: z.number().optional(),
+  minCarbs: z.number().optional(),
+  maxCarbs: z.number().optional(),
+  minProtein: z.number().optional(),
+  maxProtein: z.number().optional(),
+  minFat: z.number().optional(),
+  maxFat: z.number().optional(),
+  addMenuItemInformation: z.union([z.literal(false), z.literal(true)]).optional(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
 export const zSearchMenuItemsResponse = z.object({
-    menuItems: z.array(zMenuItem).min(0),
-    totalMenuItems: z.int(),
-    type: z.string().min(1),
-    offset: z.int(),
-    number: z.int()
+  menuItems: z.array(zMenuItem).min(0),
+  totalMenuItems: z.int(),
+  type: z.string().min(1),
+  offset: z.int(),
+  number: z.int(),
 });
 
 export const zGetMenuItemInformationPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 /**
@@ -1577,11 +1761,11 @@ export const zGetMenuItemInformationPath = z.object({
 export const zGetMenuItemInformationResponse = zMenuItem;
 
 export const zVisualizeMenuItemNutritionByIdPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zVisualizeMenuItemNutritionByIdQuery = z.object({
-    defaultCss: z.boolean().optional().default(true)
+  defaultCss: z.boolean().optional().default(true),
 });
 
 /**
@@ -1590,7 +1774,7 @@ export const zVisualizeMenuItemNutritionByIdQuery = z.object({
 export const zVisualizeMenuItemNutritionByIdResponse = z.string();
 
 export const zMenuItemNutritionByIdImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 /**
@@ -1599,14 +1783,14 @@ export const zMenuItemNutritionByIdImagePath = z.object({
 export const zMenuItemNutritionByIdImageResponse = z.string();
 
 export const zMenuItemNutritionLabelWidgetPath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zMenuItemNutritionLabelWidgetQuery = z.object({
-    defaultCss: z.boolean().optional().default(true),
-    showOptionalNutrients: z.boolean().optional(),
-    showZeroValues: z.boolean().optional(),
-    showIngredients: z.boolean().optional()
+  defaultCss: z.boolean().optional().default(true),
+  showOptionalNutrients: z.boolean().optional(),
+  showZeroValues: z.boolean().optional(),
+  showIngredients: z.boolean().optional(),
 });
 
 /**
@@ -1615,13 +1799,13 @@ export const zMenuItemNutritionLabelWidgetQuery = z.object({
 export const zMenuItemNutritionLabelWidgetResponse = z.string();
 
 export const zMenuItemNutritionLabelImagePath = z.object({
-    id: z.int()
+  id: z.int(),
 });
 
 export const zMenuItemNutritionLabelImageQuery = z.object({
-    showOptionalNutrients: z.boolean().optional(),
-    showZeroValues: z.boolean().optional(),
-    showIngredients: z.boolean().optional()
+  showOptionalNutrients: z.boolean().optional(),
+  showZeroValues: z.boolean().optional(),
+  showIngredients: z.boolean().optional(),
 });
 
 /**
@@ -1630,96 +1814,135 @@ export const zMenuItemNutritionLabelImageQuery = z.object({
 export const zMenuItemNutritionLabelImageResponse = z.string();
 
 export const zGenerateMealPlanQuery = z.object({
-    timeFrame: z.string().optional(),
-    targetCalories: z.number().optional(),
-    diet: z.string().optional(),
-    exclude: z.string().optional()
+  timeFrame: z.string().optional(),
+  targetCalories: z.number().optional(),
+  diet: z.string().optional(),
+  exclude: z.string().optional(),
 });
 
 export const zGenerateMealPlanResponse = z.object({
-    meals: z.array(z.object({
+  meals: z
+    .array(
+      z.object({
         id: z.int(),
         title: z.string().min(1),
         imageType: z.string().min(1),
         readyInMinutes: z.int(),
         servings: z.number(),
-        sourceUrl: z.string().min(1)
-    })).min(0),
-    nutrients: z.object({
-        calories: z.number(),
-        carbohydrates: z.number(),
-        fat: z.number(),
-        protein: z.number()
-    })
+        sourceUrl: z.string().min(1),
+      }),
+    )
+    .min(0),
+  nutrients: z.object({
+    calories: z.number(),
+    carbohydrates: z.number(),
+    fat: z.number(),
+    protein: z.number(),
+  }),
 });
 
 export const zGetMealPlanWeekPath = z.object({
-    username: z.string(),
-    start_date: z.string()
+  username: z.string(),
+  start_date: z.string(),
 });
 
 export const zGetMealPlanWeekQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zGetMealPlanWeekResponse = z.object({
-    days: z.array(z.object({
-        nutritionSummary: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
-        nutritionSummaryBreakfast: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
-        nutritionSummaryLunch: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
-        nutritionSummaryDinner: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
+  days: z
+    .array(
+      z.object({
+        nutritionSummary: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
+        nutritionSummaryBreakfast: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
+        nutritionSummaryLunch: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
+        nutritionSummaryDinner: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
         date: z.number(),
         day: z.string().min(1),
-        items: z.array(z.object({
-            id: z.int(),
-            slot: z.int(),
-            position: z.int(),
-            type: z.string().min(1),
-            value: z.object({
-                servings: z.number(),
-                id: z.number(),
-                title: z.string().min(1),
-                imageType: z.string()
-            }).optional()
-        })).min(0).optional()
-    })).min(0)
+        items: z
+          .array(
+            z.object({
+              id: z.int(),
+              slot: z.int(),
+              position: z.int(),
+              type: z.string().min(1),
+              value: z
+                .object({
+                  servings: z.number(),
+                  id: z.number(),
+                  title: z.string().min(1),
+                  imageType: z.string(),
+                })
+                .optional(),
+            }),
+          )
+          .min(0)
+          .optional(),
+      }),
+    )
+    .min(0),
 });
 
 export const zClearMealPlanDayPath = z.object({
-    username: z.string(),
-    date: z.string()
+  username: z.string(),
+  date: z.string(),
 });
 
 export const zClearMealPlanDayQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 /**
@@ -1728,34 +1951,38 @@ export const zClearMealPlanDayQuery = z.object({
 export const zClearMealPlanDayResponse = z.record(z.string(), z.unknown());
 
 export const zAddToMealPlanBody = z.object({
-    date: z.number(),
-    slot: z.int(),
-    position: z.int(),
-    type: z.string().min(1),
-    value: z.object({
-        ingredients: z.array(z.object({
-            name: z.string().min(1)
-        })).min(0)
-    })
+  date: z.number(),
+  slot: z.int(),
+  position: z.int(),
+  type: z.string().min(1),
+  value: z.object({
+    ingredients: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+        }),
+      )
+      .min(0),
+  }),
 });
 
 export const zAddToMealPlanPath = z.object({
-    username: z.string()
+  username: z.string(),
 });
 
 export const zAddToMealPlanQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zAddToMealPlanResponse = z.record(z.string(), z.unknown());
 
 export const zDeleteFromMealPlanPath = z.object({
-    username: z.string(),
-    id: z.int()
+  username: z.string(),
+  id: z.int(),
 });
 
 export const zDeleteFromMealPlanQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 /**
@@ -1764,52 +1991,62 @@ export const zDeleteFromMealPlanQuery = z.object({
 export const zDeleteFromMealPlanResponse = z.record(z.string(), z.unknown());
 
 export const zGetMealPlanTemplatesPath = z.object({
-    username: z.string()
+  username: z.string(),
 });
 
 export const zGetMealPlanTemplatesQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zGetMealPlanTemplatesResponse = z.object({
-    templates: z.array(z.object({
+  templates: z
+    .array(
+      z.object({
         id: z.int(),
-        name: z.string().min(1)
-    })).min(0)
+        name: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zAddMealPlanTemplatePath = z.object({
-    username: z.string()
+  username: z.string(),
 });
 
 export const zAddMealPlanTemplateQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zAddMealPlanTemplateResponse = z.object({
-    name: z.string().min(1),
-    items: z.array(z.object({
+  name: z.string().min(1),
+  items: z
+    .array(
+      z.object({
         day: z.int(),
         slot: z.int(),
         position: z.int(),
         type: z.string().min(1),
-        value: z.object({
+        value: z
+          .object({
             id: z.int().optional(),
             servings: z.number().optional(),
             title: z.string().min(1).optional(),
-            imageType: z.string().min(1).optional()
-        }).optional()
-    })).min(1),
-    publishAsPublic: z.boolean()
+            imageType: z.string().min(1).optional(),
+          })
+          .optional(),
+      }),
+    )
+    .min(1),
+  publishAsPublic: z.boolean(),
 });
 
 export const zDeleteMealPlanTemplatePath = z.object({
-    username: z.string(),
-    id: z.int()
+  username: z.string(),
+  id: z.int(),
 });
 
 export const zDeleteMealPlanTemplateQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 /**
@@ -1818,209 +2055,277 @@ export const zDeleteMealPlanTemplateQuery = z.object({
 export const zDeleteMealPlanTemplateResponse = z.record(z.string(), z.unknown());
 
 export const zGetMealPlanTemplatePath = z.object({
-    username: z.string(),
-    id: z.int()
+  username: z.string(),
+  id: z.int(),
 });
 
 export const zGetMealPlanTemplateQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zGetMealPlanTemplateResponse = z.object({
-    id: z.int(),
-    name: z.string().min(1),
-    days: z.array(z.object({
-        nutritionSummary: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
-        nutritionSummaryBreakfast: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
-        nutritionSummaryLunch: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
-        nutritionSummaryDinner: z.object({
-            nutrients: z.array(z.object({
-                name: z.string().min(1),
-                amount: z.number(),
-                unit: z.string().min(1),
-                percentDailyNeeds: z.number()
-            })).min(0)
-        }).optional(),
+  id: z.int(),
+  name: z.string().min(1),
+  days: z
+    .array(
+      z.object({
+        nutritionSummary: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
+        nutritionSummaryBreakfast: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
+        nutritionSummaryLunch: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
+        nutritionSummaryDinner: z
+          .object({
+            nutrients: z
+              .array(
+                z.object({
+                  name: z.string().min(1),
+                  amount: z.number(),
+                  unit: z.string().min(1),
+                  percentDailyNeeds: z.number(),
+                }),
+              )
+              .min(0),
+          })
+          .optional(),
         day: z.string().min(1),
-        items: z.array(z.object({
-            id: z.int(),
-            slot: z.int(),
-            position: z.int(),
-            type: z.string().min(1),
-            value: z.object({
-                id: z.number(),
-                title: z.string().min(1),
-                imageType: z.string().min(1)
-            }).optional()
-        })).min(0).optional()
-    })).min(0)
+        items: z
+          .array(
+            z.object({
+              id: z.int(),
+              slot: z.int(),
+              position: z.int(),
+              type: z.string().min(1),
+              value: z
+                .object({
+                  id: z.number(),
+                  title: z.string().min(1),
+                  imageType: z.string().min(1),
+                })
+                .optional(),
+            }),
+          )
+          .min(0)
+          .optional(),
+      }),
+    )
+    .min(0),
 });
 
 export const zGetShoppingListPath = z.object({
-    username: z.string()
+  username: z.string(),
 });
 
 export const zGetShoppingListQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zGetShoppingListResponse = z.object({
-    aisles: z.array(z.object({
+  aisles: z
+    .array(
+      z.object({
         aisle: z.string().min(1),
-        items: z.array(z.object({
-            id: z.int(),
-            name: z.string().min(1),
-            measures: z.object({
-                original: z.object({
+        items: z
+          .array(
+            z.object({
+              id: z.int(),
+              name: z.string().min(1),
+              measures: z
+                .object({
+                  original: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
-                }),
-                metric: z.object({
+                    unit: z.string().min(1),
+                  }),
+                  metric: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
-                }),
-                us: z.object({
+                    unit: z.string().min(1),
+                  }),
+                  us: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
+                    unit: z.string().min(1),
+                  }),
                 })
-            }).optional(),
-            pantryItem: z.boolean(),
-            aisle: z.string().min(1),
-            cost: z.number(),
-            ingredientId: z.int()
-        })).min(0).optional()
-    })).min(0),
-    cost: z.number(),
-    startDate: z.number(),
-    endDate: z.number()
+                .optional(),
+              pantryItem: z.boolean(),
+              aisle: z.string().min(1),
+              cost: z.number(),
+              ingredientId: z.int(),
+            }),
+          )
+          .min(0)
+          .optional(),
+      }),
+    )
+    .min(0),
+  cost: z.number(),
+  startDate: z.number(),
+  endDate: z.number(),
 });
 
 export const zGenerateShoppingListPath = z.object({
-    username: z.string(),
-    start_date: z.string(),
-    end_date: z.string()
+  username: z.string(),
+  start_date: z.string(),
+  end_date: z.string(),
 });
 
 export const zGenerateShoppingListQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zGenerateShoppingListResponse = z.object({
-    aisles: z.array(z.object({
+  aisles: z
+    .array(
+      z.object({
         aisle: z.string().min(1),
-        items: z.array(z.object({
-            id: z.int(),
-            name: z.string().min(1),
-            measures: z.object({
-                original: z.object({
+        items: z
+          .array(
+            z.object({
+              id: z.int(),
+              name: z.string().min(1),
+              measures: z
+                .object({
+                  original: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
-                }),
-                metric: z.object({
+                    unit: z.string().min(1),
+                  }),
+                  metric: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
-                }),
-                us: z.object({
+                    unit: z.string().min(1),
+                  }),
+                  us: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
+                    unit: z.string().min(1),
+                  }),
                 })
-            }).optional(),
-            pantryItem: z.boolean(),
-            aisle: z.string().min(1),
-            cost: z.number(),
-            ingredientId: z.int()
-        })).min(0).optional()
-    })).min(0),
-    cost: z.number(),
-    startDate: z.number(),
-    endDate: z.number()
+                .optional(),
+              pantryItem: z.boolean(),
+              aisle: z.string().min(1),
+              cost: z.number(),
+              ingredientId: z.int(),
+            }),
+          )
+          .min(0)
+          .optional(),
+      }),
+    )
+    .min(0),
+  cost: z.number(),
+  startDate: z.number(),
+  endDate: z.number(),
 });
 
 export const zConnectUserBody = z.object({
-    username: z.string().min(1),
-    firstName: z.string().min(1),
-    lastName: z.string().min(1),
-    email: z.string().min(1)
+  username: z.string().min(1),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().min(1),
 });
 
 export const zConnectUserResponse = z.object({
-    username: z.string().min(1),
-    hash: z.string().min(1)
+  username: z.string().min(1),
+  hash: z.string().min(1),
 });
 
 export const zAddToShoppingListBody = z.object({
-    item: z.string().min(1),
-    aisle: z.string().min(1),
-    parse: z.boolean()
+  item: z.string().min(1),
+  aisle: z.string().min(1),
+  parse: z.boolean(),
 });
 
 export const zAddToShoppingListPath = z.object({
-    username: z.string()
+  username: z.string(),
 });
 
 export const zAddToShoppingListQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 export const zAddToShoppingListResponse = z.object({
-    aisles: z.array(z.object({
+  aisles: z
+    .array(
+      z.object({
         aisle: z.string().min(1),
-        items: z.array(z.object({
-            id: z.int(),
-            name: z.string().min(1),
-            measures: z.object({
-                original: z.object({
+        items: z
+          .array(
+            z.object({
+              id: z.int(),
+              name: z.string().min(1),
+              measures: z
+                .object({
+                  original: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
-                }),
-                metric: z.object({
+                    unit: z.string().min(1),
+                  }),
+                  metric: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
-                }),
-                us: z.object({
+                    unit: z.string().min(1),
+                  }),
+                  us: z.object({
                     amount: z.number(),
-                    unit: z.string().min(1)
+                    unit: z.string().min(1),
+                  }),
                 })
-            }).optional(),
-            pantryItem: z.boolean(),
-            aisle: z.string().min(1),
-            cost: z.number(),
-            ingredientId: z.int()
-        })).min(0).optional()
-    })).min(0),
-    cost: z.number(),
-    startDate: z.number(),
-    endDate: z.number()
+                .optional(),
+              pantryItem: z.boolean(),
+              aisle: z.string().min(1),
+              cost: z.number(),
+              ingredientId: z.int(),
+            }),
+          )
+          .min(0)
+          .optional(),
+      }),
+    )
+    .min(0),
+  cost: z.number(),
+  startDate: z.number(),
+  endDate: z.number(),
 });
 
 export const zDeleteFromShoppingListPath = z.object({
-    username: z.string(),
-    id: z.int()
+  username: z.string(),
+  id: z.int(),
 });
 
 export const zDeleteFromShoppingListQuery = z.object({
-    hash: z.string()
+  hash: z.string(),
 });
 
 /**
@@ -2029,27 +2334,30 @@ export const zDeleteFromShoppingListQuery = z.object({
 export const zDeleteFromShoppingListResponse = z.record(z.string(), z.unknown());
 
 export const zSearchRestaurantsQuery = z.object({
-    query: z.string().optional(),
-    lat: z.number().optional(),
-    lng: z.number().optional(),
-    distance: z.number().optional(),
-    budget: z.number().optional(),
-    cuisine: z.string().optional(),
-    'min-rating': z.number().optional(),
-    'is-open': z.boolean().optional(),
-    sort: z.string().optional(),
-    page: z.number().optional()
+  query: z.string().optional(),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
+  distance: z.number().optional(),
+  budget: z.number().optional(),
+  cuisine: z.string().optional(),
+  'min-rating': z.number().optional(),
+  'is-open': z.boolean().optional(),
+  sort: z.string().optional(),
+  page: z.number().optional(),
 });
 
 /**
  * Success
  */
 export const zSearchRestaurantsResponse = z.object({
-    restaurants: z.array(z.object({
+  restaurants: z
+    .array(
+      z.object({
         _id: z.string().optional(),
         name: z.string().optional(),
         phone_number: z.int().optional(),
-        address: z.object({
+        address: z
+          .object({
             street_addr: z.string().optional(),
             city: z.string().optional(),
             state: z.string().optional(),
@@ -2059,48 +2367,59 @@ export const zSearchRestaurantsResponse = z.object({
             lon: z.number().optional(),
             street_addr_2: z.string().optional(),
             latitude: z.number().optional(),
-            longitude: z.number().optional()
-        }).optional(),
+            longitude: z.number().optional(),
+          })
+          .optional(),
         type: z.string().optional(),
         description: z.string().optional(),
-        local_hours: z.object({
-            operational: z.object({
+        local_hours: z
+          .object({
+            operational: z
+              .object({
                 Monday: z.string().optional(),
                 Tuesday: z.string().optional(),
                 Wednesday: z.string().optional(),
                 Thursday: z.string().optional(),
                 Friday: z.string().optional(),
                 Saturday: z.string().optional(),
-                Sunday: z.string().optional()
-            }).optional(),
-            delivery: z.object({
+                Sunday: z.string().optional(),
+              })
+              .optional(),
+            delivery: z
+              .object({
                 Monday: z.string().optional(),
                 Tuesday: z.string().optional(),
                 Wednesday: z.string().optional(),
                 Thursday: z.string().optional(),
                 Friday: z.string().optional(),
                 Saturday: z.string().optional(),
-                Sunday: z.string().optional()
-            }).optional(),
-            pickup: z.object({
+                Sunday: z.string().optional(),
+              })
+              .optional(),
+            pickup: z
+              .object({
                 Monday: z.string().optional(),
                 Tuesday: z.string().optional(),
                 Wednesday: z.string().optional(),
                 Thursday: z.string().optional(),
                 Friday: z.string().optional(),
                 Saturday: z.string().optional(),
-                Sunday: z.string().optional()
-            }).optional(),
-            dine_in: z.object({
+                Sunday: z.string().optional(),
+              })
+              .optional(),
+            dine_in: z
+              .object({
                 Monday: z.string().optional(),
                 Tuesday: z.string().optional(),
                 Wednesday: z.string().optional(),
                 Thursday: z.string().optional(),
                 Friday: z.string().optional(),
                 Saturday: z.string().optional(),
-                Sunday: z.string().optional()
-            }).optional()
-        }).optional(),
+                Sunday: z.string().optional(),
+              })
+              .optional(),
+          })
+          .optional(),
         cuisines: z.array(z.string()).optional(),
         food_photos: z.array(z.string()).optional(),
         logo_photos: z.array(z.string()).optional(),
@@ -2113,28 +2432,32 @@ export const zSearchRestaurantsResponse = z.object({
         offers_third_party_delivery: z.boolean().optional(),
         miles: z.number().optional(),
         weighted_rating_value: z.number().optional(),
-        aggregated_rating_count: z.int().optional()
-    })).optional()
+        aggregated_rating_count: z.int().optional(),
+      }),
+    )
+    .optional(),
 });
 
 export const zGetDishPairingForWineQuery = z.object({
-    wine: z.string()
+  wine: z.string(),
 });
 
 export const zGetDishPairingForWineResponse = z.object({
-    pairings: z.array(z.string()),
-    text: z.string().min(1)
+  pairings: z.array(z.string()),
+  text: z.string().min(1),
 });
 
 export const zGetWinePairingQuery = z.object({
-    food: z.string(),
-    maxPrice: z.number().optional()
+  food: z.string(),
+  maxPrice: z.number().optional(),
 });
 
 export const zGetWinePairingResponse = z.object({
-    pairedWines: z.array(z.string()),
-    pairingText: z.string().min(1),
-    productMatches: z.array(z.object({
+  pairedWines: z.array(z.string()),
+  pairingText: z.string().min(1),
+  productMatches: z
+    .array(
+      z.object({
         id: z.int(),
         title: z.string().min(1),
         averageRating: z.number(),
@@ -2143,27 +2466,31 @@ export const zGetWinePairingResponse = z.object({
         link: z.string().min(1),
         price: z.string().min(1),
         ratingCount: z.int(),
-        score: z.number()
-    })).min(0)
+        score: z.number(),
+      }),
+    )
+    .min(0),
 });
 
 export const zGetWineDescriptionQuery = z.object({
-    wine: z.string()
+  wine: z.string(),
 });
 
 export const zGetWineDescriptionResponse = z.object({
-    wineDescription: z.string().min(1)
+  wineDescription: z.string().min(1),
 });
 
 export const zGetWineRecommendationQuery = z.object({
-    wine: z.string(),
-    maxPrice: z.number().optional(),
-    minRating: z.number().optional(),
-    number: z.number().gte(1).lte(100).optional().default(10)
+  wine: z.string(),
+  maxPrice: z.number().optional(),
+  minRating: z.number().optional(),
+  number: z.number().gte(1).lte(100).optional().default(10),
 });
 
 export const zGetWineRecommendationResponse = z.object({
-    recommendedWines: z.array(z.object({
+  recommendedWines: z
+    .array(
+      z.object({
         id: z.int(),
         title: z.string().min(1),
         averageRating: z.number(),
@@ -2172,184 +2499,208 @@ export const zGetWineRecommendationResponse = z.object({
         link: z.string().min(1),
         price: z.string().min(1),
         ratingCount: z.int(),
-        score: z.number()
-    })).min(0),
-    totalFound: z.int()
+        score: z.number(),
+      }),
+    )
+    .min(0),
+  totalFound: z.int(),
 });
 
 export const zImageClassificationByUrlQuery = z.object({
-    imageUrl: z.string()
+  imageUrl: z.string(),
 });
 
 export const zImageClassificationByUrlResponse = z.object({
-    category: z.string().min(1),
-    probability: z.number()
+  category: z.string().min(1),
+  probability: z.number(),
 });
 
 export const zImageAnalysisByUrlQuery = z.object({
-    imageUrl: z.string()
+  imageUrl: z.string(),
 });
 
 export const zImageAnalysisByUrlResponse = z.object({
-    nutrition: z.object({
-        recipesUsed: z.int(),
-        calories: z.object({
-            value: z.number(),
-            unit: z.string().min(1),
-            confidenceRange95Percent: z.object({
-                min: z.number(),
-                max: z.number()
-            }),
-            standardDeviation: z.number()
-        }),
-        fat: z.object({
-            value: z.number(),
-            unit: z.string().min(1),
-            confidenceRange95Percent: z.object({
-                min: z.number(),
-                max: z.number()
-            }),
-            standardDeviation: z.number()
-        }),
-        protein: z.object({
-            value: z.number(),
-            unit: z.string().min(1),
-            confidenceRange95Percent: z.object({
-                min: z.number(),
-                max: z.number()
-            }),
-            standardDeviation: z.number()
-        }),
-        carbs: z.object({
-            value: z.number(),
-            unit: z.string().min(1),
-            confidenceRange95Percent: z.object({
-                min: z.number(),
-                max: z.number()
-            }),
-            standardDeviation: z.number()
-        })
+  nutrition: z.object({
+    recipesUsed: z.int(),
+    calories: z.object({
+      value: z.number(),
+      unit: z.string().min(1),
+      confidenceRange95Percent: z.object({
+        min: z.number(),
+        max: z.number(),
+      }),
+      standardDeviation: z.number(),
     }),
-    category: z.object({
-        name: z.string().min(1),
-        probability: z.number()
+    fat: z.object({
+      value: z.number(),
+      unit: z.string().min(1),
+      confidenceRange95Percent: z.object({
+        min: z.number(),
+        max: z.number(),
+      }),
+      standardDeviation: z.number(),
     }),
-    recipes: z.array(z.object({
+    protein: z.object({
+      value: z.number(),
+      unit: z.string().min(1),
+      confidenceRange95Percent: z.object({
+        min: z.number(),
+        max: z.number(),
+      }),
+      standardDeviation: z.number(),
+    }),
+    carbs: z.object({
+      value: z.number(),
+      unit: z.string().min(1),
+      confidenceRange95Percent: z.object({
+        min: z.number(),
+        max: z.number(),
+      }),
+      standardDeviation: z.number(),
+    }),
+  }),
+  category: z.object({
+    name: z.string().min(1),
+    probability: z.number(),
+  }),
+  recipes: z
+    .array(
+      z.object({
         id: z.int(),
         title: z.string().min(1),
         imageType: z.string().min(1),
-        url: z.string().min(1)
-    })).min(0)
+        url: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zQuickAnswerQuery = z.object({
-    q: z.string()
+  q: z.string(),
 });
 
 export const zQuickAnswerResponse = z.object({
-    answer: z.string().min(1),
-    image: z.string().min(1)
+  answer: z.string().min(1),
+  image: z.string().min(1),
 });
 
 export const zDetectFoodInTextBody = z.object({
-    text: z.string()
+  text: z.string(),
 });
 
 export const zDetectFoodInTextResponse = z.object({
-    annotations: z.array(z.object({
+  annotations: z
+    .array(
+      z.object({
         annotation: z.string().min(1),
         image: z.string().min(1),
-        tag: z.string().min(1)
-    })).min(0)
+        tag: z.string().min(1),
+      }),
+    )
+    .min(0),
 });
 
 export const zSearchSiteContentQuery = z.object({
-    query: z.string()
+  query: z.string(),
 });
 
 export const zSearchSiteContentResponse = z.object({
-    Articles: z.array(zSearchResult),
-    'Grocery Products': z.array(zSearchResult),
-    'Menu Items': z.array(zSearchResult),
-    Recipes: z.array(zSearchResult)
+  Articles: z.array(zSearchResult),
+  'Grocery Products': z.array(zSearchResult),
+  'Menu Items': z.array(zSearchResult),
+  Recipes: z.array(zSearchResult),
 });
 
 export const zSearchAllFoodQuery = z.object({
-    query: z.string(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  query: z.string(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
 export const zSearchAllFoodResponse = z.object({
-    query: z.string().min(1),
-    totalResults: z.int(),
-    limit: z.int(),
-    offset: z.int(),
-    searchResults: z.array(z.object({
+  query: z.string().min(1),
+  totalResults: z.int(),
+  limit: z.int(),
+  offset: z.int(),
+  searchResults: z
+    .array(
+      z.object({
         name: z.string().min(1),
         totalResults: z.int(),
-        results: z.array(zSearchResult).min(0).optional()
-    })).min(0)
+        results: z.array(zSearchResult).min(0).optional(),
+      }),
+    )
+    .min(0),
 });
 
 export const zSearchFoodVideosQuery = z.object({
-    query: z.string(),
-    type: z.string().optional(),
-    cuisine: z.string().optional(),
-    diet: z.string().optional(),
-    includeIngredients: z.string().optional(),
-    excludeIngredients: z.string().optional(),
-    minLength: z.number().optional(),
-    maxLength: z.number().optional(),
-    offset: z.int().gte(0).lte(900).optional(),
-    number: z.int().gte(1).lte(100).optional().default(10)
+  query: z.string(),
+  type: z.string().optional(),
+  cuisine: z.string().optional(),
+  diet: z.string().optional(),
+  includeIngredients: z.string().optional(),
+  excludeIngredients: z.string().optional(),
+  minLength: z.number().optional(),
+  maxLength: z.number().optional(),
+  offset: z.int().gte(0).lte(900).optional(),
+  number: z.int().gte(1).lte(100).optional().default(10),
 });
 
 export const zSearchFoodVideosResponse = z.object({
-    videos: z.array(z.object({
+  videos: z
+    .array(
+      z.object({
         title: z.string().min(1),
         length: z.int(),
         rating: z.number(),
         shortTitle: z.string().min(1),
         thumbnail: z.string().min(1),
         views: z.int(),
-        youTubeId: z.string().min(1)
-    })).min(0),
-    totalResults: z.int()
+        youTubeId: z.string().min(1),
+      }),
+    )
+    .min(0),
+  totalResults: z.int(),
 });
 
 export const zGetARandomFoodJokeResponse = z.object({
-    text: z.string().min(1)
+  text: z.string().min(1),
 });
 
 export const zGetRandomFoodTriviaResponse = z.object({
-    text: z.string().min(1)
+  text: z.string().min(1),
 });
 
 export const zTalkToChatbotQuery = z.object({
-    text: z.string(),
-    contextId: z.string().optional()
+  text: z.string(),
+  contextId: z.string().optional(),
 });
 
 export const zTalkToChatbotResponse = z.object({
-    answerText: z.string().min(1),
-    media: z.array(z.object({
-        title: z.string().optional(),
-        image: z.string().optional(),
-        link: z.string().optional()
-    }))
+  answerText: z.string().min(1),
+  media: z.array(
+    z.object({
+      title: z.string().optional(),
+      image: z.string().optional(),
+      link: z.string().optional(),
+    }),
+  ),
 });
 
 export const zGetConversationSuggestsQuery = z.object({
-    query: z.string(),
-    number: z.number().optional()
+  query: z.string(),
+  number: z.number().optional(),
 });
 
 export const zGetConversationSuggestsResponse = z.object({
-    suggests: z.object({
-        _: z.array(z.object({
-            name: z.string().min(1)
-        })).min(0)
-    }),
-    words: z.array(z.string())
+  suggests: z.object({
+    _: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+        }),
+      )
+      .min(0),
+  }),
+  words: z.array(z.string()),
 });

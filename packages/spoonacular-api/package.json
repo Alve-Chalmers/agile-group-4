@@ -3,11 +3,29 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./zod": {
+      "types": "./dist/zod.gen.d.ts",
+      "import": "./dist/zod.gen.js",
+      "default": "./dist/zod.gen.js"
+    }
+  },
   "scripts": {
-    "generate": "openapi-ts"
+    "generate": "openapi-ts",
+    "build": "tsup src/client/index.ts src/client/zod.gen.ts --format esm --dts",
+    "check": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "0.97.1"
+    "@hey-api/openapi-ts": "0.97.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "zod": "^4.3.6"
