@@ -1,9 +1,10 @@
 import { TRPCError } from '@trpc/server';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { db } from '../db/index.js';
-import { product, userHome, category } from '../db/schema.js';
-import { protectedProcedure, publicProcedure, router } from './init.js';
+import { db } from '../../db/index.js';
+import { category, product, userHome } from '../../db/schema.js';
+import { protectedProcedure, publicProcedure, router } from '../init.js';
+import { recipeRouter } from './recipe.js';
 
 export const getHome = async (userId: string) => {
   const { home } = (await db.query.userHome.findFirst({
@@ -90,6 +91,7 @@ export const appRouter = router({
   me: protectedProcedure.query(({ ctx }) => ctx.user),
   home: homeRouter,
   category: categoryRouter,
+  recipe: recipeRouter,
 });
 
 export type AppRouter = typeof appRouter;
