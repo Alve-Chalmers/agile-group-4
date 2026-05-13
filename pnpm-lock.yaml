@@ -175,6 +175,9 @@ importers:
       '@0waste/prettier-config':
         specifier: workspace:*
         version: link:../../packages/prettier-config
+      '@0waste/spoonacular-api':
+        specifier: workspace:*
+        version: link:../../packages/spoonacular-api
       '@testing-library/jest-dom':
         specifier: ^6.9.1
         version: 6.9.1

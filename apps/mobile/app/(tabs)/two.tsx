@@ -4,6 +4,7 @@ import { Modal, ScrollView, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Chip } from '@/components/Chip';
 import { Input } from '@/components/Input';
+import { RecipeCard } from '@/components/recipes/RecipeCard';
 import { Text, View as ThemeView } from '@/components/Themed';
 import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
@@ -11,16 +12,17 @@ import { trpc } from '@/lib/trpc';
 const MS_PER_DAY = 1000 * 3600 * 24;
 
 export default function TabTwoScreen() {
-  const fetchProducts = trpc.home.getHome.useQuery();
+  const { data: home, ...fetchProducts } = trpc.home.getHome.useQuery();
   const changeProduct = trpc.home.changeProduct.useMutation({
     onSuccess: () => fetchProducts.refetch(),
   });
   const removeProductMutation = trpc.home.removeProduct.useMutation();
 
-  const products = useMemo(
-    () => fetchProducts.data?.products ?? [],
-    [fetchProducts.data?.products],
-  );
+  const products = home?.products ?? [];
+
+  const { data: recipes, ...getRecipes } = trpc.recipe.getRecipesForIngredients.useQuery({
+    ingredients: products.map((p) => p.name),
+  });
 
   const [popup, setPopup] = useState<(typeof products)[0] | null>(null);
   const [newName, setNewName] = useState('');
@@ -172,6 +174,9 @@ export default function TabTwoScreen() {
           </View>
         </Modal>
       </ThemeView>
+      {recipes?.map((r) => (
+        <RecipeCard key={r.id} recipe={r} />
+      ))}
     </ScrollView>
   );
 }
