@@ -174,9 +174,14 @@ export default function TabTwoScreen() {
           </View>
         </Modal>
       </ThemeView>
-      {recipes?.map((r) => (
-        <RecipeCard key={r.id} recipe={r} />
-      ))}
+      <ThemeView style={tw.style('flex-1 gap-2')}>
+        <Text style={tw.style('text-2xl font-bold')}>Recipes</Text>
+        <ThemeView style={tw.style('flex-row flex-wrap gap-2')}>
+          {recipes?.map((r) => (
+            <RecipeCard key={r.id} recipe={r} />
+          ))}
+        </ThemeView>
+      </ThemeView>
     </ScrollView>
   );
 }
