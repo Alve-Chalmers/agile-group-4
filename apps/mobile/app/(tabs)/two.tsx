@@ -5,7 +5,8 @@ import { Button } from '@/components/Button';
 import { Chip } from '@/components/Chip';
 import { Input } from '@/components/Input';
 import { RecipeCard } from '@/components/recipes/RecipeCard';
-import { Text, View as ThemeView } from '@/components/Themed';
+import { Text } from '@/components/Text';
+import { View as ThemeView } from '@/components/Themed';
 import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
 
@@ -174,8 +175,8 @@ export default function TabTwoScreen() {
           </View>
         </Modal>
       </ThemeView>
-      <ThemeView style={tw.style('flex-1 gap-2')}>
-        <Text style={tw.style('text-2xl font-bold')}>Recipes</Text>
+      <ThemeView style={tw.style('flex-1 gap-4')}>
+        <Text className="text-2xl font-bold">Recipes</Text>
         <ThemeView style={tw.style('flex-row flex-wrap gap-2')}>
           {recipes?.map((r) => (
             <RecipeCard key={r.id} recipe={r} />
