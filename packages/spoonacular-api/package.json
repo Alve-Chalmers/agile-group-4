@@ -1,0 +1,15 @@
+{
+  "name": "@0waste/spoonacular-api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "openapi-ts"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.97.1"
+  },
+  "peerDependencies": {
+    "zod": "^4.3.6"
+  }
+}
