@@ -7,7 +7,7 @@ import { protectedProcedure, router } from '../init.js';
 export const recipeRouter = router({
   getRecipesForIngredients: protectedProcedure
     .input(z.object({ ingredients: z.string().array() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       const { data: recipes, error } = await client.searchRecipesByIngredients({
         query: {
           ingredients: input.ingredients.join(','),
