@@ -85,9 +85,9 @@ const categories = [
     defaultShelfLifeSeconds: daysToSeconds(7),
   },
   {
-    name: "Other",
+    name: 'Other',
     defaultShelfLifeSeconds: daysToSeconds(9999),
-  }
+  },
 ];
 
 async function seed() {

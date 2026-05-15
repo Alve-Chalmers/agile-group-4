@@ -99,8 +99,7 @@ export const homeRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-
-      const categories = (await db.query.category.findMany()).map(e => e.name);
+      const categories = (await db.query.category.findMany()).map((e) => e.name);
       try {
         const { output: parsed } = await generateText({
           model: google('gemini-3.1-flash-lite'),
