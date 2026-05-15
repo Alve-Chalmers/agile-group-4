@@ -12,7 +12,6 @@ type ScannedItem = {
 };
 
 export default function ScanReceipt() {
-  const [modalVisible, setModalVisible] = useState(false);
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
   const scanMutation = trpc.home.scanReceipt.useMutation();
   const addProductMutation = trpc.home.addProduct.useMutation();
@@ -33,7 +32,6 @@ export default function ScanReceipt() {
         mediaType: 'image/jpeg',
       });
       setScannedItems(items);
-      setModalVisible(true);
     } catch {
       Alert.alert('Fel', 'Kunde inte läsa av kvittot, försök igen.');
     }
@@ -47,7 +45,6 @@ export default function ScanReceipt() {
         expiresAt: item.expiresAt,
       });
     }
-    setModalVisible(false);
     setScannedItems([]);
   };
 
@@ -61,7 +58,7 @@ export default function ScanReceipt() {
         onPress={pickAndScan}
       />
 
-      <Modal visible={modalVisible} animationType="slide" transparent>
+      <Modal visible={scannedItems.length > 0} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Found products</Text>
@@ -79,7 +76,7 @@ export default function ScanReceipt() {
               onPress={confirmItems}
               disabled={addProductMutation.isPending}
             />
-            <Button variant="ghost" onPress={() => setModalVisible(false)} text="Cancel" />
+            <Button variant="ghost" onPress={() => setScannedItems([])} text="Cancel" />
           </View>
         </View>
       </Modal>
