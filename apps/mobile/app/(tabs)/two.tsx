@@ -91,7 +91,7 @@ export default function TabTwoScreen() {
             );
           })}
         </ThemeView>
-        <ProductPopup popup={popup} onDone={onDone} />
+        {popup !== null && <ProductPopup popup={popup} onDone={onDone} />}
       </ThemeView>
     </ScrollView>
   );

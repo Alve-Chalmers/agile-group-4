@@ -8,7 +8,7 @@ import { trpc } from '@/lib/trpc';
 import { useState } from 'react';
 
 export type ProductPopupProps = {
-  popup: number | null;
+  popup: number;
   onDone: () => void;
 };
 
@@ -24,14 +24,14 @@ export function ProductPopup({ popup, onDone }: ProductPopupProps) {
     },
   });
 
-  if (!popup) {
-    return null;
-  }
-
   const product = useProduct(popup);
   const [newName, setNewName] = useState(product?.name ?? '');
   const [newCategory, setNewCategory] = useState(product?.category ?? '');
   const [newExpiresAt, setNewExpiresAt] = useState(product?.expiresAt.slice(0, 10) ?? '');
+
+  if (!popup) {
+    return null;
+  }
 
   return (
     <Modal visible={!!popup} transparent animationType="fade" onRequestClose={() => onDone()}>
