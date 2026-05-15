@@ -23,7 +23,6 @@ export default function TabTwoScreen() {
     ingredients: products.map((p) => p.name),
   });
 
-
   const [popup, setPopup] = useState<number | null>(null);
   const [sort, setSort] = useState('All');
   const [sortAsc, setAsc] = useState(false);
