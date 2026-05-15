@@ -98,6 +98,7 @@ export default function TabTwoScreen() {
           {recipes?.map((r) => (
             <RecipeCard key={r.id} recipe={r} />
           ))}
+          {(!recipes || recipes.length === 0) && <Text>No recipes found matching your ingredients</Text>}
         </View>
       </View>
     </ScrollView>
