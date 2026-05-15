@@ -3,12 +3,13 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { createAuthMiddleware } from 'better-auth/api';
 import { createHomeForUser } from '../db/home.js';
 
+import { env } from '@/env.js';
 import { db } from '../db/index.js';
 import * as tables from '../db/schema.js';
 
 /** Credentialed fetch from another origin (e.g. Expo web :8081 → API :3000) needs SameSite=None; browsers require Secure (localhost is exempt for HTTP). */
 function crossSiteSessionCookiesEnabled() {
-  const raw = process.env.BETTER_AUTH_CROSS_SITE_COOKIES;
+  const raw = env.BETTER_AUTH_CROSS_SITE_COOKIES;
   if (raw === '0' || raw === 'false') {
     return false;
   }
@@ -16,12 +17,12 @@ function crossSiteSessionCookiesEnabled() {
     return true;
   }
   // Default: on in development (split localhost ports), opt-in in production.
-  return process.env.NODE_ENV !== 'production';
+  return env.NODE_ENV !== 'production';
 }
 
 export const auth = betterAuth({
-  secret: process.env.BETTER_AUTH_SECRET ?? 'development-secret-min-32-chars-long!!',
-  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
+  secret: env.BETTER_AUTH_SECRET ?? 'development-secret-min-32-chars-long!!',
+  baseURL: env.BETTER_AUTH_URL ?? 'http://localhost:3000',
   emailAndPassword: {
     enabled: true,
   },
@@ -58,7 +59,7 @@ export const auth = betterAuth({
     : {}),
   trustedOrigins: [
     'zerowaste://',
-    ...(process.env.NODE_ENV !== 'production'
+    ...(env.NODE_ENV !== 'production'
       ? [
           'http://localhost:8081',
           'http://127.0.0.1:8081',

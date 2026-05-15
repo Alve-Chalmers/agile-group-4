@@ -4,7 +4,7 @@ import { cors } from 'hono/cors';
 
 import { auth } from './lib/auth.js';
 import { createContext } from './trpc/context.js';
-import { appRouter } from './trpc/router.js';
+import { appRouter } from './trpc/routers/index.js';
 
 const app = new Hono();
 

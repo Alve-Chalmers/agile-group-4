@@ -1,14 +1,13 @@
 import { serve } from '@hono/node-server';
 import './load-env.js';
 
+import { env } from '@/env.js';
 import { app } from './app.js';
-
-const port = Number(process.env.PORT) || 3000;
 
 serve(
   {
     fetch: app.fetch,
-    port,
+    port: env.PORT,
   },
   (info) => {
     console.info(`API listening on http://localhost:${info.port}`);
