@@ -12,7 +12,7 @@ const receiptScanResultSchema = z.object({
     z.object({
       name: z
         .string()
-        .describe("The name of the product, in english, and normalized, example: 'tomato'"),
+        .describe("The name of the product, in english, and normalized, example: 'Tomato'"),
       category: z.string().nullable(),
       expiresAt: z.string().transform((value) => new Date(value)),
     }),
@@ -99,6 +99,8 @@ export const homeRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
+
+      const categories = (await db.query.category.findMany()).map(e => e.name);
       try {
         const { output: parsed } = await generateText({
           model: google('gemini-3.1-flash-lite'),
@@ -122,6 +124,7 @@ export const homeRouter = router({
                   text: `Extract all food/grocery items from this receipt.
 Return an object matching the schema: items is an array of { name, category (or null), expiresAt (ISO date string) }.
 For expiresAt, estimate a reasonable expiry date based on the product type.
+the available categories are: ${categories.join(', ')}; if a category doesn't fit, set it to null.
 Today is ${new Date().toISOString().split('T')[0]}.`,
                 },
               ],
