@@ -3,8 +3,8 @@ import { ScrollView } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Chip } from '@/components/Chip';
-import { Popup } from '@/components/Popup';
 import { ProductCard } from '@/components/ProductCard';
+import { ProductPopup } from '@/components/ProductPopup';
 import { Text, View as ThemeView } from '@/components/Themed';
 import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
@@ -18,7 +18,7 @@ export default function TabTwoScreen() {
     [fetchProducts.data?.products],
   );
 
-  const [popup, setPopup] = useState<(typeof products)[0] | null>(null);
+  const [popup, setPopup] = useState<number | null>(null);
   const [sort, setSort] = useState('All');
   const [sortAsc, setAsc] = useState(false);
 
@@ -47,8 +47,13 @@ export default function TabTwoScreen() {
     void fetchProducts.refetch();
   }, [fetchProducts]);
 
-  const openSetPopup = useCallback((product: (typeof products)[0]) => {
-    setPopup(product);
+  const onDone = useCallback(() => {
+    setPopup(null);
+    load();
+  }, [load]);
+
+  const openEditPopup = useCallback((number: number) => {
+    setPopup(number);
   }, []);
 
   if (products.length === 0) {
@@ -84,14 +89,13 @@ export default function TabTwoScreen() {
             return (
               <ProductCard
                 key={product.id}
-                product={product}
-                openSetPopup={openSetPopup}
-                onSuccess={load}
+                product={product.id}
+                openEditPopup={openEditPopup}
               />
             );
           })}
         </ThemeView>
-        <Popup popup={popup} setPopup={setPopup} onSuccess={load} />
+        <ProductPopup popup={popup} onDone={onDone} />
       </ThemeView>
     </ScrollView>
   );
