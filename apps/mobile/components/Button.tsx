@@ -42,7 +42,7 @@ export function Button({
             'border border-field-focus bg-transparent': variant === 'outline',
             'bg-field-bg': variant === 'outline' && pressed && !disabled,
             'opacity-45': !!disabled,
-            'bg-inherit text-text-200': variant === 'ghost'
+            'bg-inherit text-text-200': variant === 'ghost',
           },
           className,
         )

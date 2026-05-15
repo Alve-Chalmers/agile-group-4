@@ -53,7 +53,13 @@ export default function ScanReceipt() {
 
   return (
     <>
-      <Button variant='secondary' className="self-start" text={scanMutation.isPending ? 'Scanning…' : 'Scan Receipt'} disabled={scanMutation.isPending} onPress={pickAndScan} />
+      <Button
+        variant="secondary"
+        className="self-start"
+        text={scanMutation.isPending ? 'Scanning…' : 'Scan Receipt'}
+        disabled={scanMutation.isPending}
+        onPress={pickAndScan}
+      />
 
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
@@ -73,7 +79,7 @@ export default function ScanReceipt() {
               onPress={confirmItems}
               disabled={addProductMutation.isPending}
             />
-            <Button variant='ghost' onPress={() => setModalVisible(false)} text="Cancel" />
+            <Button variant="ghost" onPress={() => setModalVisible(false)} text="Cancel" />
           </View>
         </View>
       </Modal>
