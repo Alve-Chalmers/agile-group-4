@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Chip } from '@/components/Chip';
@@ -67,10 +67,10 @@ export default function TabTwoScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={tw.style('flex-grow')}>
-      <ThemeView style={tw.style('flex-1 gap-2.5 p-6 pt-4')}>
+    <ScrollView contentContainerStyle={tw.style('flex-grow px-4')}>
+      <View style={tw.style('flex-1 gap-2.5 pt-4')}>
         <Text style={tw.style('mb-3 text-2xl font-bold')}>Products</Text>
-        <ThemeView style={tw.style('flex-row flex-wrap items-center gap-2')}>
+        <View style={tw.style('flex-row flex-wrap items-center gap-2')}>
           <Chip
             label={sortAsc ? 'Ascending' : 'Descending'}
             selected={sortAsc}
@@ -84,30 +84,22 @@ export default function TabTwoScreen() {
               onPress={() => setSort(sort === str ? 'All' : str)}
             />
           ))}
-        </ThemeView>
-        <ThemeView style={tw.style('mb-4 min-h-[80px] w-full gap-3')}>
+        </View>
+        <View style={tw.style('mb-4 min-h-[80px] w-full gap-3')}>
           {sortedProducts.map((product) => {
             return <ProductCard key={product.id} product={product.id} openEditPopup={setPopup} />;
           })}
-        </ThemeView>
+        </View>
         {popup !== null && <ProductPopup popup={popup} onDone={onDone} />}
-      </ThemeView>
-      <ThemeView style={tw.style('flex-1 gap-4')}>
+      </View>
+      <View style={tw.style('gap-4')}>
         <Text className="text-2xl font-bold">Recipes</Text>
-        <ThemeView style={tw.style('flex-row flex-wrap gap-2')}>
+        <View style={tw.style('flex-row flex-wrap gap-2')}>
           {recipes?.map((r) => (
             <RecipeCard key={r.id} recipe={r} />
           ))}
-        </ThemeView>
-      </ThemeView>
-      <ThemeView style={tw.style('flex-1 gap-4')}>
-        <Text className="text-2xl font-bold">Recipes</Text>
-        <ThemeView style={tw.style('flex-row flex-wrap gap-2')}>
-          {recipes?.map((r) => (
-            <RecipeCard key={r.id} recipe={r} />
-          ))}
-        </ThemeView>
-      </ThemeView>
+        </View>
+      </View>
     </ScrollView>
   );
 }
