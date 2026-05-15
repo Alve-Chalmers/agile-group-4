@@ -42,7 +42,7 @@ export default function ScanReceipt() {
     for (const item of scannedItems) {
       await addProductMutation.mutateAsync({
         name: item.name,
-        category: item.category ?? 'Övrigt',
+        category: item.category ?? 'Other',
         expiresAt: item.expiresAt,
       });
     }
