@@ -135,21 +135,20 @@ Today is ${new Date().toISOString().split('T')[0]}.`,
       }
     }),
     translateProductName: protectedProcedure.input(z.object({ name: z.string() })).query(async ({ input }) => {
-      if (!process.env.OPENAI_API_KEY) {
+      if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'OPENAI_API_KEY is not configured',
         });
       }
-      const modelId = process.env.OPENAI_RECEIPT_MODEL ?? DEFAULT_RECEIPT_VISION_MODEL;
 
       try {
         const { output: translation } = await generateText({
-          model: modelId,
+          model: google('gemini-3.1-flash-lite'),
           output: Output.object({
             schema: z.string(),
             name: 'translated_name',
-            description: 'The product name translated to English and made more specific if possible',
+            description: "The name of the product, in english, and normalized, example: 'tomato'",
           }),
           messages: [
             {
