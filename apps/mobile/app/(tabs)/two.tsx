@@ -8,9 +8,9 @@ import { ProductPopup } from '@/components/ProductPopup';
 import { Text, View as ThemeView } from '@/components/Themed';
 import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
+const MS_PER_DAY = 1000 * 3600 * 24;
 
 export default function TabTwoScreen() {
-  const MS_PER_DAY = 1000 * 3600 * 24;
   const fetchProducts = trpc.home.getHome.useQuery();
 
   const products = useMemo(
@@ -41,7 +41,7 @@ export default function TabTwoScreen() {
       (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime(),
     );
     return sortAsc ? byExpiry.reverse() : byExpiry;
-  }, [products, sort, sortAsc, MS_PER_DAY]);
+  }, [products, sort, sortAsc]);
 
   const load = useCallback(() => {
     void fetchProducts.refetch();
