@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:generate": "pnpm --filter @0waste/api db:generate",
-    "db:migrate": "pnpm --filter @0waste/api db:migrate"
+    "db:migrate": "pnpm --filter @0waste/api db:migrate",
+    "db:seeds": "pnpm --filter @0waste/api db:seeds"
   },
   "prettier": "@0waste/prettier-config",
   "devDependencies": {

@@ -24,9 +24,11 @@
     "db:seeds": "tsx --env-file=.env src/db/seeds.ts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.73",
     "@0waste/spoonacular-api": "workspace:*",
     "@hono/node-server": "^2.0.0",
     "@trpc/server": "^11.16.0",
+    "ai": "^6.0.182",
     "better-auth": "^1.6.5",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",

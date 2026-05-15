@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import ScanReceipt from '@/components/ScanReceipt';
 import { Text, View } from '@/components/Themed';
 import { getApiBaseUrl } from '@/lib/api-base';
 import { signOut } from '@/lib/auth';
@@ -76,6 +77,7 @@ export default function ApiExampleScreen() {
           className="mt-2 self-start"
           variant="secondary"
         />
+        <ScanReceipt />
         <Button
           text={loading ? 'Logging out...' : 'Logout'}
           onPress={() => void signOut(queryClient)}

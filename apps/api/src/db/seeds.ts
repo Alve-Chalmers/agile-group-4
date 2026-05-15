@@ -1,5 +1,5 @@
-import { category } from './schema.js';
 import { db } from './index.js';
+import { category } from './schema.js';
 
 const daysToSeconds = (days: number) => days * 24 * 60 * 60;
 
@@ -83,6 +83,10 @@ const categories = [
   {
     name: 'Juice',
     defaultShelfLifeSeconds: daysToSeconds(7),
+  },
+  {
+    name: 'Other',
+    defaultShelfLifeSeconds: daysToSeconds(9999),
   },
 ];
 

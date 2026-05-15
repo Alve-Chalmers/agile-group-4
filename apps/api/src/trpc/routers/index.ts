@@ -1,10 +1,24 @@
+import { google } from '@ai-sdk/google';
 import { TRPCError } from '@trpc/server';
+import { generateText, Output } from 'ai';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.js';
 import { category, product, userHome } from '../../db/schema.js';
 import { protectedProcedure, publicProcedure, router } from '../init.js';
 import { recipeRouter } from './recipe.js';
+
+const receiptScanResultSchema = z.object({
+  items: z.array(
+    z.object({
+      name: z
+        .string()
+        .describe("The name of the product, in english, and normalized, example: 'Tomato'"),
+      category: z.string().nullable(),
+      expiresAt: z.string().transform((value) => new Date(value)),
+    }),
+  ),
+});
 
 export const getHome = async (userId: string) => {
   const { home } = (await db.query.userHome.findFirst({
@@ -77,6 +91,52 @@ export const homeRouter = router({
       await db
         .delete(product)
         .where(and(eq(product.id, parseInt(input.id)), eq(product.homeId, home.id)));
+    }),
+  scanReceipt: protectedProcedure
+    .input(
+      z.object({
+        imageBase64: z.string(),
+        mediaType: z.enum(['image/jpeg', 'image/png', 'image/webp']),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const categories = (await db.query.category.findMany()).map((e) => e.name);
+      try {
+        const { output: parsed } = await generateText({
+          model: google('gemini-3.1-flash-lite'),
+
+          output: Output.object({
+            schema: receiptScanResultSchema,
+            name: 'receipt_items',
+            description: 'Food and grocery line items parsed from a receipt image',
+          }),
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'image',
+                  image: input.imageBase64,
+                  mediaType: input.mediaType,
+                },
+                {
+                  type: 'text',
+                  text: `Extract all food/grocery items from this receipt.
+Return an object matching the schema: items is an array of { name, category (or null), expiresAt (ISO date string) }.
+For expiresAt, estimate a reasonable expiry date based on the product type.
+the available categories are: ${categories.join(', ')}; if a category doesn't fit, set it to null.
+Today is ${new Date().toISOString().split('T')[0]}.`,
+                },
+              ],
+            },
+          ],
+        });
+
+        return { items: parsed.items };
+      } catch (error) {
+        console.error('Receipt vision model error:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to call AI API' });
+      }
     }),
 });
 
