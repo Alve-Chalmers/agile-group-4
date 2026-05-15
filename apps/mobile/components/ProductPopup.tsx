@@ -5,14 +5,14 @@ import { Input } from '@/components/Input';
 import { View as ThemeView } from '@/components/Themed';
 import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export type ProductPopupProps = {
   popup: number | null;
   onDone: () => void;
 };
 
-function useProduct(id: number | null) {
+function useProduct(id: number) {
   const fetchProduct = trpc.home.getHome.useQuery();
   return fetchProduct.data?.products.find((p) => p.id === id) ?? null;
 }
@@ -24,24 +24,17 @@ export function ProductPopup({ popup, onDone }: ProductPopupProps) {
     },
   });
 
-  const product = useProduct(popup);
-  const [newName, setNewName] = useState('');
-  const [newCategory, setNewCategory] = useState('');
-  const [newExpiresAt, setNewExpiresAt] = useState('');
-
-  useEffect(() => {
-    if (product) {
-      setNewName(product.name);
-      setNewCategory(product.category ?? '');
-      setNewExpiresAt(product.expiresAt.slice(0, 10));
-    }
-  }, [product]);
-
   if (!popup) {
-    return null;
-  }
+      return null;
+    }
+
+  const product = useProduct(popup);
+  const [newName, setNewName] = useState(product?.name ?? '');
+  const [newCategory, setNewCategory] = useState(product?.category ?? '');
+  const [newExpiresAt, setNewExpiresAt] = useState(product?.expiresAt.slice(0, 10) ?? '');
 
   return (
+
     <Modal visible={!!popup} transparent animationType="fade" onRequestClose={() => onDone()}>
       <View style={tw.style('flex-1 items-center justify-center bg-black/50 p-6')}>
         <ThemeView style={tw.style('w-full max-w-[380px] gap-2 rounded-lg bg-auth-screen p-6')}>
