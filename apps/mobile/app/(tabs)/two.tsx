@@ -1,8 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Modal, ScrollView, View } from 'react-native';
 
-import { Text, View } from '@/components/Themed';
+import { Button } from '@/components/Button';
+import { Chip } from '@/components/Chip';
+import { Input } from '@/components/Input';
+import { Text, View as ThemeView } from '@/components/Themed';
+import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
+
+const MS_PER_DAY = 1000 * 3600 * 24;
 
 export default function TabTwoScreen() {
   const fetchProducts = trpc.home.getHome.useQuery();
@@ -11,12 +17,12 @@ export default function TabTwoScreen() {
   });
   const removeProductMutation = trpc.home.removeProduct.useMutation();
 
-  const products = useMemo(() => {
-    return fetchProducts.data?.products || [];
-  }, [fetchProducts]);
+  const products = useMemo(
+    () => fetchProducts.data?.products ?? [],
+    [fetchProducts.data?.products],
+  );
 
   const [popup, setPopup] = useState<(typeof products)[0] | null>(null);
-  const [productsId, setProductId] = useState('');
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [newExpiresAt, setNewExpiresAt] = useState('');
@@ -24,28 +30,24 @@ export default function TabTwoScreen() {
   const [sortAsc, setAsc] = useState(false);
 
   const sortedProducts = useMemo(() => {
-    const sorted = products;
-    let selection;
-    switch (sort) {
-      case 'Expiring':
-        selection = sorted.filter(
-          (product) =>
-            (new Date(product.expiresAt).getTime() - Date.now()) / (1000 * 3600 * 24) < 7,
-        );
-        break;
-      case 'Dairy':
-        selection = sorted.filter((product) => product.category === 'Dairy');
-        break;
-      case 'Produce':
-        selection = sorted.filter((product) => product.category === 'Produce');
-        break;
-      default:
-        selection = sorted;
-    }
-    let result = selection.sort(
+    const filtered = (() => {
+      switch (sort) {
+        case 'Expiring':
+          return products.filter(
+            (p) => (new Date(p.expiresAt).getTime() - Date.now()) / MS_PER_DAY < 7,
+          );
+        case 'Dairy':
+          return products.filter((p) => p.category === 'Dairy');
+        case 'Produce':
+          return products.filter((p) => p.category === 'Produce');
+        default:
+          return products;
+      }
+    })();
+    const byExpiry = [...filtered].sort(
       (a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime(),
     );
-    return sortAsc ? result.reverse() : result;
+    return sortAsc ? byExpiry.reverse() : byExpiry;
   }, [products, sort, sortAsc]);
 
   const load = useCallback(() => {
@@ -70,248 +72,106 @@ export default function TabTwoScreen() {
     setPopup(product);
     setNewName(product.name);
     setNewCategory(product?.category ?? '');
-    setProductId('' + product.id);
-    const time = product.expiresAt.slice(0, 10);
-    setNewExpiresAt(time);
+    setNewExpiresAt(product.expiresAt.slice(0, 10));
   }, []);
 
   if (products.length === 0) {
     return (
-      <View style={[styles.container]}>
-        <Text style={styles.errorText}>No products found</Text>
-        <Pressable
-          onPress={load}
-          style={({ pressed }) => [styles.centeredButton, pressed && styles.buttonPressed]}
-        >
-          <Text style={styles.buttonLabel}>Refresh</Text>
-        </Pressable>
-      </View>
+      <ThemeView style={tw.style('flex-1 items-center justify-center gap-4 p-6 pt-4')}>
+        <Text style={tw.style('text-center text-[14px] text-error')}>No products found</Text>
+        <Button text="Refresh" onPress={load} variant="primary" />
+      </ThemeView>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.contentContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Products</Text>
-        <View style={styles.buttonRow}>
-          <Pressable
+    <ScrollView contentContainerStyle={tw.style('flex-grow')}>
+      <ThemeView style={tw.style('flex-1 gap-2.5 p-6 pt-4')}>
+        <Text style={tw.style('mb-3 text-2xl font-bold')}>Products</Text>
+        <ThemeView style={tw.style('flex-row flex-wrap items-center gap-2')}>
+          <Chip
+            label={sortAsc ? 'Ascending' : 'Descending'}
+            selected={sortAsc}
             onPress={() => setAsc(!sortAsc)}
-            style={({ pressed }) => [styles.sortButton, pressed && styles.buttonPressed]}
-          >
-            <Text style={styles.buttonLabel}>{sortAsc ? 'Ascending' : 'Descending'}</Text>
-          </Pressable>
-          {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => {
-            return (
-              <Pressable
-                key={str}
-                onPress={() => setSort(sort === str ? 'All' : str)}
-                style={({ pressed }) => [
-                  styles.sortButton,
-                  sort === str && styles.sortButtonSelected,
-                  pressed && styles.buttonPressed,
-                ]}
-              >
-                <Text style={styles.buttonLabel}>{str}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-        <View style={[styles.listContainer]}>
+          />
+          {['All', 'Produce', 'Expiring', 'Dairy'].map((str) => (
+            <Chip
+              key={str}
+              label={str}
+              selected={sort === str}
+              onPress={() => setSort(sort === str ? 'All' : str)}
+            />
+          ))}
+        </ThemeView>
+        <ThemeView style={tw.style('mb-4 min-h-[80px] w-full gap-3')}>
           {sortedProducts.map((product) => {
             const expiryDate = new Date(product.expiresAt);
-            const daysToExpire = Math.ceil(
-              (expiryDate.getTime() - Date.now()) / (1000 * 3600 * 24),
-            );
+            const daysToExpire = Math.ceil((expiryDate.getTime() - Date.now()) / MS_PER_DAY);
             return (
-              <View key={product.id} style={styles.card}>
-                <Text style={styles.productName}>{product.name}</Text>
-                <Text style={styles.productCategory}>{product.category}</Text>
+              <ThemeView
+                key={product.id}
+                style={tw.style('gap-2 rounded-lg bg-black/10 p-4 bg-background-900')}
+              >
+                <Text style={tw.style('mb-1 text-base font-semibold')}>{product.name}</Text>
+                <Text style={tw.style('mb-1 text-[13px] opacity-70')}>{product.category}</Text>
                 <Text>Expires in: {daysToExpire} days.</Text>
-                <Pressable
-                  onPress={() => removeCall(product.id)}
-                  style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-                  disabled={removeProductMutation.isPending}
-                >
-                  <Text style={styles.buttonLabel}>
-                    {' '}
-                    {removeProductMutation.isPending ? 'Removing...' : 'Remove Ingredient!'}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => openSetPopup(product)}
-                  style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-                >
-                  <Text style={styles.buttonLabel}>Change!</Text>
-                </Pressable>
-              </View>
+                <ThemeView style={tw.style('mt-2 flex-row flex-wrap gap-2 bg-inherit')}>
+                  <Button
+                    variant="secondary"
+                    text={removeProductMutation.isPending ? 'Removing...' : 'Remove'}
+                    onPress={() => removeCall(product.id)}
+                    disabled={removeProductMutation.isPending}
+                  />
+                  <Button variant="primary" text="Change" onPress={() => openSetPopup(product)} />
+                </ThemeView>
+              </ThemeView>
             );
           })}
-        </View>
+        </ThemeView>
 
-        {popup && (
-          <View style={styles.overlay}>
-            <View style={styles.modal}>
-              <TextInput
-                placeholder="Product Name"
-                value={newName}
-                onChangeText={setNewName}
-                style={styles.textInput}
-              />
-              <TextInput
-                placeholder="Category"
-                value={newCategory}
-                onChangeText={setNewCategory}
-                style={styles.textInput}
-              />
-              <TextInput
+        <Modal
+          visible={popup !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setPopup(null)}
+        >
+          <View style={tw.style('flex-1 items-center justify-center bg-black/50 p-6')}>
+            <ThemeView style={tw.style('w-full max-w-[380px] gap-2 rounded-lg bg-auth-screen p-6')}>
+              <View style={tw.style('flex-row justify-end pb-3')}>
+                <Button variant="outline" text="Close" onPress={() => setPopup(null)} />
+              </View>
+              <Input placeholder="Product Name" value={newName} onChangeText={setNewName} />
+              <Input placeholder="Category" value={newCategory} onChangeText={setNewCategory} />
+              <Input
                 placeholder="Expiration Date"
                 value={newExpiresAt}
                 onChangeText={setNewExpiresAt}
-                style={styles.textInput}
+                containerClassName="mb-2"
               />
-              <Pressable
-                onPress={() => setPopup(null)}
-                style={({ pressed }) => [styles.exitButton, pressed && styles.buttonPressed]}
-              >
-                <Text style={styles.buttonLabel}>Exit!</Text>
-              </Pressable>
-              <Pressable
-                onPress={() =>
-                  changeProduct.mutate({
-                    id: Number(productsId),
-                    category: newCategory,
-                    expiresAt: newExpiresAt,
-                    name: newName,
-                  })
-                }
-                style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-              >
-                <Text style={styles.buttonLabel}>Change!</Text>
-              </Pressable>
-            </View>
+              <Button
+                text={changeProduct.isPending ? 'Saving…' : 'Apply'}
+                onPress={() => {
+                  if (!popup) return;
+                  changeProduct.mutate(
+                    {
+                      id: popup.id,
+                      category: newCategory,
+                      expiresAt: newExpiresAt,
+                      name: newName,
+                    },
+                    {
+                      onSuccess: () => setPopup(null),
+                    },
+                  );
+                }}
+                variant="primary"
+                className="w-full self-stretch"
+                disabled={changeProduct.isPending}
+              />
+            </ThemeView>
           </View>
-        )}
-      </View>
+        </Modal>
+      </ThemeView>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  sortButtonSelected: {
-    backgroundColor: '#044f0b',
-  },
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modal: {
-    position: 'relative',
-    borderRadius: '8px',
-    padding: 40,
-    paddingHorizontal: 200,
-  },
-  exitButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    fontSize: 16,
-    backgroundColor: '#ffffff',
-    color: '#000000',
-  },
-  container: {
-    flex: 1,
-    padding: 24,
-    paddingTop: 16,
-    gap: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
-  },
-  contentContainer: {
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  listContainer: {
-    gap: 12,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    height: 1,
-    width: '100%',
-  },
-  card: {
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: 'rgba(120,120,128,0.12)',
-  },
-  productName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  productCategory: {
-    fontSize: 13,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-  button: {
-    marginTop: 16,
-    alignSelf: 'flex-start',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  sortButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  centeredButton: {
-    marginTop: 16,
-    alignSelf: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  buttonPressed: {
-    opacity: 0.85,
-  },
-  buttonLabel: {
-    color: '#fafafa',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  errorText: {
-    fontSize: 14,
-    color: '#ff4444',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-});

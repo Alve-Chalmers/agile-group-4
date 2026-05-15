@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
-import { createAuthMiddleware } from 'better-auth/api';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { createAuthMiddleware } from 'better-auth/api';
 import { createHomeForUser } from '../db/home.js';
 
 import { db } from '../db/index.js';
@@ -57,10 +57,16 @@ export const auth = betterAuth({
       }
     : {}),
   trustedOrigins: [
-    'http://localhost:8081',
-    'http://localhost:19006',
-    'http://localhost:3000',
     'zerowaste://',
-    'exp://',
+    ...(process.env.NODE_ENV !== 'production'
+      ? [
+          'http://localhost:8081',
+          'http://127.0.0.1:8081',
+          'http://[::1]:8081',
+          'exp://',
+          'exp://**',
+          'exp://192.168.*.*:*/**',
+        ]
+      : []),
   ],
 });

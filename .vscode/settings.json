@@ -1,7 +1,10 @@
 {
+  "tailwindCSS.experimental.configFile": "apps/mobile/tailwind.config.js",
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "tailwindCSS.classAttributes": ["style"],
+  "tailwindCSS.classFunctions": ["tw", "tw.color", "tw.style"]
 }

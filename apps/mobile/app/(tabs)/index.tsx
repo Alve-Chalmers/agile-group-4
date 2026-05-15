@@ -1,9 +1,12 @@
-import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
+import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
 import ScanReceipt from '@/components/ScanReceipt';
 import { Text, View } from '@/components/Themed';
 import { getApiBaseUrl } from '@/lib/api-base';
 import { signOut } from '@/lib/auth';
+import tw from '@/lib/tailwind';
 import { trpc } from '@/lib/trpc';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
@@ -45,18 +48,24 @@ export default function ApiExampleScreen() {
           </Text>
         </View>
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? <Text style={tw.style('mt-2 text-[14px] text-error')}>{error}</Text> : null}
 
-        <Pressable
+        <Button
+          text={loading ? 'Loading…' : 'Refresh'}
           onPress={load}
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
           disabled={loading}
-        >
-          <Text style={styles.buttonLabel}>{loading ? 'Loading…' : 'Refresh'}</Text>
-        </Pressable>
+          className="mt-4 self-start"
+          variant="primary"
+        />
 
-        <TextInput placeholder="Product name" value={productName} onChangeText={setProductName} />
-        <Pressable
+        <Input
+          placeholder="Product name"
+          value={productName}
+          onChangeText={setProductName}
+          containerClassName="mt-2"
+        />
+        <Button
+          text={addProductMutation.isPending ? 'Adding…' : 'Add product'}
           onPress={() =>
             addProductMutation.mutate({
               name: productName,
@@ -64,25 +73,18 @@ export default function ApiExampleScreen() {
               expiresAt: '2026-05-10',
             })
           }
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
           disabled={addProductMutation.isPending}
-        >
-          <Text style={styles.buttonLabel}>
-            {addProductMutation.isPending ? 'Adding…' : 'Add product'}
-          </Text>
-        </Pressable>
+          className="mt-2 self-start"
+          variant="secondary"
+        />
         <ScanReceipt />
-        <Pressable
+        <Button
+          text={loading ? 'Logging out...' : 'Logout'}
           onPress={() => void signOut(queryClient)}
           disabled={loading}
-          style={({ pressed }) => [
-            styles.button,
-            loading && styles.buttonDisabled,
-            pressed && styles.buttonPressed,
-          ]}
-        >
-          <Text style={styles.buttonLabel}>{loading ? 'Logging out...' : 'Logout'}</Text>
-        </Pressable>
+          className="mt-2 self-start"
+          variant="outline"
+        />
       </View>
     </ScrollView>
   );
@@ -123,29 +125,5 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     fontFamily: 'SpaceMono',
-  },
-  error: {
-    marginTop: 8,
-    color: '#b91c1c',
-    fontSize: 14,
-  },
-  button: {
-    marginTop: 16,
-    alignSelf: 'flex-start',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#18181b',
-  },
-  buttonPressed: {
-    opacity: 0.85,
-  },
-  buttonLabel: {
-    color: '#fafafa',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  buttonDisabled: {
-    opacity: 0.6,
   },
 });
