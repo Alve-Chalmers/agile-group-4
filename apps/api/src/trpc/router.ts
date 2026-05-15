@@ -1,23 +1,21 @@
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { TRPCError } from '@trpc/server';
 import { generateText, Output } from 'ai';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/index.js';
-import { product, userHome, category } from '../db/schema.js';
+import { category, product, userHome } from '../db/schema.js';
 import { protectedProcedure, publicProcedure, router } from './init.js';
 
 const receiptScanResultSchema = z.object({
   items: z.array(
     z.object({
-      name: z.string(),
+      name: z.string().describe("The name of the product, in english, and normalized, example: 'tomato'"),
       category: z.string().nullable(),
-      expiresAt: z.string(),
+      expiresAt: z.string().transform(value => new Date(value)),
     }),
   ),
 });
-
-const DEFAULT_RECEIPT_VISION_MODEL = 'gpt-5.4-mini';
 
 export const getHome = async (userId: string) => {
   const { home } = (await db.query.userHome.findFirst({
@@ -99,19 +97,10 @@ export const homeRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      if (!process.env.OPENAI_API_KEY) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'OPENAI_API_KEY is not configured',
-        });
-      }
-
-      const modelId = process.env.OPENAI_RECEIPT_MODEL ?? DEFAULT_RECEIPT_VISION_MODEL;
-
       try {
         const { output: parsed } = await generateText({
-          model: openai(modelId),
-          maxOutputTokens: 1024,
+          model: google('gemini-3.1-flash-lite'),
+
           output: Output.object({
             schema: receiptScanResultSchema,
             name: 'receipt_items',

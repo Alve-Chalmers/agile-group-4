@@ -24,7 +24,7 @@
     "db:seeds": "tsx --env-file=.env src/db/seeds.ts"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^3.0.63",
+    "@ai-sdk/google": "^3.0.73",
     "@hono/node-server": "^2.0.0",
     "@trpc/server": "^11.16.0",
     "ai": "^6.0.182",
