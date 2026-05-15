@@ -19,9 +19,11 @@ export default function TabTwoScreen() {
   });
   const removeProductMutation = trpc.home.removeProduct.useMutation();
 
-  const products = home?.products ?? [];
+  const products = useMemo(() => {
+    return home?.products ?? [];
+  }, [home?.products]);
 
-  const { data: recipes, ...getRecipes } = trpc.recipe.getRecipesForIngredients.useQuery({
+  const { data: recipes } = trpc.recipe.getRecipesForIngredients.useQuery({
     ingredients: products.map((p) => p.name),
   });
 
