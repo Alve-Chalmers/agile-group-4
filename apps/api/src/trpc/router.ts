@@ -1,9 +1,23 @@
+import { openai } from '@ai-sdk/openai';
 import { TRPCError } from '@trpc/server';
+import { generateText, Output } from 'ai';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/index.js';
 import { product, userHome } from '../db/schema.js';
 import { protectedProcedure, publicProcedure, router } from './init.js';
+
+const receiptScanResultSchema = z.object({
+  items: z.array(
+    z.object({
+      name: z.string(),
+      category: z.string().nullable(),
+      expiresAt: z.string(),
+    }),
+  ),
+});
+
+const DEFAULT_RECEIPT_VISION_MODEL = 'gpt-5.4-mini';
 
 export const getHome = async (userId: string) => {
   const { home } = (await db.query.userHome.findFirst({
@@ -85,56 +99,49 @@ export const homeRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY!,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1024,
+      if (!process.env.OPENAI_API_KEY) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'OPENAI_API_KEY is not configured',
+        });
+      }
+
+      const modelId = process.env.OPENAI_RECEIPT_MODEL ?? DEFAULT_RECEIPT_VISION_MODEL;
+
+      try {
+        const { output: parsed } = await generateText({
+          model: openai(modelId),
+          maxOutputTokens: 1024,
+          output: Output.object({
+            schema: receiptScanResultSchema,
+            name: 'receipt_items',
+            description: 'Food and grocery line items parsed from a receipt image',
+          }),
           messages: [
             {
               role: 'user',
               content: [
                 {
                   type: 'image',
-                  source: {
-                    type: 'base64',
-                    media_type: input.mediaType,
-                    data: input.imageBase64,
-                  },
+                  image: input.imageBase64,
+                  mediaType: input.mediaType,
                 },
                 {
                   type: 'text',
                   text: `Extract all food/grocery items from this receipt.
-  Return ONLY a JSON array, no other text, no markdown:
-  [{"name": "string", "category": "string or null", "expiresAt": "ISO date string"}]
-  For expiresAt, estimate a reasonable expiry date based on the product type.
-  Today is ${new Date().toISOString().split('T')[0]}.`,
+Return an object matching the schema: items is an array of { name, category (or null), expiresAt (ISO date string) }.
+For expiresAt, estimate a reasonable expiry date based on the product type.
+Today is ${new Date().toISOString().split('T')[0]}.`,
                 },
               ],
             },
           ],
-        }),
-      });
+        });
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        console.error('Anthropic error:', response.status, errorBody);
+        return { items: parsed.items };
+      } catch (error) {
+        console.error('Receipt vision model error:', error);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to call AI API' });
-      }
-
-      const data = await response.json() as { content: { text: string }[] };
-      const text = data.content[0].text;
-
-      try {
-        const items = JSON.parse(text) as { name: string; category: string | null; expiresAt: string }[];
-        return { items };
-      } catch {
-        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to parse AI response' });
       }
     }),
 });
