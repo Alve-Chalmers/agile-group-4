@@ -10,9 +10,11 @@ import { protectedProcedure, publicProcedure, router } from './init.js';
 const receiptScanResultSchema = z.object({
   items: z.array(
     z.object({
-      name: z.string().describe("The name of the product, in english, and normalized, example: 'tomato'"),
+      name: z
+        .string()
+        .describe("The name of the product, in english, and normalized, example: 'tomato'"),
       category: z.string().nullable(),
-      expiresAt: z.string().transform(value => new Date(value)),
+      expiresAt: z.string().transform((value) => new Date(value)),
     }),
   ),
 });
