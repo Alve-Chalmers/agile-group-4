@@ -47,6 +47,7 @@
   "devDependencies": {
     "@0waste/eslint-config": "workspace:*",
     "@0waste/prettier-config": "workspace:*",
+    "@0waste/spoonacular-api": "workspace:*",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "~19.2.10",

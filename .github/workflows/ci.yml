@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Lint, format, typecheck, test
+    name: Lint, format, build, test
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
 
       - name: Install dependencies
@@ -39,8 +39,8 @@ jobs:
       - name: ESLint + Prettier (apps via Turbo)
         run: pnpm lint
 
-      - name: Typecheck API
-        run: pnpm --filter @0waste/api check
+      - name: Build
+        run: pnpm build
 
       - name: Test
         run: pnpm test
