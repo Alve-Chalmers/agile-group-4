@@ -1,5 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 
+import ScanReceipt from '@/components/ScanReceipt';
 import { Text, View } from '@/components/Themed';
 import { getApiBaseUrl } from '@/lib/api-base';
 import { signOut } from '@/lib/auth';
@@ -70,6 +71,7 @@ export default function ApiExampleScreen() {
             {addProductMutation.isPending ? 'Adding…' : 'Add product'}
           </Text>
         </Pressable>
+        <ScanReceipt />
         <Pressable
           onPress={() => void signOut(queryClient)}
           disabled={loading}
