@@ -52,10 +52,6 @@ export default function TabTwoScreen() {
     load();
   }, [load]);
 
-  const openEditPopup = useCallback((number: number) => {
-    setPopup(number);
-  }, []);
-
   if (products.length === 0) {
     return (
       <ThemeView style={tw.style('flex-1 items-center justify-center gap-4 p-6 pt-4')}>
@@ -86,9 +82,7 @@ export default function TabTwoScreen() {
         </ThemeView>
         <ThemeView style={tw.style('mb-4 min-h-[80px] w-full gap-3')}>
           {sortedProducts.map((product) => {
-            return (
-              <ProductCard key={product.id} product={product.id} openEditPopup={openEditPopup} />
-            );
+            return <ProductCard key={product.id} product={product.id} openEditPopup={setPopup} />;
           })}
         </ThemeView>
         {popup !== null && <ProductPopup popup={popup} onDone={onDone} />}
