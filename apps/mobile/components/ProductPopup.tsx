@@ -29,12 +29,8 @@ export function ProductPopup({ popup, onDone }: ProductPopupProps) {
   const [newCategory, setNewCategory] = useState(product?.category ?? '');
   const [newExpiresAt, setNewExpiresAt] = useState(product?.expiresAt.slice(0, 10) ?? '');
 
-  if (!popup) {
-    return null;
-  }
-
   return (
-    <Modal visible={!!popup} transparent animationType="fade" onRequestClose={() => onDone()}>
+    <Modal transparent animationType="fade" onRequestClose={() => onDone()}>
       <View style={tw.style('flex-1 items-center justify-center bg-black/50 p-6')}>
         <ThemeView style={tw.style('w-full max-w-[380px] gap-2 rounded-lg bg-auth-screen p-6')}>
           <View style={tw.style('flex-row justify-end pb-3')}>
