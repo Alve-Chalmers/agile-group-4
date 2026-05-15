@@ -20,9 +20,7 @@ export function ProductCard({ product, openEditPopup }: ProductCardProps) {
 
   const removeCall = useCallback(
     (productId: number) => {
-      removeProductMutation.mutate(
-        { id: productId.toString() },
-      );
+      removeProductMutation.mutate({ id: productId.toString() });
     },
     [removeProductMutation],
   );
@@ -35,7 +33,10 @@ export function ProductCard({ product, openEditPopup }: ProductCardProps) {
     <ThemeView style={tw.style('gap-2 rounded-lg bg-black/10 p-4 bg-background-900')}>
       <Text style={tw.style('mb-1 text-base font-semibold')}>{productData.name}</Text>
       <Text style={tw.style('mb-1 text-[13px] opacity-70')}>{productData.category}</Text>
-      <Text>Expires in: { Math.ceil((new Date(productData.expiresAt).getTime() - Date.now()) / MS_PER_DAY)} days.</Text>
+      <Text>
+        Expires in:{' '}
+        {Math.ceil((new Date(productData.expiresAt).getTime() - Date.now()) / MS_PER_DAY)} days.
+      </Text>
       <ThemeView style={tw.style('mt-2 flex-row flex-wrap gap-2 bg-inherit')}>
         <Button
           variant="secondary"

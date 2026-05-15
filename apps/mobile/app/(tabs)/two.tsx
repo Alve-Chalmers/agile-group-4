@@ -87,11 +87,7 @@ export default function TabTwoScreen() {
         <ThemeView style={tw.style('mb-4 min-h-[80px] w-full gap-3')}>
           {sortedProducts.map((product) => {
             return (
-              <ProductCard
-                key={product.id}
-                product={product.id}
-                openEditPopup={openEditPopup}
-              />
+              <ProductCard key={product.id} product={product.id} openEditPopup={openEditPopup} />
             );
           })}
         </ThemeView>
