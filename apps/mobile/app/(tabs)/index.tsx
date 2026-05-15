@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -16,10 +16,35 @@ export default function ApiExampleScreen() {
   const pingQuery = trpc.ping.useQuery();
   const homeQuery = trpc.home.getHome.useQuery();
   const addProductMutation = trpc.home.addProduct.useMutation();
+  const deleteAccountMutation = trpc.account.deleteAccount.useMutation();
 
   const error = homeQuery.error?.message ?? pingQuery.error?.message ?? null;
   const loading = homeQuery.isPending || pingQuery.isPending;
   const queryClient = useQueryClient();
+
+  const requestAccountDeletion = () => {
+    Alert.alert(
+      'Delete account?',
+      'This permanently removes your account. If you are the last member of your home, the home and its products will also be deleted.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete account',
+          style: 'destructive',
+          onPress: () => {
+            void (async () => {
+              try {
+                await deleteAccountMutation.mutateAsync();
+                await signOut(queryClient);
+              } catch {
+                // Surface mutation failures in the UI below the button.
+              }
+            })();
+          },
+        },
+      ],
+    );
+  };
 
   const load = useCallback(() => {
     void homeQuery.refetch();
@@ -83,6 +108,18 @@ export default function ApiExampleScreen() {
           className="mt-2 self-start"
           variant="outline"
         />
+        <Button
+          text={deleteAccountMutation.isPending ? 'Deleting…' : 'Delete account'}
+          onPress={requestAccountDeletion}
+          disabled={deleteAccountMutation.isPending}
+          className="mt-2 self-start border-error bg-error/10"
+          variant="outline"
+        />
+        {deleteAccountMutation.error ? (
+          <Text style={tw.style('mt-1 text-[14px] text-error')}>
+            {deleteAccountMutation.error.message}
+          </Text>
+        ) : null}
       </View>
     </ScrollView>
   );
