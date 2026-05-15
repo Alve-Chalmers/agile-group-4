@@ -2,7 +2,8 @@ import { Text, View } from '@/components/Themed';
 import { trpc } from '@/lib/trpc';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Modal, ScrollView, StyleSheet } from 'react-native';
+import { Button } from './Button';
 
 type ScannedItem = {
   name: string;
@@ -51,46 +52,32 @@ export default function ScanReceipt() {
   };
 
   return (
-    <View>
-      <Pressable
-        onPress={pickAndScan}
-        disabled={scanMutation.isPending}
-        style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-      >
-        <Text style={styles.buttonLabel}>
-          {scanMutation.isPending ? 'Scanning…' : 'Scan Receipt'}
-        </Text>
-      </Pressable>
+    <>
+      <Button variant='secondary' className="self-start" text={scanMutation.isPending ? 'Scanning…' : 'Scan Receipt'} disabled={scanMutation.isPending} onPress={pickAndScan} />
 
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Hittade produkter</Text>
+            <Text style={styles.modalTitle}>Found products</Text>
             <ScrollView>
               {scannedItems.map((item, i) => (
                 <View key={i} style={styles.item}>
                   <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemDetail}>{item.category ?? 'Okänd kategori'}</Text>
-                  <Text style={styles.itemDetail}>Går ut: {item.expiresAt.split('T')[0]}</Text>
+                  <Text style={styles.itemDetail}>{item.category ?? 'Unknown category'}</Text>
+                  <Text style={styles.itemDetail}>Expires: {item.expiresAt.split('T')[0]}</Text>
                 </View>
               ))}
             </ScrollView>
-            <Pressable
+            <Button
+              text={addProductMutation.isPending ? 'Adding…' : 'Add all'}
               onPress={confirmItems}
               disabled={addProductMutation.isPending}
-              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-            >
-              <Text style={styles.buttonLabel}>
-                {addProductMutation.isPending ? 'Lägger till…' : 'Lägg till alla'}
-              </Text>
-            </Pressable>
-            <Pressable onPress={() => setModalVisible(false)} style={styles.cancelButton}>
-              <Text style={styles.cancelLabel}>Avbryt</Text>
-            </Pressable>
+            />
+            <Button variant='ghost' onPress={() => setModalVisible(false)} text="Cancel" />
           </View>
         </View>
       </Modal>
-    </View>
+    </>
   );
 }
 

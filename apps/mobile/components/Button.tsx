@@ -7,7 +7,7 @@ export type ButtonProps = {
   text: string;
   onPress: () => void;
   disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   icon?: React.ReactNode;
   className?: string;
 };
@@ -42,6 +42,7 @@ export function Button({
             'border border-field-focus bg-transparent': variant === 'outline',
             'bg-field-bg': variant === 'outline' && pressed && !disabled,
             'opacity-45': !!disabled,
+            'bg-inherit text-text-200': variant === 'ghost'
           },
           className,
         )
