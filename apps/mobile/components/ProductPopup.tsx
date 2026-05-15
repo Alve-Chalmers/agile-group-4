@@ -25,8 +25,8 @@ export function ProductPopup({ popup, onDone }: ProductPopupProps) {
   });
 
   if (!popup) {
-      return null;
-    }
+    return null;
+  }
 
   const product = useProduct(popup);
   const [newName, setNewName] = useState(product?.name ?? '');
@@ -34,7 +34,6 @@ export function ProductPopup({ popup, onDone }: ProductPopupProps) {
   const [newExpiresAt, setNewExpiresAt] = useState(product?.expiresAt.slice(0, 10) ?? '');
 
   return (
-
     <Modal visible={!!popup} transparent animationType="fade" onRequestClose={() => onDone()}>
       <View style={tw.style('flex-1 items-center justify-center bg-black/50 p-6')}>
         <ThemeView style={tw.style('w-full max-w-[380px] gap-2 rounded-lg bg-auth-screen p-6')}>
