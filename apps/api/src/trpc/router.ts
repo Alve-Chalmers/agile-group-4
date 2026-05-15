@@ -120,6 +120,7 @@ export const homeRouter = router({
                   text: `Extract all food/grocery items from this receipt.
 Return an object matching the schema: items is an array of { name, category (or null), expiresAt (ISO date string) }.
 For expiresAt, estimate a reasonable expiry date based on the product type.
+For name, translate the name to English if it's in another language, and be as specific as possible (e.g. "2% milk" instead of just "milk").
 Today is ${new Date().toISOString().split('T')[0]}.`,
                 },
               ],
@@ -133,6 +134,39 @@ Today is ${new Date().toISOString().split('T')[0]}.`,
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to call AI API' });
       }
     }),
+    translateProductName: protectedProcedure.input(z.object({ name: z.string() })).query(async ({ input }) => {
+      if (!process.env.OPENAI_API_KEY) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'OPENAI_API_KEY is not configured',
+        });
+      }
+      const modelId = process.env.OPENAI_RECEIPT_MODEL ?? DEFAULT_RECEIPT_VISION_MODEL;
+
+      try {
+        const { output: translation } = await generateText({
+          model: modelId,
+          output: Output.object({
+            schema: z.string(),
+            name: 'translated_name',
+            description: 'The product name translated to English and made more specific if possible',
+          }),
+          messages: [
+            {
+              role: 'user',
+              content: `Return a string matching the following schema: items is an array of { name }. 
+              For name, translate the name to English if it's in another language, and be as specific as possible (e.g. "2% milk" instead of just "milk").
+              Use this input: ${input.name}`,
+            },
+          ],
+        });
+        
+        return { name: translation };
+      } catch (error) {
+        console.error('Product name translation error:', error);
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to call AI API' });
+      }
+})
 });
 
 export const categoryRouter = router({
